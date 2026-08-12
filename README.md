@@ -1,242 +1,238 @@
-# Angular AI Tutor
+# Angular AI Tutor — Angular Mastery Curriculum
 
-An educational Angular workspace designed for use with Cline and local LLMs (Qwen, Llama, DeepSeek, GPT, Claude, etc.).
+> Progressive learning path for mastering modern Angular, built around incrementally developing a real-world application.
 
-The project transforms a coding model into an experienced Angular mentor capable of teaching modern Angular while producing production-ready code.
+## Project Overview
 
-Rather than embedding all Angular knowledge into a single prompt, the project follows a modular Skill-based architecture inspired by the official Angular documentation.
+This repository is a **living laboratory** for learning Angular from fundamentals to advanced architecture. Each lesson is represented by a unique Git branch, ensuring the codebase evolves incrementally from foundational concepts to production-ready patterns.
 
----
-
-# Project Goals
-
-The primary goal of this repository is education.
-
-The AI should:
-
-- teach Angular instead of only generating code
-- explain architectural decisions
-- recommend best practices
-- generate production-ready solutions
-- review code
-- debug applications
-- explain trade-offs
-- guide the user through modern Angular development
+The curriculum focuses on **understanding how Angular works and why we make specific architectural decisions**, rather than simply learning the next directive or service pattern. Each phase builds mental models that help you reason about Angular applications.
 
 ---
 
-# Repository Structure
+## 🎯 Flagship Project: TaskFlow
+
+Throughout the curriculum, you will incrementally build **TaskFlow** — a full-featured project management application with Kanban-style boards.
+
+### What is TaskFlow?
+
+A multi-board task management application where users can:
+- Create multiple project boards (e.g., "Marketing Sprint", "Bug Tracker")
+- Organize tasks into columns (To Do, In Progress, Review, Done)
+- Create, edit, and delete tasks with metadata (title, description, priority, due date, assignee)
+- Filter and search tasks across boards
+- Track task status with visual indicators
+- Navigate between boards with a routed layout
+- Work with role-based access (admin vs member views)
+
+By the end of the curriculum, TaskFlow will be a **production-ready application** demonstrating every major Angular concept.
+
+---
+
+## 📚 Curriculum Phases
+
+Detailed lesson plans are split across phase files. Each phase builds on all previous work.
+
+**Status legend:** ⬜ not started ◐ in progress ✅ completed
+
+| Phase | Status | Topic | File |
+|---|---|---|---|
+| **0** | ⬜ | Project Setup & Angular Fundamentals | [`course/phase-00-fundamentals.md`](course/phase-00-fundamentals.md) |
+| **1** | ⬜ | Standalone Components & Templates | [`course/phase-01-components.md`](course/phase-01-components.md) |
+| **2** | ⬜ | Component Communication | [`course/phase-02-communication.md`](course/phase-02-communication.md) |
+| **3** | ⬜ | Dependency Injection | [`course/phase-03-di.md`](course/phase-03-di.md) |
+| **4** | ⬜ | Signals & Reactive State | [`course/phase-04-signals.md`](course/phase-04-signals.md) |
+| **5** | ⬜ | RxJS & Async Patterns (incl. Service Store) | [`course/phase-05-rxjs.md`](course/phase-05-rxjs.md) |
+| **6** | ⬜ | Forms | [`course/phase-06-forms.md`](course/phase-06-forms.md) |
+| **7** | ⬜ | Routing & Navigation | [`course/phase-07-routing.md`](course/phase-07-routing.md) |
+| **8** | ⬜ | Change Detection & Performance | [`course/phase-08-performance.md`](course/phase-08-performance.md) |
+| **9** | ⬜ | Directives & Pipes | [`course/phase-09-directives-pipes.md`](course/phase-09-directives-pipes.md) |
+| **10** | ⬜ | Server-Side Rendering & Hydration | [`course/phase-10-ssr.md`](course/phase-10-ssr.md) |
+| **11** | ⬜ | Testing | [`course/phase-11-testing.md`](course/phase-11-testing.md) |
+| **12** | ⬜ | Accessibility & Polish | [`course/phase-12-accessibility.md`](course/phase-12-accessibility.md) |
+| **13** | ⬜ | Architecture & Production | [`course/phase-13-architecture.md`](course/phase-13-architecture.md) |
+| **14** | ⬜ | Global State Management with NgRx | [`course/phase-14-ngrx.md`](course/phase-14-ngrx.md) |
+
+---
+
+## 🔄 Lesson Workflow
+
+Each lesson follows a **5-step workflow**:
+
+1. **Topic Discussion** — Mentor explains the Angular concept, internals, alternatives, and trade-offs
+2. **Focused Exercise** — A small, isolated exercise that practices the concept in isolation
+3. **Exercise Verification** — You complete the exercise, receive validation and feedback
+4. **Project Application** — A concrete change to apply the concept in the TaskFlow project
+5. **Project Verification** — You implement the change in TaskFlow, receive code review and suggestions
+
+### Training Flow: `src/app/` → `projects/taskflow/`
+
+Each lesson follows a **two-step flow**:
+
+| Step | Where | Purpose |
+|---|---|---|
+| **1. Training** | `src/app/` | Practice the concept in isolation, without the pressure of a real project |
+| **2. Application** | `projects/taskflow/` | Apply the concept in the real TaskFlow project |
+
+**Rules:**
+- First we train on simple files in `src/app/`
+- Only when the concept is understood, we move to `projects/taskflow/`
+- The user controls the pace — ask for more training exercises if needed
+
+---
+
+## 🌿 Git Branch Strategy
+
+The repository uses a structured branching model to keep the codebase clean and traceable.
+
+### Branches
+
+| Branch | Purpose | Modifiable? |
+|---|---|---|
+| `start` | **Clean baseline** — the original project setup. Represents the starting point of the curriculum. | ❌ No |
+| `main` | **Working branch** — mirror of `start`. All lesson branches are merged here. | ✅ Yes |
+| `lesson-XX-*` | **Lesson branches** — each lesson gets its own branch created from `main`. After completion, merged back to `main`. | ✅ Yes |
+
+### Flow
 
 ```
-├── src/                  # Educational app (Angular course exercises)
-│   ├── app/
-│   ├── main.ts
-│   └── styles.scss
-│
-├── projects/
-│   └── taskflow/         # Independent sub-project (TaskFlow Kanban app)
-│       ├── src/
-│       │   ├── app/
-│       │   ├── main.ts
-│       │   └── styles.scss
-│       ├── public/
-│       ├── tsconfig.app.json
-│       └── tsconfig.spec.json
-│
-├── .clinerules/
-│   ├── agents/
-│   │   └── angular-senior.md
-│   ├── course.md
-│   └── rules.md
-│
-├── angular.json
-├── package.json
-└── README.md
+start (clean baseline, read-only)
+  └── main (merge target)
+        ├── lesson-01-workspace-anatomy ──┐
+        ├── lesson-02-typescript-strict ──┤── merged after completion
+        ├── lesson-11-standalone-basics ──┘
+        └── ...
 ```
+
+### Rules
+
+1. **`start` branch** is the source of truth for the clean project state
+2. **`main` tracks progress** — every completed lesson branch merges into `main`
+3. **Each lesson branches from `main`** — ensures lessons build on top of all previous work
+4. **Lesson branches follow naming convention** — `lesson-XX-topic-name` (e.g., `lesson-01-workspace-anatomy`)
 
 ---
 
-# Workspace Projects
+## 🛠 Tech Stack
+
+| Tool | Version | Purpose |
+|---|---|---|
+| **Angular** | 22.0 | Framework |
+| **TypeScript** | 6.0 | Type-safe development |
+| **RxJS** | 7.8 | Reactive programming |
+| **Vitest** | 4.0 | Unit testing |
+| **Angular CLI** | 22.0 | Build tool & scaffolding |
+| **SCSS** | — | Styling |
+
+---
+
+## 📐 Workspace Projects
 
 This Angular workspace contains two independent applications:
 
-## `angular-ai-tutor` (Educational App)
+### `angular-ai-tutor` (Educational App)
 
-The main project used for course exercises and learning Angular concepts.
+The main project used for course exercises and learning Angular concepts in isolation.
 
 ```bash
-ng serve angular-ai-tutor
+npm run start:edu
 # Runs on http://localhost:4200/
 ```
 
-## `taskflow` (Sub-Project)
+### `taskflow` (Sub-Project)
 
-An independent application built throughout the course — a project management Kanban board.
-This project evolves incrementally as new Angular concepts are introduced.
+The flagship Kanban application built throughout the curriculum. This project evolves incrementally as new Angular concepts are introduced.
 
 ```bash
-ng serve taskflow
+npm run start:taskflow
 # Runs on http://localhost:4300/
 ```
 
-The two projects share dependencies but are otherwise fully independent.
-Changes in one do not affect the other.
+The two projects share dependencies but are otherwise fully independent. Changes in one do not affect the other.
 
 ---
 
-# Directory Overview
+## 📂 Project Structure
 
-## `.clinerules/agents`
-
-Contains always-active behavioral rules.
-
-Current agent:
-
-- `angular-senior.md`
-
-Responsibilities:
-
-- Senior Angular Architect
-- Mentor
-- Technical Lead
-- Code Reviewer
-- Debugging Assistant
-
----
-
-## `.clinerules/skills/angular-developer`
-
-The primary Skill loaded on demand by Cline.
-
-Responsibilities:
-
-- determine user intent
-- load appropriate references
-- orchestrate documentation
-- extend official Angular guidance with senior engineering experience
+```
+angular-ai-tutor/
+├── course/                      # Curriculum phase documentation
+├── src/                         # Educational app (training exercises)
+│   ├── app/                     # Training components, services, etc.
+│   ├── main.ts                  # Educational app entry point
+│   └── styles.scss              # Global styles
+├── projects/
+│   └── taskflow/                # TaskFlow Kanban application
+│       ├── src/
+│       │   ├── app/             # TaskFlow components, services, etc.
+│       │   ├── main.ts          # TaskFlow entry point
+│       │   └── styles.scss      # TaskFlow styles
+│       ├── public/              # TaskFlow static assets
+│       ├── tsconfig.app.json    # TaskFlow TypeScript config
+│       └── tsconfig.spec.json   # TaskFlow test TypeScript config
+├── .clinerules/                 # AI tutor configuration
+│   ├── agents/
+│   │   └── angular-senior.md    # Senior Angular mentor agent
+│   ├── course.md                # Curriculum master roadmap
+│   └── rules.md                 # Skill selection rules
+├── angular.json                 # Angular workspace configuration
+└── package.json                 # Dependencies and scripts
+```
 
 ---
 
-## `references`
+## 🧪 Test Coverage Policy
 
-Contains official Angular reference material.
+After completing **Phase 11 (Testing)**, the following policy takes effect:
 
-Examples:
-
-- Components
-- Signals
-- Forms
-- Routing
-- Dependency Injection
-- SSR
-- Testing
-- Accessibility
-- Tailwind
-- MCP
-- Resource API
-
-These files should remain as close as possible to the official Angular documentation.
+1. **Backfill** — All existing components, services, directives, and pipes in TaskFlow must receive unit tests
+2. **Ongoing** — Every new or modified component/service/directive/pipe must include corresponding tests before the lesson is marked complete
+3. **Threshold** — Minimum code coverage is **90%** (measured per-file, not project-wide)
+4. **Enforcement** — Before merging any lesson branch after Phase 11, verify tests pass and coverage meets the threshold
 
 ---
 
-## `docs`
+## 🎓 Mentoring Approach
 
-Project-specific knowledge extending the official documentation.
+This curriculum is designed in **mentoring mode**. The AI tutor will:
 
-Examples:
+- Ask guiding questions instead of immediately giving answers
+- Explain Angular internals and how the framework works under the hood
+- Compare multiple approaches and explain trade-offs
+- Recommend best practices backed by reasoning
+- Encourage independent problem solving
 
-- architecture
-- performance
-- clean code
-- debugging
-- RxJS
-- testing strategies
-
----
-
-## `templates`
-
-Reusable templates used by the AI.
-
-Examples:
-
-- component templates
-- feature templates
-- architecture templates
-- testing templates
+> The goal is not to behave like an autocomplete, but like a senior engineer mentoring a junior developer.
 
 ---
 
-# Training Philosophy
+## 🚀 Getting Started
 
-The AI should always prioritize learning over code generation.
+```bash
+# Install dependencies
+npm install
 
-Each answer should:
+# Start educational app (training)
+npm run start:edu
 
-1. Explain the problem.
+# Start TaskFlow app (project)
+npm run start:taskflow
 
-2. Explain Angular concepts.
+# Build for production
+npm run build:taskflow
 
-3. Explain internal framework behaviour.
-
-4. Compare alternatives.
-
-5. Recommend the best solution.
-
-6. Generate production-ready code.
-
-7. Suggest improvements.
-
----
-
-# Technology Focus
-
-The project targets modern Angular development.
-
-Primary technologies include:
-
-- Angular
-- TypeScript
-- Signals
-- RxJS
-- Angular CLI
-- Angular Material
-- Tailwind CSS
-- SCSS
-- Vitest
-- Playwright
-- Node.js
+# Run tests
+npm test
+```
 
 ---
 
-# Code Standards
+## 📖 Philosophy
 
-Generated code should follow:
+This curriculum focuses on **understanding how Angular works and why we make specific architectural decisions**, rather than simply learning the next feature. Each phase builds mental models that help you reason about Angular applications.
 
-- SOLID
-- DRY
-- KISS
-- YAGNI
-- Clean Architecture
-- Feature-first architecture
-- Strict TypeScript
-
----
-
-# Supported Models
-
-Designed primarily for:
-
-- GPT-5.5
-- Claude
-- Qwen 3.x
-- DeepSeek
-- Llama 3.x
-
----
-
-# Notes
-
-The official Angular reference files are considered the source of truth.
-
-The AI should always prefer these references over its internal knowledge whenever applicable.
+By the end of this course, you will:
+- Deeply understand Angular's DI system, change detection, signals, and reactive patterns
+- Be able to architect production-grade Angular applications
+- Have built a complete, real-world application (TaskFlow) from scratch
+- Possess the mental models to learn new Angular features independently
