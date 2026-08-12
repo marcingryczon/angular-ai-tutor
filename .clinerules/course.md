@@ -69,7 +69,9 @@ start (clean baseline, read-only)
 1. Do not create new or edit any existing files by yourself without ask. THIS IS VERY IMPORTANT!
 2. Use angular-cli MCP server as much as you can.
 3. I'm beginner in Angular
-4. run `npm start` and visually check also (use chrome devtools mcp)
+4. run `npm start` and visually check also
+5. Do not run npm commands by yourself without ask. THIS IS VERY IMPORTANT!
+
 
 ---
 
