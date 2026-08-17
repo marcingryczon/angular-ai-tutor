@@ -139,6 +139,11 @@ TaskFlow is a multi-board task management application where users can:
 - Navigate between boards with a routed layout
 - Work with role-based access (admin vs member views)
 
+### TaskFlow Visual & Structure Reference
+
+> **Read this before building any TaskFlow UI:** [`course/taskflow-spec.md`](../course/taskflow-spec.md)
+> It is the single source of truth for the app's look and structure — design tokens, class names, screen layouts, interactions, domain model, seed data, and file layout. Follow it so every learner produces a visually identical TaskFlow.
+
 ---
 
 ## Test Coverage Policy
