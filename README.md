@@ -1,6 +1,8 @@
-# Angular AI Tutor — Angular Mastery Curriculum
+﻿# Angular AI Tutor — Angular Mastery Curriculum
 
 > Progressive learning path for mastering modern Angular, built around incrementally developing a real-world application.
+>
+> **Instantiated from the [AI Tutor Course Template](https://github.com/marcingryczon/template-ai-tutor)** — see `meta/INSTANTIATION.md` for the one-time setup that produced this course.
 
 ## Project Overview
 
@@ -52,6 +54,8 @@ Detailed lesson plans are split across phase files. Each phase builds on all pre
 | **12** | ⬜ | Accessibility & Polish | [`course/phase-12-accessibility.md`](course/phase-12-accessibility.md) |
 | **13** | ⬜ | Architecture & Production | [`course/phase-13-architecture.md`](course/phase-13-architecture.md) |
 | **14** | ⬜ | Global State Management with NgRx | [`course/phase-14-ngrx.md`](course/phase-14-ngrx.md) |
+
+> The full phase index is maintained as the **single source of truth** in `.clinerules/course.md`. The table above is a convenience mirror.
 
 ---
 
@@ -156,7 +160,23 @@ The two projects share dependencies but are otherwise fully independent. Changes
 
 ```
 angular-ai-tutor/
+├── .clinerules/                 # AI tutor configuration
+│   ├── agents/
+│   │   └── senior.md            # Senior Angular mentor agent
+│   ├── skills/
+│   │   ├── SKILL.md             # Skills index & per-phase mapping
+│   │   └── references/          # 37 authoritative Angular topic files
+│   ├── course.md                # Curriculum master roadmap (single source of truth)
+│   └── rules.md                 # Skill selection rules
 ├── course/                      # Curriculum phase documentation
+│   ├── phase-TEMPLATE.md        # Reusable phase template
+│   ├── phase-00-fundamentals.md
+│   └── ... (15 phase files)
+├── lessons/                     # Individual lesson files
+│   ├── lesson-TEMPLATE.md       # Reusable lesson template
+│   └── 01-workspace-anatomy.md
+├── meta/
+│   └── INSTANTIATION.md         # One-time setup record (not loaded in tutoring sessions)
 ├── src/                         # Educational app (training exercises)
 │   ├── app/                     # Training components, services, etc.
 │   ├── main.ts                  # Educational app entry point
@@ -170,14 +190,26 @@ angular-ai-tutor/
 │       ├── public/              # TaskFlow static assets
 │       ├── tsconfig.app.json    # TaskFlow TypeScript config
 │       └── tsconfig.spec.json   # TaskFlow test TypeScript config
-├── .clinerules/                 # AI tutor configuration
-│   ├── agents/
-│   │   └── angular-senior.md    # Senior Angular mentor agent
-│   ├── course.md                # Curriculum master roadmap
-│   └── rules.md                 # Skill selection rules
 ├── angular.json                 # Angular workspace configuration
 └── package.json                 # Dependencies and scripts
 ```
+
+---
+
+## 📖 Where to Find What (single sources of truth)
+
+| Topic | Authoritative location |
+|---|---|
+| Phase index, Git branch strategy, learner environment, test coverage policy, workflow protocol | `.clinerules/course.md` |
+| Skill selection policy | `.clinerules/rules.md` |
+| Tutor persona, coding standards, Angular best practices | `.clinerules/agents/senior.md` |
+| Skills index & per-phase skill mapping | `.clinerules/skills/SKILL.md` |
+| Authoritative Angular topic references | `.clinerules/skills/references/` |
+| Phase lesson plans | `course/phase-NN-<slug>.md` |
+| Phase template | `course/phase-TEMPLATE.md` |
+| Lesson content | `lessons/*.md` |
+| Lesson template | `lessons/lesson-TEMPLATE.md` |
+| One-time setup record & verification checklist | `meta/INSTANTIATION.md` |
 
 ---
 
@@ -187,8 +219,14 @@ After completing **Phase 11 (Testing)**, the following policy takes effect:
 
 1. **Backfill** — All existing components, services, directives, and pipes in TaskFlow must receive unit tests
 2. **Ongoing** — Every new or modified component/service/directive/pipe must include corresponding tests before the lesson is marked complete
-3. **Threshold** — Minimum code coverage is **90%** (measured per-file, not project-wide)
-4. **Enforcement** — Before merging any lesson branch after Phase 11, verify tests pass and coverage meets the threshold
+3. **Threshold:**
+   - **Project-wide:** ≥ **80%** line coverage
+   - **Business logic** (`projects/taskflow/src/`): ≥ **90%**
+   - **Training exercises** (`src/app/` of the educational project): no minimum — they are learning artifacts
+   - **Config / boilerplate / entry points:** excluded from measurement
+4. **Enforcement** — Before merging any lesson branch after Phase 11, verify tests pass and coverage meets the thresholds
+
+> The authoritative policy lives in `.clinerules/course.md`.
 
 ---
 
@@ -224,6 +262,8 @@ npm run build:taskflow
 # Run tests
 npm test
 ```
+
+> **Learner environment:** Windows 11, PowerShell 7 (pwsh). All terminal commands must be adapted to this shell (see `.clinerules/course.md`).
 
 ---
 
