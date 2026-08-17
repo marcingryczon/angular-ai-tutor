@@ -16,7 +16,9 @@ export class DueDatePipe implements PipeTransform {
     if (Number.isNaN(date.getTime())) {
       return value;
     }
-    return date.toLocaleDateString(undefined, {
+    // Pin to en-US so the app renders identically on every learner's machine
+    // regardless of their browser locale (course rule: single language = EN).
+    return date.toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'short',
       day: 'numeric'
