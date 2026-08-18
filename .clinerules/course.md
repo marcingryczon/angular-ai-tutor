@@ -11,6 +11,8 @@ The project is a living laboratory. As we advance through the curriculum, the ap
 
 Detailed lesson plans are split across phase files to reduce context window usage. Read the relevant phase file when working on that section.
 
+The phases below were derived from the concepts most unique to **Angular** — standalone components, dependency injection, signals, RxJS, routing, and global state management — and progress from fundamentals to production-ready architecture.
+
 **Status legend:** ⬜ not started ◐ in progress ✅ completed
 
 | Phase | Status | Topic | File |
@@ -67,11 +69,39 @@ start (clean baseline, read-only)
 
 ## IMPORTANT
 1. Do not create new or edit any existing files by yourself without ask. THIS IS VERY IMPORTANT!
-2. Use angular-cli MCP server as much as you can.
-3. I'm beginner in Angular
-4. run `npm start` and visually check also
-5. Do not run npm commands by yourself without ask. THIS IS VERY IMPORTANT!
+2. I'm a beginner in Angular
+3. Run the development server and visually check the application
+4. Use official Angular tools, linters, and formatters where available
+5. Keep the course language consistent — all curriculum files (phases, lessons, skills) use ONE language (EN)
+6. Use the angular-cli MCP server as much as you can.
+7. Do not run npm commands by yourself without ask. THIS IS VERY IMPORTANT!
 
+---
+
+## Learner Environment
+
+> Filled in during instantiation.
+> ALL terminal commands MUST be adapted to this environment (shell syntax, path style, quoting).
+
+- **OS:** Windows 11
+- **Shell:** PowerShell 7 (pwsh)
+- **Path style:** Windows (`C:\...`)
+- **Command chaining:** `;` (PowerShell 5) or `&&` (PowerShell 7)
+- **Notes:** Case-insensitive file system; CRLF line endings; GUI tools available.
+
+---
+
+## Tutor Meta-Commands
+
+The learner can invoke these at any point during a session:
+
+| Command | Action |
+|---|---|
+| `toc` / `spis treści` | Show phase/lesson progress from the Phase Index |
+| `skip` / `pomiń` | Skip the current exercise and move to the next step |
+| `repeat` / `powtórz` | Re-explain the current concept from a different angle |
+| `test` | Run the project's test suite and report results |
+| `status` / `stan` | Show current branch, lesson progress, and coverage (if Testing Phase done) |
 
 ---
 
@@ -109,16 +139,25 @@ TaskFlow is a multi-board task management application where users can:
 - Navigate between boards with a routed layout
 - Work with role-based access (admin vs member views)
 
+### TaskFlow Visual & Structure Reference
+
+> **Read this before building any TaskFlow UI:** [`course/taskflow-spec.md`](../course/taskflow-spec.md)
+> It is the single source of truth for the app's look and structure — design tokens, class names, screen layouts, interactions, domain model, seed data, and file layout. Follow it so every learner produces a visually identical TaskFlow.
+
 ---
 
 ## Test Coverage Policy
 
-After completing **Phase 11 (Testing)** the following policy takes effect:
+After completing the **Testing Phase (Phase 11)** the following policy takes effect:
 
 1. **Backfill** — All existing components, services, directives, and pipes in TaskFlow must receive unit tests.
 2. **Ongoing** — Every new or modified component/service/directive/pipe must include corresponding tests before the lesson is marked complete.
-3. **Threshold** — Minimum code coverage is **90%** (measured per-file, not project-wide).
-4. **Enforcement** — Before merging any lesson branch after Phase 11, verify tests pass and coverage meets the threshold.
+3. **Threshold:**
+   - **Project-wide:** ≥ **80%** line coverage.
+   - **Business logic** (`projects/taskflow/src/`): ≥ **90%**.
+   - **Training exercises** (`src/app/` of the educational project): no minimum — they are learning artifacts.
+   - **Config / boilerplate / entry points:** excluded from measurement.
+4. **Enforcement** — Before merging any lesson branch after the Testing Phase, verify tests pass and coverage meets the thresholds.
 
 ---
 
@@ -145,3 +184,9 @@ Each lesson follows a **two-step flow**:
 - First we train on simple files in `src/app/`
 - Only when the concept is understood, we move to `projects/taskflow/`
 - The user controls the pace — can ask for more training exercises
+
+---
+
+## Philosophy
+
+This curriculum focuses on **understanding how Angular works and why we make specific architectural decisions**, rather than simply learning the next feature. Each phase builds mental models that help you reason about Angular applications.
