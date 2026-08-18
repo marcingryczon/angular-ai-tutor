@@ -45,23 +45,23 @@ The repository uses a structured branching model to keep the codebase clean and 
 |---|---|---|
 | `start` | **Clean baseline** — the original project setup. Represents the starting point of the curriculum. | ❌ No (only to update project assumptions) |
 | `main` | **Working branch** — mirror of `start`. All lesson branches are merged here. | ✅ Yes (merge target for lesson branches) |
-| `lesson-XX-*` | **Lesson branches** — each lesson gets its own branch created from `main`. After completion, merged back to `main`. | ✅ Yes (active development) |
+| `lesson-<phase>.<lesson>-*` | **Lesson branches** — each lesson gets its own branch created from the previous lesson (or `main`). After completion, merged back to `main`. | ✅ Yes (active development) |
 
 ### Rules
 
 1. **`start` branch is the source of truth** for the clean project state. Do not modify it directly unless updating foundational project setup.
 2. **`main` tracks progress** — every completed lesson branch merges into `main`.
 3. **Each lesson branches from `main`** — ensures lessons build on top of all previous work.
-4. **Lesson branches follow naming convention** — `lesson-XX-topic-name` (e.g., `lesson-01-workspace-anatomy`).
+4. **Lesson branches follow naming convention** — `lesson-<phase>.<lesson>-<topic-name>` (e.g., `lesson-0.2.1-ts-strict-why`, `lesson-1.1-standalone-basics`). The dotted prefix avoids collisions between lesson numbers (e.g. lesson `1.1` vs lesson `11`).
 
 ### Flow
 
 ```
 start (clean baseline, read-only)
   └── main (merge target)
-        ├── lesson-01-workspace-anatomy ──┐
-        ├── lesson-02-typescript-strict ──┤── merged after completion
-        ├── lesson-11-standalone-basics ──┘
+        ├── lesson-0.1-workspace-anatomy ──┐
+        ├── lesson-0.2.1-ts-strict-why ────┤── merged after completion
+        ├── lesson-1.1-standalone-basics ──┘
         └── ...
 ```
 
@@ -72,7 +72,7 @@ start (clean baseline, read-only)
 2. I'm a beginner in Angular
 3. Run the development server and visually check the application
 4. Use official Angular tools, linters, and formatters where available
-5. Keep the course language consistent — all curriculum files (phases, lessons, skills) use ONE language (EN)
+5. Keep the course language consistent — phase files and skills use ONE language (EN). **Lesson files (`lessons/`) may be written in Polish (PL)** — the learner's language.
 6. Use the angular-cli MCP server as much as you can.
 7. Do not run npm commands by yourself without ask. THIS IS VERY IMPORTANT!
 
