@@ -1,13 +1,13 @@
 # Phase 1: Standalone Components & Templates
 *Focus: Building the foundation with modern component architecture.*
 
-## Git Branch: `lesson-11-*`
+## Git Branch: `lesson-1.*`
 
 ---
 
 ### Lesson 1.1: Standalone Component Basics
 - *Objective:* Master `@Component`, metadata, bootstrap, and the standalone vs NgModule paradigm.
-- *Branch Name:* `lesson-11-standalone-basics`
+- *Branch Name:* `lesson-1.1-standalone-basics`
 - *Topics:*
   - `@Component()` decorator: selector, templateUrl, styleUrls, standalone flag
   - Standalone vs NgModule: why standalone is the default in modern Angular
@@ -19,7 +19,7 @@
 
 ### Lesson 1.2: Template Expressions & Property Binding
 - *Objective:* Interpolation, property binding, event binding, and two-way binding syntax.
-- *Branch Name:* `lesson-12-template-bindings`
+- *Branch Name:* `lesson-1.2-template-bindings`
 - *Topics:*
   - Interpolation: `{{ value }}`
   - Property binding: `[prop]="value"`
@@ -32,7 +32,7 @@
 
 ### Lesson 1.3: Modern Control Flow
 - *Objective:* Replace `*ngIf`/`*ngFor` with `@if`, `@else`, `@for`, `@switch`.
-- *Branch Name:* `lesson-13-modern-control-flow`
+- *Branch Name:* `lesson-1.3-modern-control-flow`
 - *Topics:*
   - `@if` / `@else` / `@else if` — built-in, no `NgIf` import needed
   - `@for` — built-in loop with `track` expression for performance
@@ -45,7 +45,7 @@
 
 ### Lesson 1.4: Component Composition
 - *Objective:* Build component trees, understand parent-child relationships.
-- *Branch Name:* `lesson-14-component-composition`
+- *Branch Name:* `lesson-1.4-component-composition`
 - *Topics:*
   - Component hierarchy: parent → child nesting
   - How components discover each other via selector matching
@@ -57,7 +57,7 @@
 
 ### Lesson 1.5: Component Styling
 - *Objective:* SCSS workflows, view encapsulation, style isolation.
-- *Branch Name:* `lesson-15-component-styling`
+- *Branch Name:* `lesson-1.5-component-styling`
 - *Topics:*
   - ViewEncapsulation: Emulated (default), Native, None
   - Component-scoped styles vs global styles in `styles.scss`
