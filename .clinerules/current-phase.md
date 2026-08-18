@@ -1,5 +1,5 @@
 We currently working on:
 
-[phase-00-fundamentals](../course/phase-00-fundamentals.md)
+[phase-01-components](../course/phase-01-components.md)
 
 load this file through this phase
