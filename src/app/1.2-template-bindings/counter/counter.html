@@ -1,0 +1,5 @@
+<h1>counter</h1>
+<p [style.color]="count() < 0 ? 'var(--danger)' : 'var(--text)'">{{count()}}</p>
+<button (click)="increment()">+</button>
+<button (click)="decrement()">-</button>
+<button (click)="reset()">Reset</button>

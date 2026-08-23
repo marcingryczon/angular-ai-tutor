@@ -1,9 +1,9 @@
 // Union types — domena TaskFlow
-type Priority = 'low' | 'medium' | 'high';
-type TaskStatus = 'todo' | 'in-progress' | 'review' | 'done';
+export type Priority = 'low' | 'medium' | 'high';
+export type TaskStatus = 'todo' | 'in-progress' | 'review' | 'done';
 
 // Interfejsy — domena TaskFlow
-interface Task {
+export interface Task {
   readonly id: string;
   title: string;
   description: string | undefined;
@@ -12,13 +12,13 @@ interface Task {
   dueDate: string | undefined;
 }
 
-interface Column {
+export interface Column {
   readonly id: string;
   title: string;
   status: TaskStatus;
 }
 
-interface Board {
+export interface Board {
   readonly id: string;
   title: string;
   columns: Column[];
