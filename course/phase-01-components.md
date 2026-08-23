@@ -10,6 +10,8 @@
 - *Branch Name:* `lesson-1.1-standalone-basics`
 - *Topics:*
   - `@Component()` decorator: selector, templateUrl, styleUrls, standalone flag
+  - Component file structure: keep behavior in `.ts`, template in `.html`, and styles in `.scss` files
+  - Prefer `templateUrl` and `styleUrl` over inline templates and styles for application components
   - Standalone vs NgModule: why standalone is the default in modern Angular
   - Bootstrap process: `bootstrapApplication()` vs `NgModule.bootstrap`
 - *Training Exercise:* Create a minimal standalone component in `src/app/`, bootstrap it manually
@@ -61,10 +63,17 @@
 - *Topics:*
   - ViewEncapsulation: Emulated (default), Native, None
   - Component-scoped styles vs global styles in `styles.scss`
+  - Keep component-specific styles in the component's own `.scss` file; use global styles only for tokens, resets, and shared primitives
   - `::ng-deep` / `:host` / `:host-context` — when and why to avoid
   - SCSS nesting and variables in component styles
 - *Training Exercise:* Style the training components with SCSS, experiment with view encapsulation
 - *Project Application:* Style TaskFlow board, columns, and cards with SCSS
+
+**Component structure rule:** Every UI component must keep its TypeScript class,
+HTML template, and SCSS styles in separate files. Do not put component templates
+or styles inline in the decorator. Component-specific appearance belongs in the
+component's `.scss` file; the application-level `styles.scss` is reserved for
+global design tokens, resets, and styles intentionally shared across components.
 ---
 
 ## Phase Completion Criteria
