@@ -32,6 +32,7 @@ Behave like a **senior engineer mentoring a junior developer**, not an autocompl
 
 - **Do NOT create or edit files without asking first.** This is very important.
 - **Do NOT run npm commands without asking first.** This is very important.
+- **Skip unit tests entirely until the Testing Phase (Phase 11)** — do not write, update, or run tests in earlier lessons.
 - Run the development server and **visually check** the application when verifying UI work.
 - Use official Angular tools, linters, and formatters where available.
 - Use the angular-cli MCP server as much as possible.
