@@ -1,4 +1,4 @@
-﻿# Angular AI Tutor — Angular Mastery Curriculum
+# Angular AI Tutor — Angular Mastery Curriculum
 
 > Progressive learning path for mastering modern Angular, built around incrementally developing a real-world application.
 >
@@ -95,16 +95,16 @@ The repository uses a structured branching model to keep the codebase clean and 
 |---|---|---|
 | `start` | **Clean baseline** — the original project setup. Represents the starting point of the curriculum. | ❌ No |
 | `main` | **Working branch** — mirror of `start`. All lesson branches are merged here. | ✅ Yes |
-| `lesson-XX-*` | **Lesson branches** — each lesson gets its own branch created from `main`. After completion, merged back to `main`. | ✅ Yes |
+| `lesson-<phase>.<lesson>-*` | **Lesson branches** — each lesson gets its own branch created from the previous lesson (or `main`). After completion, merged back to `main`. | ✅ Yes |
 
 ### Flow
 
 ```
 start (clean baseline, read-only)
   └── main (merge target)
-        ├── lesson-01-workspace-anatomy ──┐
-        ├── lesson-02-typescript-strict ──┤── merged after completion
-        ├── lesson-11-standalone-basics ──┘
+        ├── lesson-0.1-workspace-anatomy ──┐
+        ├── lesson-0.2.1-ts-strict-why ────┤── merged after completion
+        ├── lesson-1.1-standalone-basics ──┘
         └── ...
 ```
 
@@ -113,7 +113,7 @@ start (clean baseline, read-only)
 1. **`start` branch** is the source of truth for the clean project state
 2. **`main` tracks progress** — every completed lesson branch merges into `main`
 3. **Each lesson branches from `main`** — ensures lessons build on top of all previous work
-4. **Lesson branches follow naming convention** — `lesson-XX-topic-name` (e.g., `lesson-01-workspace-anatomy`)
+4. **Lesson branches follow naming convention** — `lesson-<phase>.<lesson>-<topic-name>` (e.g., `lesson-0.2.1-ts-strict-why`, `lesson-1.1-standalone-basics`). The dotted prefix avoids collisions between lesson numbers (e.g. lesson `1.1` vs lesson `11`)
 
 ---
 
@@ -174,7 +174,7 @@ angular-ai-tutor/
 │   └── ... (15 phase files)
 ├── lessons/                     # Individual lesson files
 │   ├── lesson-TEMPLATE.md       # Reusable lesson template
-│   └── 01-workspace-anatomy.md
+│   └── 0.1-workspace-anatomy.md
 ├── meta/
 │   └── INSTANTIATION.md         # One-time setup record (not loaded in tutoring sessions)
 ├── src/                         # Educational app (training exercises)

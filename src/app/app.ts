@@ -1,9 +1,9 @@
 import { Component, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Greetings } from './1.1-standalone-basics/greetings';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
+  imports: [Greetings],
   templateUrl: './app.html',
   styleUrl: './app.scss'
 })

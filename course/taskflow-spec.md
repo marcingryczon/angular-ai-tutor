@@ -8,7 +8,11 @@
 
 ## 1. Design System (the "look")
 
-The entire visual identity lives in **one global stylesheet**: `projects/taskflow/src/styles.scss`. Every feature component is style-encapsulated and carries **no local styles** — all appearance comes from this file. This is the single most important invariant for matching the look: *never add per-component `<style>` blocks; reuse the global classes.*
+The visual foundation lives in `projects/taskflow/src/styles.scss`: it contains
+global design tokens, resets, and intentionally shared primitives. Every feature
+component must keep its TypeScript class, HTML template, and SCSS styles in
+separate files, with component-specific appearance in the component's own
+`.scss` file. Do not add inline templates or styles to the `@Component` decorator.
 
 ### 1.1 Fonts & icons (loaded in `index.html`)
 
@@ -310,7 +314,8 @@ projects/taskflow/src/
 - **Feature-first**: `core/` holds domain + state with no UI; `features/` hold screens; `shared/` holds reusable primitives.
 - **Standalone components**, signal inputs (`input()`), outputs (`output()`), and `inject()`.
 - **State lives in stores** (`board.store`, `task.store`) as signals + `computed`; components dispatch mutations to the store rather than mutating data directly.
-- **No local component styles** — everything is styled from global `styles.scss` using the BEM-ish classes above.
+- **Component file separation** — keep component behavior in `.ts`, templates in `.html`, and component-specific styles in `.scss` files.
+- **Global styles are foundational** — use `styles.scss` for design tokens, resets, and styles intentionally shared across components; do not make it the primary source of component-specific styles.
 
 ---
 

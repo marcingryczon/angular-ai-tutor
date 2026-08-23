@@ -1,13 +1,13 @@
 # Phase 0: Project Setup & Angular Fundamentals
 *Focus: Understanding the workspace, TypeScript, and the Angular mental model.*
 
-## Git Branch: `lesson-00-*`
+## Git Branch: `lesson-0.*`
 
 ---
 
 ### Lesson 0.1: Workspace Anatomy ✅ COMPLETED
 - *Objective:* Navigate `angular.json`, `package.json`, project structure, and CLI commands.
-- *Branch Name:* `lesson-01-workspace-anatomy`
+- *Branch Name:* `lesson-0.1-workspace-anatomy`
 - *Topics:*
   - Project tree: `angular.json`, `package.json`, `tsconfig.json`, `src/`, `projects/`
   - Build targets: `ng serve`, `ng build`, `ng test`
@@ -19,7 +19,7 @@
 
 ### Lesson 0.2.1: TypeScript Strict Mode — Why Strict?
 - *Objective:* Understand why `strict: true` is non-negotiable in Angular. Explore `strictNullChecks`, `noImplicitOverride`, `noImplicitReturns`.
-- *Branch Name:* `lesson-021-ts-strict-why`
+- *Branch Name:* `lesson-0.2.1-ts-strict-why`
 - *Topics:*
   - What `strict: true` enables under the hood
   - `strictNullChecks`: null/undefined safety
@@ -33,7 +33,7 @@
 
 ### Lesson 0.2.2: TypeScript Strict Mode — Types & Interfaces
 - *Objective:* Master `type` unions, `interface` definitions, optional vs required fields, `readonly`.
-- *Branch Name:* `lesson-022-ts-types-interfaces`
+- *Branch Name:* `lesson-0.2.2-ts-types-interfaces`
 - *Topics:*
   - Union types with string literals
   - Interface vs type alias
@@ -46,7 +46,7 @@
 
 ### Lesson 0.2.3: TypeScript Strict Mode — Generics
 - *Objective:* Understand generic functions, generic interfaces, `T extends`, and why generics preserve type safety.
-- *Branch Name:* `lesson-023-ts-generics`
+- *Branch Name:* `lesson-0.2.3-ts-generics`
 - *Topics:*
   - Why generics: type preservation without `any`
   - Generic functions
@@ -60,7 +60,7 @@
 
 ### Lesson 0.3: Angular Mental Model
 - *Objective:* Understand the framework lifecycle, bootstrap process, and the component tree.
-- *Branch Name:* `lesson-03-angular-mental-model`
+- *Branch Name:* `lesson-0.3.0-angular-mental-model`
 - *Topics:*
   - Entry point: `main.ts` → `bootstrapApplication()`
   - Component tree and the rendering lifecycle
@@ -74,10 +74,10 @@
 
 Before marking this phase as complete:
 
-- [ ] All lessons implemented and merged to `main`
-- [ ] All training exercises completed
-- [ ] All project applications integrated into TaskFlow
-- [ ] Code reviewed and follows best practices
+- [x] All lessons implemented and merged to `main`
+- [x] All training exercises completed
+- [x] All project applications integrated into TaskFlow
+- [x] Code reviewed and follows best practices
 - [ ] Tests pass (if Testing Phase already completed)
 
 ---
