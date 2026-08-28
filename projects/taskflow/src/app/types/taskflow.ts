@@ -1,5 +1,5 @@
 // Union types — domena TaskFlow
-export type Priority = 'low' | 'medium' | 'high';
+export type Priority = 'low' | 'medium' | 'high' | 'urgent';
 export type TaskStatus = 'todo' | 'in-progress' | 'review' | 'done';
 
 // Interfejsy — domena TaskFlow
