@@ -102,8 +102,11 @@ Before marking this phase as complete:
 
 ## Key Takeaways
 
-After completing this phase, the learner should understand:
+After completing this phase, the learner should be able to:
 
-- Multi-page applications and advanced routing.
-- How this phase builds on earlier phases and prepares the ground for the next ones in the Angular learning path
-- The Angular 22 best practices for this topic: standalone components, signals, strict TypeScript, and production-ready patterns
+- Configure lazy-loaded routes with `loadComponent` and `loadChildren`
+- Use route resolvers to preload data before component activation
+- Implement route guards (`CanActivate`, `CanDeactivate`) and child guards
+- Pass and read route parameters, query params, and data
+- Use `deferBlock` for deferred content loading within a route
+- Handle 404, redirect, and wildcard routes correctly

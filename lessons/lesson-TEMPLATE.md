@@ -47,6 +47,16 @@ The mentor verifies ALL of the following before the lesson is marked complete:
 
 ---
 
+## Common Pitfalls
+
+> Gotchas that trip up most learners on this topic. The mentor should explicitly warn about these.
+
+- {{PITFALL_1}}
+- {{PITFALL_2}}
+- {{PITFALL_3}}
+
+---
+
 ## Summary
 
 - {{SUMMARY_1}}

@@ -66,8 +66,11 @@ Before marking this phase as complete:
 
 ## Key Takeaways
 
-After completing this phase, the learner should understand:
+After completing this phase, the learner should be able to:
 
-- User input with modern form patterns.
-- How this phase builds on earlier phases and prepares the ground for the next ones in the Angular learning path
-- The Angular 22 best practices for this topic: standalone components, signals, strict TypeScript, and production-ready patterns
+- Build reactive forms with `FormGroup`, `FormControl`, and `FormArray`
+- Implement custom synchronous and asynchronous validators
+- Use template-driven forms for simple cases and know when to switch to reactive
+- Bind forms to signals with `formState` and `formControl`
+- Handle dynamic forms (add/remove fields) with `FormArray`
+- Validate and sanitize user input for security (XSS prevention)

@@ -97,8 +97,11 @@ Before marking this phase as complete:
 
 ## Key Takeaways
 
-After completing this phase, the learner should understand:
+After completing this phase, the learner should be able to:
 
-- Streaming data and the RxJS + Signals synergy.
-- How this phase builds on earlier phases and prepares the ground for the next ones in the Angular learning path
-- The Angular 22 best practices for this topic: standalone components, signals, strict TypeScript, and production-ready patterns
+- Compose observables with `map`, `switchMap`, `mergeMap`, `combineLatest`, `debounceTime`
+- Explain the difference between `switchMap`, `mergeMap`, `concatMap`, and `exhaustMap`
+- Use `toSignal()` to bridge RxJS streams into the signal world
+- Implement a service-based state store with `BehaviorSubject` + selectors
+- Handle HTTP requests with `HttpClient` + interceptors and convert to signals
+- Apply the `resource()` / `httpResource()` pattern for declarative async data

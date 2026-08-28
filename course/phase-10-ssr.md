@@ -54,8 +54,11 @@ Before marking this phase as complete:
 
 ## Key Takeaways
 
-After completing this phase, the learner should understand:
+After completing this phase, the learner should be able to:
 
-- Production-grade deployment.
-- How this phase builds on earlier phases and prepares the ground for the next ones in the Angular learning path
-- The Angular 22 best practices for this topic: standalone components, signals, strict TypeScript, and production-ready patterns
+- Configure Angular SSR with `@angular/ssr` and explain the rendering pipeline
+- Handle hydration: matching server HTML with client JS without flicker
+- Use `isPlatformBrowser` / `isPlatformServer` for platform-specific logic
+- Manage `TransferState` to pass data from server to client
+- Configure `allowedHosts` and security headers for production SSR
+- Debug SSR-specific issues: mismatched HTML, missing DOM APIs, CORS

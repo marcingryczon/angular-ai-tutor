@@ -78,8 +78,11 @@ Before marking this phase as complete:
 
 ## Key Takeaways
 
-After completing this phase, the learner should understand:
+After completing this phase, the learner should be able to:
 
-- Modern reactive programming with Signals.
-- How this phase builds on earlier phases and prepares the ground for the next ones in the Angular learning path
-- The Angular 22 best practices for this topic: standalone components, signals, strict TypeScript, and production-ready patterns
+- Create writable signals with `signal()` and update them with `.set()` / `.update()`
+- Derive state with `computed()` and explain lazy memoization
+- Run side effects with `effect()` and manage cleanup correctly
+- Synchronize parent-child signals with `linkedSignal()`
+- Explain why signals outperform Zone.js for fine-grained UI updates
+- Choose between `effect()`, `computed()`, and template auto-unwrapping

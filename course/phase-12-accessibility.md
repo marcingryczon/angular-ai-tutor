@@ -54,8 +54,11 @@ Before marking this phase as complete:
 
 ## Key Takeaways
 
-After completing this phase, the learner should understand:
+After completing this phase, the learner should be able to:
 
-- Production-ready quality.
-- How this phase builds on earlier phases and prepares the ground for the next ones in the Angular learning path
-- The Angular 22 best practices for this topic: standalone components, signals, strict TypeScript, and production-ready patterns
+- Audit UI with axe DevTools and fix common WCAG 2.1 AA violations
+- Implement proper focus management: `tabindex`, focus traps, focus restoration
+- Add ARIA attributes where semantic HTML is insufficient (modals, tabs, live regions)
+- Ensure keyboard navigability: all interactions work without a mouse
+- Test with screen readers (VoiceOver / NVDA) for critical flows
+- Apply responsive design and reduced-motion preferences

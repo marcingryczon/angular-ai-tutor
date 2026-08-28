@@ -78,8 +78,11 @@ Before marking this phase as complete:
 
 ## Key Takeaways
 
-After completing this phase, the learner should understand:
+After completing this phase, the learner should be able to:
 
-- Rendering efficiency and optimization.
-- How this phase builds on earlier phases and prepares the ground for the next ones in the Angular learning path
-- The Angular 22 best practices for this topic: standalone components, signals, strict TypeScript, and production-ready patterns
+- Explain how Angular's change detection works (Zone.js vs. zoneless)
+- Apply `ChangeDetectionStrategy.OnPush` and explain when it helps / hurts
+- Use `markForCheck()` and `refresh()` for manual CD in specific scenarios
+- Profile rendering with the Angular DevTools performance panel
+- Reduce bundle size with lazy loading, `deferBlock`, and tree-shaking
+- Explain the zoneless change detection architecture (Angular 20+)

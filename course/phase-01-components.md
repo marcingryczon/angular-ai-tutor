@@ -20,13 +20,14 @@
 ---
 
 ### Lesson 1.2: Template Expressions & Property Binding
-- *Objective:* Interpolation, property binding, event binding, and two-way binding syntax.
-- *Branch Name:* `lesson-1.2-template-bindings`
+- *Objective:* Interpolation, property binding, event binding, two-way binding, and `@let` aliasing.
+- *Branch Name:* `lesson-12-template-bindings`
 - *Topics:*
   - Interpolation: `{{ value }}`
   - Property binding: `[prop]="value"`
   - Event binding: `(event)="handler()"`
   - Two-way binding: `[(ngModel)]="value"`
+  - `@let` — template variable aliasing to reduce repetition (e.g., `@let items = filteredList()`)
 - *Training Exercise:* Build a counter component with increment/decrement buttons and display
 - *Project Application:* Add dynamic task count display to TaskFlow board header
 
@@ -90,8 +91,10 @@ Before marking this phase as complete:
 
 ## Key Takeaways
 
-After completing this phase, the learner should understand:
+After completing this phase, the learner should be able to:
 
-- Building the foundation with modern component architecture.
-- How this phase builds on earlier phases and prepares the ground for the next ones in the Angular learning path
-- The Angular 22 best practices for this topic: standalone components, signals, strict TypeScript, and production-ready patterns
+- Create standalone components with inline and external templates, and explain why standalone is the default
+- Use `@if`, `@for`, `@switch` control flow blocks instead of `*ngIf`/`*ngFor`
+- Apply `@let` for template variable aliasing to reduce repetition
+- Configure component metadata: `inputs()`, `outputs()`, `hostBindings()`, `hostListeners()`
+- Choose between `ChangeDetectionStrategy.OnPush` and default, and explain the trade-offs

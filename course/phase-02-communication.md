@@ -67,8 +67,10 @@ Before marking this phase as complete:
 
 ## Key Takeaways
 
-After completing this phase, the learner should understand:
+After completing this phase, the learner should be able to:
 
-- How components talk to each other.
-- How this phase builds on earlier phases and prepares the ground for the next ones in the Angular learning path
-- The Angular 22 best practices for this topic: standalone components, signals, strict TypeScript, and production-ready patterns
+- Pass data down with `input()` and events up with `output()` using typed signals
+- Implement two-way binding with `model()` signal for controlled components
+- Share state between siblings via a service or lifted state (prop drilling vs. service)
+- Use `linkedSignal()` for parent-child signal synchronization
+- Choose the right communication pattern for a given component relationship
