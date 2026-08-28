@@ -3,6 +3,12 @@
 
 ## Git Branch: `lesson-11*-*`
 
+> **⚠️ Testing Policy — effective from this phase onward:**
+>
+> 1. **Backfill:** After completing this phase, ALL existing components, services, directives, and pipes in TaskFlow that lack tests MUST receive unit tests before the phase is marked complete.
+> 2. **Ongoing:** From this point forward, every new or modified component/service/directive/pipe MUST include corresponding tests before the lesson is marked complete. No exceptions.
+> 3. **Coverage threshold:** ≥ 80% line coverage project-wide, ≥ 90% for business logic (`projects/taskflow/src/`).
+
 ---
 
 ### Lesson 11.1: Vitest Setup
@@ -77,8 +83,11 @@ Before marking this phase as complete:
 
 ## Key Takeaways
 
-After completing this phase, the learner should understand:
+After completing this phase, the learner should be able to:
 
-- Confidence through automated tests.
-- How this phase builds on earlier phases and prepares the ground for the next ones in the Angular learning path
-- The Angular 22 best practices for this topic: standalone components, signals, strict TypeScript, and production-ready patterns
+- Write unit tests for components, services, directives, and pipes with Vitest + TestBed
+- Mock dependencies with `vi.fn()`, `vi.spyOn()`, and `TestBed.overrideProvider`
+- Test signals, async flows (RxJS), and template interactions
+- Achieve meaningful coverage (not just line %) — test behavior, not implementation
+- Write integration tests for feature slices (component + service + store)
+- Configure coverage thresholds and enforce them in CI

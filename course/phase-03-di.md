@@ -67,8 +67,10 @@ Before marking this phase as complete:
 
 ## Key Takeaways
 
-After completing this phase, the learner should understand:
+After completing this phase, the learner should be able to:
 
-- The power of Angular's DI system.
-- How this phase builds on earlier phases and prepares the ground for the next ones in the Angular learning path
-- The Angular 22 best practices for this topic: standalone components, signals, strict TypeScript, and production-ready patterns
+- Explain the injector hierarchy: root → environment → component → element
+- Create and inject services at different scopes (root, feature, component-level)
+- Use `InjectionToken` for non-class dependencies (strings, configs, factories)
+- Implement lazy services with `forwardRef` and factory providers
+- Debug DI issues: circular dependencies, `NullInjectorError`, provider scope mistakes

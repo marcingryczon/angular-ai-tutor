@@ -3,6 +3,16 @@
 
 **Prerequisite:** Lesson 5.6 (Service-Based State Store). Before learning NgRx, you must understand the problems it solves: scattered state, prop drilling, unpredictable mutations, and the need for a single source of truth.
 
+> **⚠️ This is a full rewrite, not an add-on.**
+>
+> Phase 14 does NOT add NgRx alongside the existing service store. The goal is to **completely replace** the service-based state management in TaskFlow with NgRx. By the end of this phase:
+> - All `TaskStore` / `BoardStore` service methods are replaced by NgRx actions + reducers
+> - All components read state via `store.select()` or `signalStore` — no direct service calls for state
+> - The old service store is **removed** from the codebase
+> - TaskFlow runs 100% on NgRx for all shared state
+>
+> This is intentional: the learner experiences the full migration lifecycle (audit → plan → migrate → verify → remove legacy) on a real project.
+
 ## Git Branch: `lesson-14*-*`
 
 ---
@@ -449,8 +459,12 @@ Before marking this phase as complete:
 
 ## Key Takeaways
 
-After completing this phase, the learner should understand:
+After completing this phase, the learner should be able to:
 
-- Centralized state management with predictable data flow, from NgRx Store fundamentals to @ngrx/signals (signalStore), Entity, DevTools, debugging, and comprehensive testing.
-- How this phase builds on earlier phases and prepares the ground for the next ones in the Angular learning path
-- The Angular 22 best practices for this topic: standalone components, signals, strict TypeScript, and production-ready patterns
+- Explain the Redux pattern and why unidirectional data flow reduces bugs
+- Build NgRx Store with `createFeature()`, typed actions, reducers, and selectors
+- Handle side effects with Effects and integrate with HTTP services
+- Manage entity collections with `@ngrx/entity` (normalize, denormalize)
+- Use `@ngrx/signals` `signalStore()` for signal-based reactive stores
+- Debug state changes with NgRx DevTools: time-travel, action inspection, state diffing
+- Migrate a service-based store to NgRx incrementally (strangler pattern)

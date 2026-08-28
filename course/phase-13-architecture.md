@@ -66,8 +66,11 @@ Before marking this phase as complete:
 
 ## Key Takeaways
 
-After completing this phase, the learner should understand:
+After completing this phase, the learner should be able to:
 
-- Real-world application structure.
-- How this phase builds on earlier phases and prepares the ground for the next ones in the Angular learning path
-- The Angular 22 best practices for this topic: standalone components, signals, strict TypeScript, and production-ready patterns
+- Structure a feature-based architecture: `features/`, `core/`, `shared/`, `layouts/`
+- Apply the bucket brigade pattern for cross-feature communication
+- Configure environment-specific builds (`environment.ts`, `config`)
+- Set up CI/CD pipeline: lint → test → build → deploy
+- Implement error handling strategy: global error handler, route-level, component-level
+- Document architectural decisions with ADRs (Architecture Decision Records)

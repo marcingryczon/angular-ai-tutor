@@ -5,7 +5,7 @@
 
 ---
 
-### Lesson 0.1: Workspace Anatomy ✅ COMPLETED
+### Lesson 0.1: Workspace Anatomy
 - *Objective:* Navigate `angular.json`, `package.json`, project structure, and CLI commands.
 - *Branch Name:* `lesson-01-workspace-anatomy`
 - *Topics:*
@@ -84,8 +84,9 @@ Before marking this phase as complete:
 
 ## Key Takeaways
 
-After completing this phase, the learner should understand:
+After completing this phase, the learner should be able to:
 
-- Understanding the workspace, TypeScript, and the Angular mental model.
-- How this phase builds on earlier phases and prepares the ground for the next ones in the Angular learning path
-- The Angular 22 best practices for this topic: standalone components, signals, strict TypeScript, and production-ready patterns
+- Navigate and explain the purpose of every config file in an Angular workspace (`angular.json`, `tsconfig.json`, `package.json`)
+- Explain why `strict: true` is non-negotiable and what each strict sub-flag prevents
+- Define domain types with unions, interfaces, and generics that survive refactoring
+- Trace the Angular bootstrap flow from `main.ts` through `bootstrapApplication()` to first render
