@@ -1,0 +1,31 @@
+<table class="table">
+  <thead>
+    <tr class="table_headers">
+      <th>Nazwa</th>
+      <th>Zapłacone</th>
+    </tr>
+  </thead>
+  <tbody>
+
+    @for (item of items; track item.id) {
+    <tr class="table_rows">
+      <td>
+        {{item.name}}
+      </td>
+      <td>
+        <span class="material-symbols-outlined" [class.green]="item.paid" [class.red]="!item.paid">
+          @if(item.paid){
+          check
+          } @else {
+          close
+          }
+        </span>
+      </td>
+    </tr>
+    } @empty {
+    <tr class="table_rows">
+      <td colspan="2">Brak pozycji</td>
+    </tr>
+    }
+  </tbody>
+</table>

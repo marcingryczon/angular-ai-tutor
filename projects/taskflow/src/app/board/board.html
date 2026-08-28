@@ -13,43 +13,21 @@
 </header>
 
 <div class="board__columns">
-  <section class="column">
-    <header class="column__header">
-      <h2 class="column__title">To Do</h2>
-      <span class="column__count">{{countFor('todo')}}</span>
-    </header>
-    <div class="column__cards">
-      <p class="column__empty">No tasks</p>
-    </div>
-  </section>
-
+  @for(column of columns; track column.id) {
     <section class="column">
-    <header class="column__header">
-      <h2 class="column__title">In Progress</h2>
-      <span class="column__count">{{countFor('in-progress')}}</span>
-    </header>
-    <div class="column__cards">
-      <p class="column__empty">No tasks</p>
-    </div>
-  </section>
-
-    <section class="column">
-    <header class="column__header">
-      <h2 class="column__title">Review</h2>
-      <span class="column__count">{{countFor('review')}}</span>
-    </header>
-    <div class="column__cards">
-      <p class="column__empty">No tasks</p>
-    </div>
-  </section>
-
-    <section class="column">
-    <header class="column__header">
-      <h2 class="column__title">Done</h2>
-      <span class="column__count">{{countFor('done')}}</span>
-    </header>
-    <div class="column__cards">
-      <p class="column__empty">No tasks</p>
-    </div>
-  </section>
+      <header class="column__header">
+        <h2 class="column__title">{{column.title}}</h2>
+        <span class="column__count">{{countFor(column.status)}}</span>
+      </header>
+      <div class="column__cards">
+        @for(task of taskFor(column.status); track task.id) {
+          <article class="task-card">
+            <div>{{task.title}} ({{task.priority}})</div>
+          </article>
+        } @empty {
+          <p class="column__empty">No tasks</p>
+        }
+      </div>
+    </section>
+  }
 </div>
