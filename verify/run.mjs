@@ -1,0 +1,125 @@
+#!/usr/bin/env node
+/**
+ * Milestone verification for TaskFlow.
+ *
+ *   npm run verify 7      → checks the "after phase 7" milestone from taskflow-spec.md §10
+ *   npm run verify        → checks every phase whose files are already there
+ *
+ * A check either passes or explains exactly what it expected. Failures before you
+ * have done that phase are normal — that is what the list is for.
+ */
+import { readdirSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
+import { dirname, join } from 'node:path';
+import { openBrowser } from './lib/browser.mjs';
+import { startDevServer } from './lib/server.mjs';
+
+const here = dirname(fileURLToPath(import.meta.url));
+const phasesDir = join(here, 'phases');
+
+const GREEN = '\x1b[32m';
+const RED = '\x1b[31m';
+const DIM = '\x1b[2m';
+const BOLD = '\x1b[1m';
+const OFF = '\x1b[0m';
+
+async function loadPhase(number) {
+  const file = readdirSync(phasesDir).find(
+    (name) => name === `phase-${String(number).padStart(2, '0')}.mjs`,
+  );
+  if (!file) {
+    throw new Error(`No verification for phase ${number}. Available: 0–14.`);
+  }
+  return (await import(join(phasesDir, file))).default;
+}
+
+async function runPhase(phase, context) {
+  console.log(`\n${BOLD}Phase ${phase.phase} — ${phase.title}${OFF}`);
+  console.log(`${DIM}${phase.milestone}${OFF}\n`);
+
+  let passed = 0;
+  const failures = [];
+  for (const check of phase.checks) {
+    try {
+      await check.run(context);
+      console.log(`  ${GREEN}✓${OFF} ${check.name}`);
+      passed++;
+    } catch (error) {
+      console.log(`  ${RED}✗${OFF} ${check.name}`);
+      console.log(`      ${RED}${error.message.split('\n')[0]}${OFF}`);
+      failures.push(check.name);
+    }
+  }
+
+  console.log(
+    `\n  ${passed}/${phase.checks.length} checks passed` +
+      (failures.length
+        ? ` ${DIM}(first failure: ${failures[0]})${OFF}`
+        : ` ${GREEN}— milestone reached${OFF}`),
+  );
+  return failures.length === 0;
+}
+
+const requested = process.argv.slice(2).filter((arg) => /^\d+$/.test(arg));
+const numbers = requested.length
+  ? requested.map(Number)
+  : readdirSync(phasesDir)
+      .map((name) => Number(name.match(/\d+/)[0]))
+      .sort((a, b) => a - b);
+
+const phases = [];
+for (const number of numbers) phases.push(await loadPhase(number));
+
+const needsApp = phases.some((phase) => phase.checks.some((check) => check.needsApp));
+let server;
+let browser;
+
+if (needsApp) {
+  console.log(`${DIM}Starting the dev server (this takes a few seconds)…${OFF}`);
+  server = await startDevServer();
+  browser = await openBrowser();
+}
+
+const context = {
+  url: server?.url,
+  page: browser,
+  /** Navigates to a route and lets the app settle. */
+  async visit(path = '/') {
+    await browser.goto(server.url + path.replace(/^\//, ''));
+    return browser;
+  },
+  /**
+   * Opens a Kanban board, wherever it lives: before Phase 7 the board *is* the
+   * home page; afterwards the home page is the board list and we click through.
+   */
+  async visitBoard() {
+    await browser.goto(server.url);
+    await browser.evaluate(`
+      const link = document.querySelector('.board-card__link');
+      if (link) {
+        link.click();
+        await new Promise(r => setTimeout(r, 900));
+      }
+      return true;
+    `);
+    return browser;
+  },
+  async reset() {
+    await browser.evaluate('localStorage.clear(); return true;');
+  },
+};
+
+let allGreen = true;
+try {
+  for (const phase of phases) {
+    const green = await runPhase(phase, context);
+    allGreen = allGreen && green;
+  }
+} finally {
+  // Always tear the tooling down, including when a check throws something unexpected —
+  // a leaked dev server would block the next run.
+  await browser?.close();
+  server?.stop();
+}
+
+process.exit(allGreen ? 0 : 1);

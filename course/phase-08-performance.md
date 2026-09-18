@@ -1,28 +1,29 @@
 # Phase 8: Change Detection & Performance
 *Focus: Rendering efficiency and optimization in a zoneless app.*
 
-## Git Branch: `lesson-8.<n>-*`
+## Git Branch: `phase-8-performance` — one branch per phase, one commit per lesson
 ## Training dir: `src/app/phase-8-performance/8.<n>-<slug>/` · Lesson notes: `lessons/phase-8-performance/8.<n>-<slug>.md`
 
 ---
 
 ### Lesson 8.1: Change Detection Internals (Zoneless)
 - *Objective:* How Angular decides *what* to re-check and *when*, without Zone.js.
-- *Branch Name:* `lesson-8.1-cd-internals`
+- *Commit:* `lesson-8.1-cd-internals`
 - *Topics:*
   - The change detection pass: top-down, unidirectional, template bindings compared
   - What schedules a pass in a zoneless app: signal writes read by a template, template event listeners, `markForCheck()`, `async` pipe, `ComponentRef.setInput()`
   - What does **not** schedule a pass: a `setTimeout` mutating a plain property — the classic zoneless bug
   - `ChangeDetectorRef`: `markForCheck()`, `detectChanges()`, `detach()` — and why you rarely need them with signals
   - `ExpressionChangedAfterItHasBeenCheckedError` explained
-- *Training Exercise:* Mutate a plain property from `setTimeout` (no update) vs a signal (update); add `console.log` in a template getter to count checks
+  - **One pass only sees the net change:** a property binding writes to the DOM when the bound value differs from what Angular wrote last time. If the user types into `<input [value]="draft()">` and submits in the *same* cycle, `draft` goes `'' → 'text' → ''` before any check runs, Angular sees no net change, and the field keeps the typed text. Either let the two events land in different cycles or reset the element directly through `viewChild()` — which is what TaskFlow's quick-add does.
+- *Training Exercise:* Mutate a plain property from `setTimeout` (no update) vs a signal (update); add `console.log` in a template getter to count checks; then reproduce the `[value]` case above and fix it
 - *Project Application:* Audit TaskFlow for any state that is not a signal and could silently go stale
 
 ---
 
 ### Lesson 8.2: `OnPush` Strategy
 - *Objective:* Skip untouched subtrees.
-- *Branch Name:* `lesson-8.2-onpush`
+- *Commit:* `lesson-8.2-onpush`
 - *Topics:*
   - `changeDetection: ChangeDetectionStrategy.OnPush`
   - When an OnPush view is checked: input reference change, event in the view, signal read in the template changed, `markForCheck()`
@@ -35,7 +36,8 @@
 
 ### Lesson 8.3: Zone.js — Legacy & Interop
 - *Objective:* Understand what Zone.js did, how to recognise zone-era code, and how to interoperate.
-- *Branch Name:* `lesson-8.3-zone-legacy`
+- *Commit:* `lesson-8.3-zone-legacy`
+- *Reference:* `agent-skills/angular-skills/references/migrations.md`
 - *Topics:*
   - What Zone.js is: monkey-patching async browser APIs to trigger CD after *every* task
   - `provideZoneChangeDetection()` — opting back in for legacy libraries; the cost
@@ -48,7 +50,7 @@
 
 ### Lesson 8.4: Performance Profiling
 - *Objective:* Angular DevTools, measuring change detection.
-- *Branch Name:* `lesson-8.4-profiling`
+- *Commit:* `lesson-8.4-profiling`
 - *Topics:*
   - Angular DevTools: component tree, signal graph, profiler
   - Measuring CD passes and their duration
@@ -60,7 +62,8 @@
 
 ### Lesson 8.5: Rendering Optimization & `@defer`
 - *Objective:* `@for` track, pure pipes, deferred blocks.
-- *Branch Name:* `lesson-8.5-rendering-opts`
+- *Commit:* `lesson-8.5-rendering-opts`
+- *Reference:* `agent-skills/angular-skills/references/loading-strategies.md`
 - *Topics:*
   - `@for` `track` — identity vs index and what a wrong track costs (DOM churn)
   - Avoiding object/function creation in templates; pure pipes as memoization
@@ -78,6 +81,7 @@ Before marking this phase as complete:
 - [ ] All training exercises completed
 - [ ] All project applications integrated into TaskFlow
 - [ ] Code reviewed and follows best practices
+- [ ] `npm run verify 8` passes — the milestone in `taskflow-spec.md` §10 is reached
 - [ ] Tests pass (if Testing Phase already completed)
 
 ---

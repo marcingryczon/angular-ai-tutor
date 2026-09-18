@@ -1,7 +1,7 @@
 # Phase 1: Standalone Components & Templates
 *Focus: Building the foundation with modern component architecture.*
 
-## Git Branch: `lesson-1.<n>-*`
+## Git Branch: `phase-1-components` — one branch per phase, one commit per lesson
 ## Training dir: `src/app/phase-1-components/1.<n>-<slug>/` · Lesson notes: `lessons/phase-1-components/1.<n>-<slug>.md`
 
 > **Signals note.** Before Phase 4 we do **not** create component state with `signal()`, `computed()`, or `effect()` — plain class properties only. Angular's component APIs that happen to be signal-based (`input()`, `output()`, `model()`, `viewChild()`) are still used, because they are the standard way to write components in Angular 22.
@@ -10,7 +10,8 @@
 
 ### Lesson 1.1: Standalone Component Basics
 - *Objective:* Master `@Component`, metadata, bootstrap, and the standalone vs NgModule paradigm.
-- *Branch Name:* `lesson-1.1-standalone-basics`
+- *Commit:* `lesson-1.1-standalone-basics`
+- *Reference:* `agent-skills/angular-skills/references/components.md`
 - *Topics:*
   - `@Component()` decorator: `selector`, `templateUrl`, `styleUrl`, `imports`
   - Component file structure: behavior in `.ts`, template in `.html`, styles in `.scss` — never inline
@@ -25,7 +26,7 @@
 
 ### Lesson 1.2: Template Expressions & Property Binding
 - *Objective:* Interpolation, property binding, event binding, and `@let` aliasing.
-- *Branch Name:* `lesson-1.2-template-bindings`
+- *Commit:* `lesson-1.2-template-bindings`
 - *Topics:*
   - Interpolation: `{{ value }}`
   - Property binding: `[prop]="value"`, attribute/class/style bindings `[class.x]`, `[style.width.px]`, `[attr.aria-label]`
@@ -39,7 +40,8 @@
 
 ### Lesson 1.3: Modern Control Flow
 - *Objective:* Use `@if`, `@else`, `@for`, `@switch`, `@empty`.
-- *Branch Name:* `lesson-1.3-modern-control-flow`
+- *Commit:* `lesson-1.3-modern-control-flow`
+- *Reference:* `agent-skills/angular-skills/references/components.md`
 - *Topics:*
   - `@if` / `@else if` / `@else` — built-in, no `NgIf` import needed
   - `@for (item of items; track item.id)` — why `track` is mandatory and what a bad track expression costs
@@ -53,7 +55,7 @@
 
 ### Lesson 1.4: Component Composition
 - *Objective:* Build component trees, understand parent-child relationships.
-- *Branch Name:* `lesson-1.4-component-composition`
+- *Commit:* `lesson-1.4-component-composition`
 - *Topics:*
   - Component hierarchy: parent → child nesting via the `imports` array
   - How components discover each other via selector matching
@@ -65,12 +67,14 @@
 
 ### Lesson 1.5: Component Styling
 - *Objective:* SCSS workflows, view encapsulation, style isolation, design tokens.
-- *Branch Name:* `lesson-1.5-component-styling`
+- *Commit:* `lesson-1.5-component-styling`
+- *Reference:* `agent-skills/angular-skills/references/component-styling.md`
 - *Topics:*
   - `ViewEncapsulation`: `Emulated` (default), `ShadowDom`, `None`
   - Component-scoped styles vs global `styles.scss`: tokens, resets, and shared primitives are global; component appearance lives in the component's own `.scss`
   - `:host`, `:host-context()`, and why `::ng-deep` is a last resort
   - CSS custom properties as design tokens; SCSS nesting and variables
+  - The alternative TaskFlow does not take: a utility-first framework (`agent-skills/angular-skills/references/tailwind-css.md`). The spec's tokens + BEM-ish class names are what keep two learners' builds visually identical — know the trade-off, then follow the spec.
 - *Training Exercise:* Style the training components with SCSS, experiment with view encapsulation
 - *Project Application:* Copy the design tokens from `taskflow-spec.md` §1.2 into `projects/taskflow/src/styles.scss`; style the topbar, board, columns, and cards to match spec §2, §5.3–5.5 pixel-for-pixel
 
@@ -78,7 +82,7 @@
 
 ### Lesson 1.6: Lifecycle Hooks & View Queries
 - *Objective:* Know when component code runs and how to reach the DOM safely.
-- *Branch Name:* `lesson-1.6-lifecycle-view-queries`
+- *Commit:* `lesson-1.6-lifecycle-view-queries`
 - *Topics:*
   - Lifecycle in order: constructor → `ngOnInit` → `ngAfterViewInit` → `ngOnDestroy`, and why the constructor should stay light
   - `afterNextRender()` / `afterEveryRender()` — the modern, SSR-safe way to touch the DOM
@@ -97,6 +101,7 @@ Before marking this phase as complete:
 - [ ] All training exercises completed
 - [ ] All project applications integrated into TaskFlow
 - [ ] Code reviewed and follows best practices
+- [ ] `npm run verify 1` passes — the milestone in `taskflow-spec.md` §10 is reached
 - [ ] Tests pass (if Testing Phase already completed)
 
 ---

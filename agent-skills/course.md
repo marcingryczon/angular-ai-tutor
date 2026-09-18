@@ -17,7 +17,7 @@ The phases below were derived from the concepts most unique to **Angular** — s
 
 > **Keep this table current.** When a lesson branch is merged, update the status here (and mirror it in `README.md`). Progress is also visible from `git branch --list 'lesson-*'`.
 
-**Phase dependencies and the recommended order** live in `course/prerequisites.md`. **What TaskFlow must look like after each phase** is defined in `course/taskflow-spec.md` §10 (Build Milestones) — check the milestone before starting a phase and verify it before closing one.
+**Phase dependencies and the recommended order** live in `course/prerequisites.md`. **What TaskFlow must look like after each phase** is defined in `course/taskflow-spec.md` §10 (Build Milestones) — check the milestone before starting a phase, and close a phase with `npm run verify <n>`, which asserts that milestone against the learner's own code (`verify/README.md`).
 
 | Phase | Status | Topic | File |
 |---|---|---|---|
@@ -34,8 +34,8 @@ The phases below were derived from the concepts most unique to **Angular** — s
 | **10** | ⬜ | Server-Side Rendering & Hydration | `course/phase-10-ssr.md` |
 | **11** | ⬜ | Testing | `course/phase-11-testing.md` |
 | **12** | ⬜ | Accessibility & Polish | `course/phase-12-accessibility.md` |
-| **13** | ⬜ | Architecture & Production | `course/phase-13-architecture.md` |
-| **14** | ⬜ | Global State Management with NgRx | `course/phase-14-ngrx.md` |
+| **13** | ⬜ | Global State Management with NgRx | `course/phase-13-ngrx.md` |
+| **14** | ⬜ | Architecture & Production (finale — you ship) | `course/phase-14-production.md` |
 
 ---
 
@@ -48,20 +48,20 @@ The repository uses a structured branching model to keep the codebase clean and 
 | Branch | Purpose | Modifiable? |
 |---|---|---|
 | `start` | **Clean baseline** — the original project setup and the curriculum documents. | ❌ Only to update project assumptions or curriculum docs |
-| `main` | **Working branch** — receives every completed lesson branch. | ✅ Yes (merge target) |
-| `lesson-<phase>.<lesson>-<slug>` | **Lesson branches** — one per lesson. | ✅ Yes (active development) |
-| `taskflow-finished`, `taskflow-preview` | **Reference implementation** of the finished TaskFlow. The tutor may consult it to verify the learner's result against the spec, but must never copy from it or show it to the learner before the corresponding lesson. | ❌ Read-only |
+| `main` | **Working branch** — receives every completed phase branch. | ✅ Yes (merge target) |
+| `phase-<n>-<slug>` | **Phase branches** — one per phase, one commit per lesson. | ✅ Yes (active development) |
+| `taskflow-finished`, `taskflow-preview` | **Reference implementations** of the finished TaskFlow. They are snapshots of the *final* state and may drift from the spec, so **the spec plus `npm run verify` decide what is correct**, not these branches. Never copy from them or show them before the matching lesson. | ❌ Read-only |
 
 ### Rules
 
 1. **`start` is the source of truth** for the clean project state and the curriculum files (`course/`, `agent-skills/`, templates). Curriculum fixes go to `start` and are merged forward into `main`.
-2. **Naming is dotted**: `lesson-<phase>.<lesson>-<slug>`, e.g. `lesson-0.2.1-ts-strict-why`, `lesson-1.5-component-styling`, `lesson-14.2-actions`. The dot prevents collisions (`1.1` vs `11`). The slug must match the *Branch Name* in the phase file. Never use the undotted form (`lesson-11-…`).
-3. **Each lesson branches from the previous lesson branch** (or from `main` at the start of a phase), so lessons build on top of all previous work.
-4. **Merge into `main` at least at the end of every phase** (merging after every lesson is fine too). A phase is not "completed" in the Phase Index until its last lesson is on `main`.
+2. **One branch per phase, one commit per lesson.** Branch: `phase-<n>-<slug>` (`phase-3-di`, `phase-13-ngrx`). Commit subject: `lesson-<phase>.<lesson>: <what changed>` — the dot prevents `1.1` vs `11` collisions. A chain of sixty lesson branches means a fix in lesson 3.2 has to be rebased through everything after it; a chain of fifteen phase branches does not, and `git log --oneline` still reads as the course.
+3. **Each phase branches from `main`** after the previous phase was merged, so every phase starts from all completed work.
+4. **Merge into `main` at the end of every phase**, and run `npm run verify <n>` before you do. A phase is not "completed" in the Phase Index until it is on `main` and its verification passes.
 5. **Directory convention** (must match the branch):
    - Training exercises: `src/app/phase-<N>-<topic>/<N>.<M>-<slug>/`
    - Lesson notes (Polish): `lessons/phase-<N>-<topic>/<N>.<M>-<slug>.md`
-   - Phase topic slugs: `0-fundamentals`, `1-components`, `2-communication`, `3-di`, `4-signals`, `5-rxjs`, `6-forms`, `7-routing`, `8-performance`, `9-directives-pipes`, `10-ssr`, `11-testing`, `12-accessibility`, `13-architecture`, `14-ngrx`
+   - Phase topic slugs: `0-fundamentals`, `1-components`, `2-communication`, `3-di`, `4-signals`, `5-rxjs`, `6-forms`, `7-routing`, `8-performance`, `9-directives-pipes`, `10-ssr`, `11-testing`, `12-accessibility`, `13-ngrx`, `14-production`
    - Lessons created before this convention (flat `src/app/0.2.1-…/`, `lessons/0.1-….md`) are moved into the phase folders when their branch is next touched or merged.
 
 ### Flow
@@ -69,9 +69,9 @@ The repository uses a structured branching model to keep the codebase clean and 
 ```
 start (clean baseline + curriculum docs)
   └── main (merge target)
-        ├── lesson-0.1-workspace-anatomy ──┐
-        ├── lesson-0.2.1-ts-strict-why ────┤── merged after completion
-        ├── lesson-1.1-standalone-basics ──┘
+        ├── phase-0-fundamentals   (commits: lesson-0.1 … lesson-0.3)  ──┐
+        ├── phase-1-components     (commits: lesson-1.1 … lesson-1.6)  ──┤ merged when
+        ├── phase-2-communication  (commits: lesson-2.1 … lesson-2.5)  ──┘ `npm run verify <n>` passes
         └── ...
 ```
 
@@ -85,7 +85,7 @@ start (clean baseline + curriculum docs)
 5. Keep the course language consistent — phase files and skills use ONE language (EN). **Lesson files (`lessons/`) may be written in Polish (PL)** — the learner's language.
 6. Use the angular-cli MCP server as much as you can.
 7. Do not run npm commands by yourself without ask. THIS IS VERY IMPORTANT!
-8. Skip unit tests entirely until the Testing Phase (Phase 11) — do not write, update, or run tests in earlier lessons. `angular.json` sets `skipTests: true` for schematics so `ng generate` does not create `.spec.ts` files; lesson 11.1 removes it.
+8. **Tests start at Lesson 3.6**, not at Phase 11. Before 3.6 do not write or run tests (there is nothing testable yet and it would drown the first lessons); `angular.json` ships `skipTests: true` and lesson 3.6 removes it. From 3.6 on, every new service, pipe, directive or pure function ships with its spec **in the same commit**. Components, guards and resolvers wait for Phase 11, which owns the thresholds and the backfill.
 9. **Signals timeline:** before Phase 4 do not create state with `signal()` / `computed()` / `effect()` — use plain class properties. The signal-based component APIs (`input()`, `output()`, `model()`, `viewChild()`) are used from Phase 1–2 on because they are the standard Angular 22 component API.
 10. **Zoneless:** this workspace has no `zone.js`. Never add it or `provideZoneChangeDetection()` to TaskFlow; teach change detection as signal-driven (Phase 0.3, Phase 8).
 11. **Verify facts against `agent-skills/angular-skills/references/`** before teaching an API. If a phase file and a reference file disagree, the reference file wins — and the phase file must be fixed.
@@ -105,6 +105,37 @@ start (clean baseline + curriculum docs)
 
 ---
 
+## Out of Scope (and why)
+
+TaskFlow deliberately does **not** cover the topics below. Say so when the learner asks, instead of
+improvising a lesson — each one is a conscious trade-off, not an oversight.
+
+| Not covered | Why | Where it would go |
+|---|---|---|
+| **i18n / `@angular/localize`** | Every screen would need translation keys, which buries the Angular concept under plumbing. The learner should know it exists and that it is a build-time concern. | A 15th phase, or a follow-up project |
+| **UI component libraries** (`@angular/cdk`, Material, PrimeNG) | Drag & drop, the dialog and the focus trap are written by hand in Phases 2, 6 and 12 precisely because writing them teaches the mechanics a library hides. | After the course, as a refactor |
+| **End-to-end tests** (Playwright / Cypress) | Phase 11 already carries a full unit-test backfill; adding a second runner doubles the setup cost. Covered as awareness in 11.5. | Phase 13 CI, as an extra job |
+| **A real backend, auth, multi-user sync** | State lives in `localStorage` so every learner sees identical data and no server is needed. `@ngrx/effects` is skipped in Phase 14 for the same reason. | A follow-up project |
+
+---
+
+## Toolchain Facts (from a full end-to-end run of the course)
+
+Properties of *this* workspace, collected while building TaskFlow once from `start` through Phase 14.
+Each item is something that blocked or surprised that run.
+
+- **Angular versions are pinned**, not ranged: `@angular/*` at `22.1.4`, `@angular/build` / `@angular/cli` at `22.1.6`. Ranges plus a drifted `package-lock.json` make `ng add @angular/ssr` fail with `ERESOLVE`. The fix is to align versions and regenerate the lockfile — never `--force` / `--legacy-peer-deps`.
+- **`strict: true` is set in the workspace `tsconfig.json`** alongside the flags listed in CLAUDE.md. `target` is `ES2022`, so ES2023 array methods (`toSorted`, `with`) do not exist.
+- **Both projects have a `test` target** (`@angular/build:unit-test`, runner `vitest`). Before the first spec exists, `ng test taskflow` reports *"No tests found"* — the expected Phase 11 starting point.
+- **Three moments in the course need a package install** (rule 7 applies — ask the learner to run them):
+  1. Lesson 10.1 — `ng add @angular/ssr` (no `--server-routing` flag in v22)
+  2. Lesson 11.1 — `npm install -D @vitest/coverage-v8` (required by `ng test --coverage`)
+  3. Phase 14 — `ng add @ngrx/store` plus `@ngrx/store-devtools`
+- **Zoneless testing:** `await fixture.whenStable()` waits for in-flight HTTP, so with `httpResource()` the order is `TestBed.tick()` → `httpMock.expectOne(url).flush(data)` → microtask → `tick()`. Details in lesson 11.3.
+- **Zoneless runtime:** `provideStoreDevtools({ connectInZone: false })`; and a property binding only writes to the DOM when the bound value changed *between* checks (the quick-add case in lesson 8.1).
+
+---
+
 ## Tutor Meta-Commands
 
 The learner can invoke these at any point during a session:
@@ -114,7 +145,8 @@ The learner can invoke these at any point during a session:
 | `toc` / `spis treści` | Show phase/lesson progress from the Phase Index |
 | `skip` / `pomiń` | Skip the current exercise and move to the next step |
 | `repeat` / `powtórz` | Re-explain the current concept from a different angle |
-| `test` | Run the project's test suite and report results — **only from Phase 11 on**; before that, reply that tests are introduced in Phase 11. This is the learner's explicit permission to run `npm test`. |
+| `test` | Run the project's test suite and report results — **from Lesson 3.6 on**; before that, reply that tests start in 3.6. This is the learner's explicit permission to run `npm test`. |
+| `verify` / `sprawdź` | Run `npm run verify <current phase>` and walk through whatever is red. This is the learner's explicit permission to run it. |
 | `status` / `stan` | Show current branch, lesson progress, and coverage (if Testing Phase done) |
 
 ---
@@ -162,9 +194,16 @@ TaskFlow is a multi-board task management application where users can:
 
 ## Test Coverage Policy
 
-After completing the **Testing Phase (Phase 11)** the following policy takes effect:
+Two stages, because the cost of a test is not the same for a service and for a component.
 
-1. **Backfill** — All existing components, services, directives, and pipes in TaskFlow must receive unit tests.
+**From Lesson 3.6 (services, pipes, directives, pure functions):**
+
+- Every new or modified unit of this kind ships with its spec in the same commit. No thresholds yet — the rule is "it exists and it passes".
+- `ng test taskflow` green is part of "lesson done" from here on.
+
+**From the Testing Phase (Phase 11)** the full policy takes effect:
+
+1. **Backfill** — the units that were out of scope before (components, guards, resolvers) receive tests.
 2. **Ongoing** — Every new or modified component/service/directive/pipe must include corresponding tests before the lesson is marked complete.
 3. **Threshold:**
    - **Project-wide:** ≥ **80%** line coverage.
@@ -198,6 +237,26 @@ Each lesson follows a **two-step flow**:
 - First we train on simple files in `src/app/`
 - Only when the concept is understood, we move to `projects/taskflow/`
 - The user controls the pace — can ask for more training exercises
+
+**When the isolated exercise is worth its cost.** It earns its place when it lets the learner change a
+variable that cannot be changed in TaskFlow. When it is only a smaller rehearsal of what TaskFlow is
+about to do, skip it and spend the time on reviewing the real implementation instead — the two-step
+flow is a tool, not a ritual.
+
+These experiments are always worth doing, because TaskFlow can never show them:
+
+| Lesson | Experiment that only works in isolation |
+|---|---|
+| 0.3 | `console.log` in a constructor and in the template — watch *when* each runs |
+| 1.5 | The same component under `Emulated`, `ShadowDom` and `None` encapsulation |
+| 1.6 | Every lifecycle hook of a parent and a child, logged in order |
+| 2.4 | A wrapper with two projection slots and default content in `<ng-content>` |
+| 3.4 | The same token provided at root and overridden on a component — two instances side by side |
+| 4.3 | An `effect()` with `onCleanup` on an interval; then the same thing done with `computed()` to feel why it is wrong |
+| 8.1 | A plain property mutated from `setTimeout` (nothing happens) vs a signal (it renders) |
+| 8.3 | Switch `provideZoneChangeDetection()` on and watch the `setTimeout` case start "working" — then explain why that is worse |
+| 10.2 | A deliberate hydration mismatch, read the NG0500, fix it |
+| 13.9 | The same todo store written as `signalStore()` and as `@ngrx/store` — compare line counts |
 
 ---
 

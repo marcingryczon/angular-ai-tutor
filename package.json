@@ -13,7 +13,8 @@
     "start:taskflow": "ng serve taskflow --port 4300",
     "build:taskflow": "ng build taskflow",
     "test:taskflow": "ng test taskflow",
-    "serve:ssr:taskflow": "node dist/taskflow/server/server.mjs"
+    "serve:ssr:taskflow": "node dist/taskflow/server/server.mjs",
+    "verify": "node verify/run.mjs"
   },
   "private": true,
   "packageManager": "npm@11.13.0",

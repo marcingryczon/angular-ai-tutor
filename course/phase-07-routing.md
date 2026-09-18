@@ -1,14 +1,15 @@
 # Phase 7: Routing & Navigation
 *Focus: Multi-page applications and advanced routing.*
 
-## Git Branch: `lesson-7.<n>-*`
+## Git Branch: `phase-7-routing` — one branch per phase, one commit per lesson
 ## Training dir: `src/app/phase-7-routing/7.<n>-<slug>/` · Lesson notes: `lessons/phase-7-routing/7.<n>-<slug>.md`
 
 ---
 
 ### Lesson 7.1: Route Configuration
 - *Objective:* `provideRouter`, route definitions, basic navigation.
-- *Branch Name:* `lesson-7.1-route-config`
+- *Commit:* `lesson-7.1-route-config`
+- *Reference:* `agent-skills/angular-skills/references/define-routes.md`
 - *Topics:*
   - `provideRouter(routes, ...features)` in `app.config.ts`
   - `Routes`: `path`, `component`, `children`, `redirectTo`, `pathMatch`
@@ -21,7 +22,8 @@
 
 ### Lesson 7.2: Router Outlet & Links
 - *Objective:* `<router-outlet>`, `routerLink`, active link states.
-- *Branch Name:* `lesson-7.2-router-outlet`
+- *Commit:* `lesson-7.2-router-outlet`
+- *Reference:* `agent-skills/angular-skills/references/show-routes-with-outlets.md` · `agent-skills/angular-skills/references/navigate-to-routes.md`
 - *Topics:*
   - `<router-outlet />` — where routed components render
   - `routerLink` (string vs array form) and `routerLinkActive`
@@ -33,7 +35,8 @@
 
 ### Lesson 7.3: Route Parameters & Query Params
 - *Objective:* Dynamic segments, reading params as inputs.
-- *Branch Name:* `lesson-7.3-route-params`
+- *Commit:* `lesson-7.3-route-params`
+- *Reference:* `agent-skills/angular-skills/references/define-routes.md` · `agent-skills/angular-skills/references/router-lifecycle.md`
 - *Topics:*
   - Dynamic segments: `:boardId`
   - `withComponentInputBinding()` — route params, query params, and `data` become `input()`s
@@ -46,7 +49,8 @@
 
 ### Lesson 7.4: Route Guards
 - *Objective:* Functional guards: `canActivate`, `canMatch`, `canDeactivate`.
-- *Branch Name:* `lesson-7.4-route-guards`
+- *Commit:* `lesson-7.4-route-guards`
+- *Reference:* `agent-skills/angular-skills/references/route-guards.md`
 - *Topics:*
   - `CanActivateFn` — with `inject()` and `Router.createUrlTree()` for redirects
   - `CanMatchFn` — hide a route entirely
@@ -58,19 +62,21 @@
 
 ### Lesson 7.5: Resolvers & Data Fetching
 - *Objective:* Pre-fetching route data.
-- *Branch Name:* `lesson-7.5-resolvers`
+- *Commit:* `lesson-7.5-resolvers`
+- *Reference:* `agent-skills/angular-skills/references/data-resolvers.md`
 - *Topics:*
-  - `ResolveFn<T>` and the `resolve` route property
+  - `ResolveFn<T>` and the `resolve` route property; a resolver may return a value, a `Promise`, an `Observable` — or a `RedirectCommand(router.parseUrl('/'))` to send the navigation somewhere else
   - Reading resolved data via `input()` (with `withComponentInputBinding()`)
   - Resolver vs loading inside the component (`resource()`): trade-offs, `withNavigationErrorHandler`
 - *Training Exercise:* Create a resolver that loads data before rendering
-- *Project Application:* Create `core/board.resolver.ts` that resolves the board (redirects to `/` when missing) — spec §3
+- *Project Application:* Create `core/board.resolver.ts` that resolves the board and returns `new RedirectCommand(router.parseUrl('/'))` when the id is unknown — spec §3. Note that the seed may still be in flight on a cold load, so the resolver first awaits the store's "data is ready" signal; otherwise every deep link redirects to the list.
 
 ---
 
 ### Lesson 7.6: Lazy Loading & Preloading
 - *Objective:* `loadComponent`, route-level code splitting.
-- *Branch Name:* `lesson-7.6-lazy-loading`
+- *Commit:* `lesson-7.6-lazy-loading`
+- *Reference:* `agent-skills/angular-skills/references/loading-strategies.md`
 - *Topics:*
   - `loadComponent` / `loadChildren` with dynamic `import()`
   - Bundle impact: inspect the chunks in `ng build` output
@@ -87,6 +93,7 @@ Before marking this phase as complete:
 - [ ] All training exercises completed
 - [ ] All project applications integrated into TaskFlow
 - [ ] Code reviewed and follows best practices
+- [ ] `npm run verify 7` passes — the milestone in `taskflow-spec.md` §10 is reached
 - [ ] Tests pass (if Testing Phase already completed)
 
 ---

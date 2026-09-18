@@ -24,6 +24,10 @@ npm run build:taskflow
 npm test                 # All projects
 npm run test:edu
 npm run test:taskflow
+
+# Milestone verification — asserts taskflow-spec.md §10 against the code
+npm run verify 7         # one phase
+npm run verify           # all phases (red for the ones not reached yet)
 ```
 
 No lint command is configured separately — use `ng lint` if needed via Angular CLI.
@@ -44,19 +48,25 @@ agent-skills/                            ← shared persona, curriculum & Angula
 
 ### Two-Step Learning Pattern
 
-Every lesson follows: **train in isolation** (`src/app/phase-N-*/`) → **apply to TaskFlow** (`projects/taskflow/`). Never skip to TaskFlow without the isolated exercise first.
+Lessons run **train in isolation** (`src/app/phase-N-*/`) → **apply to TaskFlow** (`projects/taskflow/`).
 
-### Lesson Branch Convention
+The isolated exercise earns its place when it lets the learner **change a variable they cannot change in TaskFlow** — toggle `ViewEncapsulation`, switch `provideZoneChangeDetection()` on to watch `setTimeout` "work" (and understand why that is worse), scope a provider two ways, break hydration on purpose. When the exercise is just a smaller version of the same thing TaskFlow is about to do, it is a tax: go straight to TaskFlow and spend the time on the review instead. `agent-skills/course.md` lists the experiments that are always worth doing.
 
-Branches use dotted lesson numbers: `lesson-1.5-component-styling`, `lesson-0.2.1-ts-strict-why`. The dot prevents collision (e.g., `1.1` vs `11`). The undotted form (`lesson-15-…`) is wrong. Reference implementation of the finished app: `taskflow-finished` (read-only, never shown to the learner ahead of a lesson).
+### Branch Convention
+
+**One branch per phase, one commit per lesson:** branch `phase-<n>-<slug>` (`phase-3-di`), commits `lesson-3.2: <what changed>`. The dot prevents collision (`1.1` vs `11`); the undotted form is wrong. A phase merges to `main` once `npm run verify <n>` passes.
+
+Reference implementations (`taskflow-finished`, `taskflow-preview`) are read-only snapshots of the *final* state and may drift from the spec — `course/taskflow-spec.md` plus `npm run verify` decide what is correct. Never show them to the learner ahead of a lesson.
 
 ### Phase Progression
 
 - **Phases 1–3:** No `signal()` / `computed()` / `effect()` for state — regular class properties. `input()`, `output()`, `model()`, `viewChild()` are used (standard component API).
 - **Phase 4+:** Angular signals for reactive state
 - **Phase 5+:** RxJS + `HttpClient` + `resource()` for async; signal service store
-- **Phase 11+:** Vitest unit tests; before that, skip tests entirely (`skipTests: true` in `angular.json` schematics)
-- **Phase 14:** `@ngrx/store` replaces the signal service store (migration)
+- **Lesson 3.6+:** every service / pipe / directive / pure function ships with a Vitest spec in the same commit (`skipTests: true` is removed there)
+- **Phase 11+:** component, guard and resolver tests, plus coverage thresholds and the backfill
+- **Phase 13:** `@ngrx/store` replaces the signal service store (migration), ending in an ADR that judges whether it was worth it
+- **Phase 14:** the finale — boundaries, domain extraction, budgets priced against the NgRx cost, error handling, CI, deploy
 - **Zoneless throughout:** no `zone.js` in the workspace — change detection is signal-driven
 
 ## Key Conventions
@@ -87,7 +97,7 @@ export class Counter {
 
 ### Test Policy
 
-See `agent-skills/course.md` (`## IMPORTANT` item 8 and `## Test Coverage Policy`).
+Tests start at Lesson 3.6 (services and pure functions), not at Phase 11. See `agent-skills/course.md` (`## IMPORTANT` item 8 and `## Test Coverage Policy`).
 
 ## Single Sources of Truth
 
@@ -98,6 +108,7 @@ See `agent-skills/course.md` (`## IMPORTANT` item 8 and `## Test Coverage Policy
 | Angular references (37 topics) | `agent-skills/angular-skills/references/` |
 | TaskFlow visual/domain spec | `course/taskflow-spec.md` — pixel-perfect required |
 | Detailed lesson plans | `course/phase-NN-<slug>.md` |
+| Architecture decisions (from Phase 13) | `course/adr/` |
 | Lesson content (Polish) | `lessons/` |
 
 ## TaskFlow Spec

@@ -1,7 +1,7 @@
 # Phase 4: Signals & Reactive State
 *Focus: Modern reactive programming with Signals.*
 
-## Git Branch: `lesson-4.<n>-*`
+## Git Branch: `phase-4-signals` — one branch per phase, one commit per lesson
 ## Training dir: `src/app/phase-4-signals/4.<n>-<slug>/` · Lesson notes: `lessons/phase-4-signals/4.<n>-<slug>.md`
 
 > From this phase on, component and service state is held in signals.
@@ -10,7 +10,8 @@
 
 ### Lesson 4.1: `signal()` — Writable Signals
 - *Objective:* Create and manage reactive state with `signal()`.
-- *Branch Name:* `lesson-4.1-writable-signals`
+- *Commit:* `lesson-4.1-writable-signals`
+- *Reference:* `agent-skills/angular-skills/references/signals-overview.md`
 - *Topics:*
   - `signal<T>(initialValue)` — creating writable signals; `WritableSignal` vs `Signal`
   - `.set()` vs `.update()` — replacing vs transforming state; immutability of arrays/objects
@@ -23,7 +24,8 @@
 
 ### Lesson 4.2: `computed()` — Derived State
 - *Objective:* Automatic dependency tracking with computed signals.
-- *Branch Name:* `lesson-4.2-computed-signals`
+- *Commit:* `lesson-4.2-computed-signals`
+- *Reference:* `agent-skills/angular-skills/references/signals-overview.md`
 - *Topics:*
   - `computed()` — derived signals that auto-track dependencies
   - Chaining computed signals; `equal` option
@@ -36,7 +38,8 @@
 
 ### Lesson 4.3: `effect()` — Side Effects
 - *Objective:* React to signal changes, manage cleanup, know when *not* to use effects.
-- *Branch Name:* `lesson-4.3-effects`
+- *Commit:* `lesson-4.3-effects`
+- *Reference:* `agent-skills/angular-skills/references/effects.md`
 - *Topics:*
   - `effect()` — runs when tracked signals change; runs in an injection context
   - `onCleanup` callback; `untracked()` to read without tracking
@@ -49,19 +52,21 @@
 
 ### Lesson 4.4: Linked Signals
 - *Objective:* `linkedSignal()` — writable state that resets when its source changes.
-- *Branch Name:* `lesson-4.4-linked-signals`
+- *Commit:* `lesson-4.4-linked-signals`
+- *Reference:* `agent-skills/angular-skills/references/linked-signal.md`
 - *Topics:*
-  - `linkedSignal(() => source())` — a writable signal with a computed default
-  - `linkedSignal({ source, computation })` with access to the previous value
+  - `linkedSignal(() => source())` — a writable signal with a computed default. It only resets when the computation **reads a signal**: `linkedSignal(() => '')` has no dependency and therefore never resets.
+  - `linkedSignal({ source, computation })` with access to the previous value — the form to use when the default is a constant but the reset must follow an input
   - When to use `linkedSignal()` vs `model()` vs `computed()`
 - *Training Exercise:* Build a "selected option" that resets when the option list changes
-- *Project Application:* `Column` gets a `draft = linkedSignal(() => '')` for the quick-add input tied to the `column` input; `Board` keeps `selectedTaskId` as a `linkedSignal` that resets when the task disappears from `filteredTasks()`
+- *Project Application:* `Column` gets a quick-add `draft` that clears whenever the component is bound to another column — `linkedSignal({ source: this.column, computation: () => '' })`; `Board` keeps `selectedTaskId` as a `linkedSignal({ source: filteredTasks, computation })` that keeps the previous id while it is still in the list and resets to `undefined` when it is filtered out
 
 ---
 
 ### Lesson 4.5: Signals in Templates
 - *Objective:* Template reactivity and the reading rules.
-- *Branch Name:* `lesson-4.5-signals-templates`
+- *Commit:* `lesson-4.5-signals-templates`
+- *Reference:* `agent-skills/angular-skills/references/signals-overview.md`
 - *Topics:*
   - Calling signals in templates: `{{ count() }}`, `[prop]="value()"`, `@if (item())`
   - `@let` to read a signal once per template
@@ -79,6 +84,7 @@ Before marking this phase as complete:
 - [ ] All training exercises completed
 - [ ] All project applications integrated into TaskFlow
 - [ ] Code reviewed and follows best practices
+- [ ] `npm run verify 4` passes — the milestone in `taskflow-spec.md` §10 is reached
 - [ ] Tests pass (if Testing Phase already completed)
 
 ---
