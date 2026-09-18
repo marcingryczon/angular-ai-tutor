@@ -5,24 +5,23 @@
         <span class="material-symbols-rounded material-symbols-rounded--sm">arrow_back</span>
         All boards
       </a>
-      @if (board; as board) {
+      @if (board(); as board) {
         <h1 class="board__title">
           {{ board.title }}
           <span class="visibility-{{ board.visibility }}">{{ board.visibility }}</span>
         </h1>
         <p class="board__desc">{{ board.description }}</p>
       }
-      <p class="board__meta">{{ tasks.length }} task(s)</p>
     </div>
 
     <div class="board__actions">
-      <button type="button" class="btn btn--primary" (click)="isCreating = true">
+      <button type="button" class="btn btn--primary" (click)="isCreating.set(true)">
         <span class="material-symbols-rounded material-symbols-rounded--sm">add</span>
         New task
       </button>
 
       <!-- Inline role check until the *adminOnly directive arrives in Phase 9 -->
-      @if (session.isAdmin) {
+      @if (session.isAdmin()) {
         <button type="button" class="btn btn--ghost" (click)="resetDemoData()">
           Reset demo data
         </button>
@@ -30,13 +29,62 @@
     </div>
   </header>
 
+  <div class="board__filter">
+    <div class="field board__search">
+      <label class="field__label" for="board-search">Search</label>
+      <input
+        id="board-search"
+        class="field__input"
+        type="search"
+        placeholder="Filter by text…"
+        [value]="search()"
+        (input)="onSearch($any($event.target).value)"
+      />
+    </div>
+
+    <div class="field board__filter-select">
+      <label class="field__label" for="board-priority">Priority</label>
+      <select
+        id="board-priority"
+        class="field__input"
+        [value]="priorityFilter()"
+        (change)="onPriorityFilter($any($event.target).value)"
+      >
+        <option value="">All</option>
+        @for (priority of config.priorities; track priority) {
+          <option [value]="priority">{{ priority }}</option>
+        }
+      </select>
+    </div>
+
+    <div class="field board__filter-select">
+      <label class="field__label" for="board-assignee">Assignee</label>
+      <select
+        id="board-assignee"
+        class="field__input"
+        [value]="assigneeFilter()"
+        (change)="onAssigneeFilter($any($event.target).value)"
+      >
+        <option value="">All</option>
+        @for (user of users(); track user.id) {
+          <option [value]="user.id">{{ user.name }}</option>
+        }
+        <option value="none">Unassigned</option>
+      </select>
+    </div>
+
+    <span class="board__count">{{ filteredTasks().length }} task(s)</span>
+  </div>
+
   <div class="board__columns">
-    @for (column of columns; track column.id) {
+    @for (column of columns(); track column.id) {
       <app-column
         [column]="column"
         [tasks]="tasksOf(column)"
-        [users]="users"
+        [users]="users()"
+        [selectedTaskId]="selectedTaskId()"
         (quickAdd)="onQuickAdd(column, $event)"
+        (selectTask)="onSelect($event)"
         (editTask)="onEdit($event)"
         (removeTask)="onRemove($event)"
         (taskMoved)="onMove($event)"
@@ -45,8 +93,14 @@
   </div>
 </section>
 
-@if (isCreating || editedTask) {
-  <app-modal [title]="editedTask ? 'Edit task' : 'New task'" (closed)="closeModal()">
+@if (isCreating() || editedTask()) {
+  <app-modal [title]="editedTask() ? 'Edit task' : 'New task'" (closed)="closeModal()">
     <p class="board__modal-placeholder">The task form arrives in Phase 6 (Signal Forms).</p>
+  </app-modal>
+}
+
+@if (selectedTask(); as task) {
+  <app-modal title="Task details" (closed)="closeModal()">
+    <p class="board__modal-placeholder">{{ task.title }}</p>
   </app-modal>
 }

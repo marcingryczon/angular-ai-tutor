@@ -1,45 +1,51 @@
-import { inject, Injectable } from '@angular/core';
-import { TaskFlowDb } from './db';
+import { computed, effect, inject, Injectable, signal } from '@angular/core';
+import { TaskFlowDb, TaskFlowData } from './db';
 import { findById } from './helpers';
 import { Board, Column, User } from './models';
 
-/** Data access for boards, columns and users. */
+/**
+ * Owns the persisted dataset as a signal. Every other service derives from it,
+ * so there is exactly one writable source of truth in the app.
+ */
 @Injectable({ providedIn: 'root' })
 export class BoardService {
   private readonly db = inject(TaskFlowDb);
-  private data = this.db.load();
 
-  get boards(): readonly Board[] {
-    return this.data.boards;
+  private readonly data = signal<TaskFlowData>(this.db.load());
+
+  readonly boards = computed(() => this.data().boards);
+  readonly users = computed(() => this.data().users);
+  readonly columns = computed(() => this.data().columns);
+
+  constructor() {
+    // Side effect: persistence. Deriving state here would be a smell.
+    effect(() => this.db.save(this.data()));
   }
 
-  get users(): readonly User[] {
-    return this.data.users;
+  snapshot(): TaskFlowData {
+    return this.data();
+  }
+
+  update(mutate: (data: TaskFlowData) => TaskFlowData): void {
+    this.data.update(mutate);
   }
 
   columnsOf(boardId: string): readonly Column[] {
-    return this.data.columns
+    return this.columns()
       .filter((column) => column.boardId === boardId)
       .sort((a, b) => a.order - b.order);
   }
 
   boardById(boardId: string): Board | undefined {
-    return findById(this.data.boards, boardId);
+    return findById(this.boards(), boardId);
+  }
+
+  userById(userId: string | undefined): User | undefined {
+    return userId ? findById(this.users(), userId) : undefined;
   }
 
   /** Re-seeds the demo dataset (admin action). */
   reset(): void {
-    this.data = this.db.seed();
-    this.db.save(this.data);
-  }
-
-  /** Shared snapshot so `TaskService` writes into the same object graph. */
-  snapshot() {
-    return this.data;
-  }
-
-  replace(data: ReturnType<TaskFlowDb['load']>): void {
-    this.data = data;
-    this.db.save(data);
+    this.data.set(this.db.seed());
   }
 }

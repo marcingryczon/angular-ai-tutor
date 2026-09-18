@@ -1,4 +1,4 @@
-import { inject, Injectable } from '@angular/core';
+import { computed, inject, Injectable } from '@angular/core';
 import { BoardService } from './board.service';
 import { newId } from './helpers';
 import { Priority, Task } from './models';
@@ -8,12 +8,14 @@ import { Priority, Task } from './models';
 export class TaskService {
   private readonly boards = inject(BoardService);
 
+  readonly tasks = computed(() => this.boards.snapshot().tasks);
+
   tasksOfBoard(boardId: string): readonly Task[] {
-    return this.boards.snapshot().tasks.filter((task) => task.boardId === boardId);
+    return this.tasks().filter((task) => task.boardId === boardId);
   }
 
   add(boardId: string, columnId: string, title: string, priority: Priority = 'medium'): Task {
-    const stamp = new Date().toISOString().slice(0, 10);
+    const stamp = this.stamp();
     const task: Task = {
       id: newId('task'),
       boardId,
@@ -25,34 +27,40 @@ export class TaskService {
       createdAt: stamp,
       updatedAt: stamp,
     };
-    this.write([...this.boards.snapshot().tasks, task]);
+    this.boards.update((data) => ({ ...data, tasks: [...data.tasks, task] }));
     return task;
   }
 
+  create(task: Omit<Task, 'id' | 'createdAt' | 'updatedAt'>): Task {
+    const stamp = this.stamp();
+    const created: Task = { ...task, id: newId('task'), createdAt: stamp, updatedAt: stamp };
+    this.boards.update((data) => ({ ...data, tasks: [...data.tasks, created] }));
+    return created;
+  }
+
   update(task: Task): void {
-    this.write(
-      this.boards
-        .snapshot()
-        .tasks.map((item) => (item.id === task.id ? { ...task, updatedAt: this.stamp() } : item)),
-    );
+    this.boards.update((data) => ({
+      ...data,
+      tasks: data.tasks.map((item) =>
+        item.id === task.id ? { ...task, updatedAt: this.stamp() } : item,
+      ),
+    }));
   }
 
   remove(taskId: string): void {
-    this.write(this.boards.snapshot().tasks.filter((task) => task.id !== taskId));
+    this.boards.update((data) => ({
+      ...data,
+      tasks: data.tasks.filter((task) => task.id !== taskId),
+    }));
   }
 
   move(taskId: string, columnId: string): void {
-    this.write(
-      this.boards
-        .snapshot()
-        .tasks.map((task) =>
-          task.id === taskId ? { ...task, columnId, updatedAt: this.stamp() } : task,
-        ),
-    );
-  }
-
-  private write(tasks: readonly Task[]): void {
-    this.boards.replace({ ...this.boards.snapshot(), tasks });
+    this.boards.update((data) => ({
+      ...data,
+      tasks: data.tasks.map((task) =>
+        task.id === taskId ? { ...task, columnId, updatedAt: this.stamp() } : task,
+      ),
+    }));
   }
 
   private stamp(): string {

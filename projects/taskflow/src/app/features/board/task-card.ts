@@ -13,7 +13,9 @@ import { Task, User } from '../../core/models';
 export class TaskCard {
   readonly task = input.required<Task>();
   readonly assignee = input<User | undefined>(undefined);
+  readonly selected = input(false);
 
+  readonly select = output<Task>();
   readonly edit = output<Task>();
   readonly remove = output<Task>();
 
