@@ -67,7 +67,11 @@
       {{ (task().dueDate | dueDate) || 'no due date' }}
     </span>
     @if (assignee(); as user) {
-      <span class="task-card__avatar" [attr.aria-label]="'Assigned to ' + user.name" [title]="user.name">
+      <span
+        class="task-card__avatar"
+        [attr.aria-label]="'Assigned to ' + user.name"
+        [title]="user.name"
+      >
         {{ user.name.charAt(0) }}
       </span>
     }

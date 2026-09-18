@@ -77,9 +77,9 @@ describe('TaskForm', () => {
     expect(fixture.nativeElement.querySelector('.field__error')?.textContent).toContain(
       'already exists',
     );
-    expect((fixture.nativeElement.querySelector('.btn--primary') as HTMLButtonElement).disabled).toBe(
-      true,
-    );
+    expect(
+      (fixture.nativeElement.querySelector('.btn--primary') as HTMLButtonElement).disabled,
+    ).toBe(true);
   });
 
   it('emits the form value on submit', async () => {

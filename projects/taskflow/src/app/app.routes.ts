@@ -23,8 +23,7 @@ export const routes: Routes = [
     path: 'boards/:boardId/settings',
     title: 'TaskFlow — board settings',
     canActivate: [adminGuard],
-    loadComponent: () =>
-      import('./features/board/board-settings').then((m) => m.BoardSettings),
+    loadComponent: () => import('./features/board/board-settings').then((m) => m.BoardSettings),
   },
   { path: '**', redirectTo: '' },
 ];

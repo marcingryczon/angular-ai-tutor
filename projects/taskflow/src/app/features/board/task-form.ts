@@ -1,4 +1,11 @@
-import { ChangeDetectionStrategy, Component, computed, input, linkedSignal, output } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  input,
+  linkedSignal,
+  output,
+} from '@angular/core';
 import { form, FormField, required, submit, validate } from '@angular/forms/signals';
 import { Priority, Task, User } from '../../core/models';
 

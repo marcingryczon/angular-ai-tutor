@@ -14,7 +14,10 @@ describe('BoardService', () => {
   });
 
   it('persists and reloads through the db', () => {
-    service.persist({ ...EMPTY, users: [{ id: 'u', name: 'U', email: 'u@t.dev', role: 'member' }] });
+    service.persist({
+      ...EMPTY,
+      users: [{ id: 'u', name: 'U', email: 'u@t.dev', role: 'member' }],
+    });
 
     expect(service.loadPersisted()?.users).toHaveLength(1);
   });

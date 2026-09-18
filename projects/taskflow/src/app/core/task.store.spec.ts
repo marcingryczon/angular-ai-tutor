@@ -12,9 +12,21 @@ const SEED: SeedFile = {
   ],
   boards: [{ id: 'b_1', title: 'One', description: '', visibility: 'team', ownerId: 'u_1' }],
   taskTemplates: [
-    { title: 'Write copy', description: 'launch text', status: 'todo', priority: 'low', assigneeId: 'u_1' },
+    {
+      title: 'Write copy',
+      description: 'launch text',
+      status: 'todo',
+      priority: 'low',
+      assigneeId: 'u_1',
+    },
     { title: 'Fix banner', description: 'image bug', status: 'todo', priority: 'urgent' },
-    { title: 'Ship email', description: 'welcome flow', status: 'done', priority: 'high', assigneeId: 'u_2' },
+    {
+      title: 'Ship email',
+      description: 'welcome flow',
+      status: 'done',
+      priority: 'high',
+      assigneeId: 'u_2',
+    },
   ],
 };
 

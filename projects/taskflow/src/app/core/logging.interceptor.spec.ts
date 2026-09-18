@@ -37,11 +37,16 @@ describe('loggingInterceptor', () => {
     controller.expectOne('/missing').flush('nope', { status: 404, statusText: 'Not Found' });
 
     await expect(response).rejects.toBeTruthy();
-    expect(warn).toHaveBeenCalledWith(expect.stringContaining('[http] GET /missing failed'), expect.anything());
+    expect(warn).toHaveBeenCalledWith(
+      expect.stringContaining('[http] GET /missing failed'),
+      expect.anything(),
+    );
   });
 });
 
-function firstValue<T>(source: { subscribe: (observer: Record<string, unknown>) => unknown }): Promise<T> {
+function firstValue<T>(source: {
+  subscribe: (observer: Record<string, unknown>) => unknown;
+}): Promise<T> {
   return new Promise<T>((resolve, reject) => {
     source.subscribe({ next: resolve, error: reject });
   });

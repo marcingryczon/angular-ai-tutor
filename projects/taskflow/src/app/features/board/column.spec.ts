@@ -47,7 +47,9 @@ describe('Column', () => {
   it('shows the empty state without tasks', async () => {
     const fixture = await render([]);
 
-    expect(fixture.nativeElement.querySelector('.column__empty')?.textContent).toContain('No tasks');
+    expect(fixture.nativeElement.querySelector('.column__empty')?.textContent).toContain(
+      'No tasks',
+    );
   });
 
   it('emits quickAdd on Enter and clears the draft', async () => {
@@ -55,7 +57,9 @@ describe('Column', () => {
     const quickAdd = vi.fn();
     fixture.componentInstance.quickAdd.subscribe(quickAdd);
 
-    const input = fixture.nativeElement.querySelector('.column__quick-add-input') as HTMLInputElement;
+    const input = fixture.nativeElement.querySelector(
+      '.column__quick-add-input',
+    ) as HTMLInputElement;
     input.value = '  New task  ';
     input.dispatchEvent(new Event('input'));
     input.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter' }));
@@ -70,7 +74,9 @@ describe('Column', () => {
     const quickAdd = vi.fn();
     fixture.componentInstance.quickAdd.subscribe(quickAdd);
 
-    const input = fixture.nativeElement.querySelector('.column__quick-add-input') as HTMLInputElement;
+    const input = fixture.nativeElement.querySelector(
+      '.column__quick-add-input',
+    ) as HTMLInputElement;
     input.value = '   ';
     input.dispatchEvent(new Event('input'));
     input.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter' }));

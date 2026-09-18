@@ -1,0 +1,31 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: npm
+
+      - run: npm ci
+
+      - name: Format check
+        run: npx prettier --check .
+
+      - name: Unit tests (TaskFlow, with coverage thresholds)
+        run: npm run test:taskflow -- --no-watch
+
+      - name: Unit tests (training app)
+        run: npm run test:edu -- --no-watch
+
+      - name: Production build
+        run: npm run build:taskflow

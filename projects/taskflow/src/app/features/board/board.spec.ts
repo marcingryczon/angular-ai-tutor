@@ -10,11 +10,23 @@ import { Board } from './board';
 const SEED: SeedFile = {
   users: [{ id: 'u_1', name: 'Ada', email: 'ada@taskflow.dev', role: 'member' }],
   boards: [
-    { id: 'b_1', title: 'Marketing Sprint', description: 'Launch work', visibility: 'team', ownerId: 'u_1' },
+    {
+      id: 'b_1',
+      title: 'Marketing Sprint',
+      description: 'Launch work',
+      visibility: 'team',
+      ownerId: 'u_1',
+    },
   ],
   taskTemplates: [
     { title: 'Write copy', description: 'launch text', status: 'todo', priority: 'low' },
-    { title: 'Fix banner', description: '', status: 'review', priority: 'urgent', assigneeId: 'u_1' },
+    {
+      title: 'Fix banner',
+      description: '',
+      status: 'review',
+      priority: 'urgent',
+      assigneeId: 'u_1',
+    },
   ],
 };
 

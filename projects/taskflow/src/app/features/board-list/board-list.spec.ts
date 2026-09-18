@@ -8,7 +8,13 @@ import { BoardList } from './board-list';
 const SEED: SeedFile = {
   users: [],
   boards: [
-    { id: 'b_1', title: 'Marketing Sprint', description: 'Launch', visibility: 'team', ownerId: 'u_1' },
+    {
+      id: 'b_1',
+      title: 'Marketing Sprint',
+      description: 'Launch',
+      visibility: 'team',
+      ownerId: 'u_1',
+    },
   ],
   taskTemplates: [{ title: 'A', description: '', status: 'todo', priority: 'low' }],
 };
@@ -58,7 +64,9 @@ describe('BoardList', () => {
 
   it('keeps "Create board" disabled until a title is typed', async () => {
     await seed();
-    const button = fixture.nativeElement.querySelector('.new-board .btn--primary') as HTMLButtonElement;
+    const button = fixture.nativeElement.querySelector(
+      '.new-board .btn--primary',
+    ) as HTMLButtonElement;
     expect(button.disabled).toBe(true);
 
     const title = fixture.nativeElement.querySelector('#board-title') as HTMLInputElement;
@@ -72,7 +80,9 @@ describe('BoardList', () => {
   it('creates a board and clears the form', async () => {
     await seed();
     const title = fixture.nativeElement.querySelector('#board-title') as HTMLInputElement;
-    const description = fixture.nativeElement.querySelector('#board-description') as HTMLInputElement;
+    const description = fixture.nativeElement.querySelector(
+      '#board-description',
+    ) as HTMLInputElement;
     title.value = 'Design System';
     title.dispatchEvent(new Event('input'));
     description.value = 'Tokens';
@@ -86,6 +96,8 @@ describe('BoardList', () => {
 
     expect(fixture.nativeElement.querySelectorAll('.board-card__link')).toHaveLength(2);
     expect(fixture.nativeElement.textContent).toContain('Design System');
-    expect((fixture.nativeElement.querySelector('#board-title') as HTMLInputElement).value).toBe('');
+    expect((fixture.nativeElement.querySelector('#board-title') as HTMLInputElement).value).toBe(
+      '',
+    );
   });
 });

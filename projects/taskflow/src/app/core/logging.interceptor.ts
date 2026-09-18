@@ -12,7 +12,9 @@ export const loggingInterceptor: HttpInterceptorFn = (request, next) => {
   return next(request).pipe(
     tap({
       complete: () =>
-        console.debug(`[http] ${request.method} ${request.url} — ${Math.round(performance.now() - started)}ms`),
+        console.debug(
+          `[http] ${request.method} ${request.url} — ${Math.round(performance.now() - started)}ms`,
+        ),
       error: (error) => console.warn(`[http] ${request.method} ${request.url} failed`, error),
     }),
   );

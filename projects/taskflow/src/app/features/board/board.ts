@@ -1,4 +1,13 @@
-import { ChangeDetectionStrategy, Component, computed, effect, inject, input, linkedSignal, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  inject,
+  input,
+  linkedSignal,
+  signal,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router, RouterLink } from '@angular/router';
 import { BoardStore } from '../../core/board.store';
@@ -17,7 +26,15 @@ import { TaskForm, TaskFormValue } from './task-form';
 @Component({
   changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-board',
-  imports: [Column, Modal, TaskForm, RouterLink, AdminOnlyDirective, DueDatePipe, PriorityLabelPipe],
+  imports: [
+    Column,
+    Modal,
+    TaskForm,
+    RouterLink,
+    AdminOnlyDirective,
+    DueDatePipe,
+    PriorityLabelPipe,
+  ],
   templateUrl: './board.html',
   styleUrl: './board.scss',
 })

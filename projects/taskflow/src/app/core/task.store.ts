@@ -2,6 +2,7 @@ import { computed, inject, Injectable, signal } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { debounceTime, distinctUntilChanged, map } from 'rxjs';
 import { BoardStore } from './board.store';
+import { filterTasks, tasksOfBoard, tasksOfColumn } from './domain/task-filters';
 import { Priority, Task } from './models';
 import { NewTask, TaskService } from './task.service';
 
@@ -29,32 +30,21 @@ export class TaskStore {
   readonly priorityFilter = signal<Priority | ''>('');
   readonly assigneeFilter = signal<string>('');
 
-  readonly tasks = computed(() =>
-    this.boards.data().tasks.filter((task) => task.boardId === this.boardId()),
+  readonly tasks = computed(() => tasksOfBoard(this.boards.data().tasks, this.boardId()));
+
+  /** The filtering rule itself lives in `core/domain` — this only wires signals to it. */
+  readonly filteredTasks = computed(() =>
+    filterTasks(this.tasks(), {
+      search: this.search(),
+      priority: this.priorityFilter(),
+      assignee: this.assigneeFilter(),
+    }),
   );
-
-  readonly filteredTasks = computed(() => {
-    const term = this.search();
-    const priority = this.priorityFilter();
-    const assignee = this.assigneeFilter();
-
-    return this.tasks().filter((task) => {
-      const matchesText =
-        !term ||
-        task.title.toLowerCase().includes(term) ||
-        task.description.toLowerCase().includes(term);
-      const matchesPriority = !priority || task.priority === priority;
-      const matchesAssignee =
-        !assignee || (assignee === 'none' ? !task.assigneeId : task.assigneeId === assignee);
-
-      return matchesText && matchesPriority && matchesAssignee;
-    });
-  });
 
   readonly taskCount = computed(() => this.filteredTasks().length);
 
   tasksOfColumn(columnId: string): readonly Task[] {
-    return this.filteredTasks().filter((task) => task.columnId === columnId);
+    return tasksOfColumn(this.filteredTasks(), columnId);
   }
 
   // --- actions ---

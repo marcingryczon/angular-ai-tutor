@@ -101,9 +101,7 @@ describe('TaskCard', () => {
     expect(fixture.nativeElement.querySelector('.task-card--selected')).not.toBeNull();
 
     const dataTransfer = { setData: vi.fn(), effectAllowed: '' };
-    fixture.nativeElement.dispatchEvent(
-      Object.assign(new Event('dragstart'), { dataTransfer }),
-    );
+    fixture.nativeElement.dispatchEvent(Object.assign(new Event('dragstart'), { dataTransfer }));
 
     expect(dataTransfer.setData).toHaveBeenCalledWith('text/plain', 't1');
     expect(dataTransfer.effectAllowed).toBe('move');

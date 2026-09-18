@@ -43,7 +43,9 @@ describe('Modal', () => {
     await fixture.whenStable();
 
     expect(document.body.style.overflow).toBe('hidden');
-    expect(document.activeElement).toBe(fixture.nativeElement.querySelector('.modal__header .icon-btn'));
+    expect(document.activeElement).toBe(
+      fixture.nativeElement.querySelector('.modal__header .icon-btn'),
+    );
   });
 
   it('restores focus and scrolling when it closes', async () => {
