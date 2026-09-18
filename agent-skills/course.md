@@ -50,7 +50,7 @@ The repository uses a structured branching model to keep the codebase clean and 
 | `start` | **Clean baseline** — the original project setup and the curriculum documents. | ❌ Only to update project assumptions or curriculum docs |
 | `main` | **Working branch** — receives every completed phase branch. | ✅ Yes (merge target) |
 | `phase-<n>-<slug>` | **Phase branches** — one per phase, one commit per lesson. | ✅ Yes (active development) |
-| `taskflow-finished`, `taskflow-preview` | **Reference implementations** of the finished TaskFlow. They are snapshots of the *final* state and may drift from the spec, so **the spec plus `npm run verify` decide what is correct**, not these branches. Never copy from them or show them before the matching lesson. | ❌ Read-only |
+| `taskflow-finished-claude` | **Reference implementation** of the finished TaskFlow, one commit per phase, `npm run verify` green 0–14. It is a snapshot of the *final* state and may drift from the spec, so **the spec plus `npm run verify` decide what is correct**, not this branch. Never copy from it or show it before the matching lesson. | ❌ Read-only |
 
 ### Rules
 

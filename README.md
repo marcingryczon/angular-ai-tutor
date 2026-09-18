@@ -96,7 +96,7 @@ The repository uses a structured branching model to keep the codebase clean and 
 | `start` | **Clean baseline** — project setup and the curriculum documents. | ❌ Only to update project assumptions or curriculum docs |
 | `main` | **Working branch** — receives every completed lesson branch. | ✅ Yes |
 | `phase-<n>-<slug>` | **Phase branches** — one per phase, one commit per lesson. Merged to `main` when `npm run verify <n>` passes. | ✅ Yes |
-| `taskflow-finished`, `taskflow-preview` | **Reference implementation** of the finished TaskFlow. Consult it to verify a result against the spec; never copy from it or show it before the matching lesson. | ❌ No |
+| `taskflow-finished-claude` | **Reference implementation** of the finished TaskFlow — one commit per phase, `npm run verify` green 0–14. Consult it to verify a result against the spec; never copy from it or show it before the matching lesson. | ❌ No |
 
 ### Flow
 

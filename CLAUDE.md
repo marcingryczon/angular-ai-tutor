@@ -56,7 +56,7 @@ The isolated exercise earns its place when it lets the learner **change a variab
 
 **One branch per phase, one commit per lesson:** branch `phase-<n>-<slug>` (`phase-3-di`), commits `lesson-3.2: <what changed>`. The dot prevents collision (`1.1` vs `11`); the undotted form is wrong. A phase merges to `main` once `npm run verify <n>` passes.
 
-Reference implementations (`taskflow-finished`, `taskflow-preview`) are read-only snapshots of the *final* state and may drift from the spec — `course/taskflow-spec.md` plus `npm run verify` decide what is correct. Never show them to the learner ahead of a lesson.
+The reference implementation (`taskflow-finished-claude`) is a read-only snapshot of the *final* state — one commit per phase, `npm run verify` green from 0 to 14, and `course/adr/001-state-management.md` as its phase-13 verdict. It may still drift from the spec over time: `course/taskflow-spec.md` plus `npm run verify` decide what is correct. Never show it to the learner ahead of a lesson.
 
 ### Phase Progression
 
