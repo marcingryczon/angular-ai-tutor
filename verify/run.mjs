@@ -13,6 +13,8 @@ import { fileURLToPath } from 'node:url';
 import { dirname, join } from 'node:path';
 import { openBrowser } from './lib/browser.mjs';
 import { startDevServer } from './lib/server.mjs';
+import { foreignAngularRuns } from './lib/env.mjs';
+import { runSuite } from './lib/tests.mjs';
 
 const here = dirname(fileURLToPath(import.meta.url));
 const phasesDir = join(here, 'phases');
@@ -74,7 +76,37 @@ const numbers = requested.length
 const phases = [];
 for (const number of numbers) phases.push(await loadPhase(number));
 
-const needsApp = phases.some((phase) => phase.checks.some((check) => check.needsApp));
+const checksOf = (predicate) =>
+  phases.some((phase) => phase.checks.some((check) => predicate(check)));
+
+const needsApp = checksOf((check) => check.needsApp);
+const suiteKinds = new Set(
+  phases
+    .flatMap((phase) => phase.checks)
+    .filter((check) => check.needsSuite)
+    .map((check) => check.needsSuite),
+);
+
+// Somebody else's `ng` is the one failure mode that looks like a broken app but is not one.
+const foreign = foreignAngularRuns();
+if (foreign.length) {
+  console.log(`${RED}Another Angular CLI process is already running:${OFF}`);
+  for (const { pid, command } of foreign) console.log(`  ${DIM}${pid}  ${command}${OFF}`);
+  console.log(
+    `${RED}It shares .angular/cache with this run, so specs can fail for reasons that have\n` +
+      `nothing to do with your code. Stop it (or close the IDE test watcher) and run again.${OFF}\n`,
+  );
+}
+
+// The unit suite runs first and alone — before the dev server exists — so two Angular builders
+// are never working on this workspace at the same time.
+if (suiteKinds.size) {
+  console.log(`${DIM}Running the unit suite…${OFF}`);
+  for (const kind of [...suiteKinds].sort()) {
+    await runSuite({ coverage: kind === 'coverage' });
+  }
+}
+
 let server;
 let browser;
 

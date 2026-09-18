@@ -2,6 +2,9 @@ import { atLeast, fileContains, fileExists, truthy } from '../lib/checks.mjs';
 
 const APP = 'projects/taskflow/src/app';
 
+const HINT =
+  '\n\nIf these specs pass when you run `ng test taskflow` on their own, nothing is wrong with\nyour code: something else was building this workspace at the same time.';
+
 export default {
   phase: 3,
   title: 'Dependency Injection',
@@ -61,6 +64,7 @@ export default {
     },
     {
       name: 'the first service specs exist and the suite is green (lesson 3.6)',
+      needsSuite: 'plain',
       run: async () => {
         const { walk } = await import('../lib/checks.mjs');
         const { runSuite, tail } = await import('../lib/tests.mjs');
@@ -68,7 +72,7 @@ export default {
         atLeast(specs.length, 2, 'spec files under projects/taskflow/src/app');
 
         const suite = await runSuite();
-        truthy(suite.ok, `the unit suite does not pass:\n${tail(suite.output)}`);
+        truthy(suite.ok, `the unit suite does not pass:\n${tail(suite.output)}${HINT}`);
       },
     },
     {

@@ -2,6 +2,9 @@ import { atLeast, fileExists, json, truthy, walk } from '../lib/checks.mjs';
 
 const APP = 'projects/taskflow/src/app';
 
+const HINT =
+  '\n\nIf these specs pass when you run `ng test taskflow` on their own, nothing is wrong with\nyour code: something else was building this workspace at the same time.';
+
 export default {
   phase: 11,
   title: 'Testing',
@@ -50,6 +53,7 @@ export default {
     },
     {
       name: 'the suite passes at those thresholds',
+      needsSuite: 'coverage',
       run: async () => {
         // The milestone is a measurement, not a setting. Coverage is enforced by the builder, so
         // a run that exits non-zero means either a red spec or coverage below the thresholds.
@@ -57,7 +61,7 @@ export default {
         const suite = await runSuite({ coverage: true });
         truthy(
           suite.ok,
-          `the suite failed, or coverage is under the thresholds:\n${tail(suite.output, 16)}`,
+          `the suite failed, or coverage is under the thresholds:\n${tail(suite.output, 16)}${HINT}`,
         );
       },
     },

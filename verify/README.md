@@ -28,6 +28,17 @@ disagreement with the spec, which is worth a conversation.
 No test framework and no npm dependency is involved — Node 24 has everything needed. Chrome is found
 automatically on macOS; elsewhere set `CHROME_PATH`.
 
+## One builder at a time
+
+`ng serve`, `ng test` and `ng build` all share `.angular/cache`. Two of them on the same workspace can
+make specs fail for reasons that have nothing to do with your code — and a red check that blames you
+for someone else's build is worse than no check at all. So:
+
+- the unit suite runs **first and alone**, before the dev server is started, never beside it;
+- before anything starts, the runner looks for Angular CLI processes it did not launch — a leftover
+  dev server, an IDE test watcher, a second terminal — and says so;
+- a failing suite check ends with a hint: if those specs pass on their own, the run was not the truth.
+
 ## The rule these checks follow
 
 **A milestone that has been reached stays reached.** Phase 5 moves the state out of the services and
