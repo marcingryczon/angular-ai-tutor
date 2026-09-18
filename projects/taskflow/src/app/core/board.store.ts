@@ -1,4 +1,4 @@
-import { computed, effect, inject, Injectable, signal } from '@angular/core';
+import { afterNextRender, computed, effect, inject, Injectable, signal } from '@angular/core';
 import { toObservable } from '@angular/core/rxjs-interop';
 import { httpResource } from '@angular/common/http';
 import { filter, map, take } from 'rxjs';
@@ -20,11 +20,18 @@ export class BoardStore {
   private readonly db = inject(TaskFlowDb);
   private readonly session = inject(SessionService);
 
-  private readonly state = signal<TaskFlowData>(this.boardService.loadPersisted() ?? EMPTY);
-  private readonly hydrated = signal(this.boardService.loadPersisted() !== undefined);
+  /**
+   * Starts empty on both platforms so the server render and the first client
+   * render agree. Persisted data is swapped in after the first render.
+   */
+  private readonly state = signal<TaskFlowData>(EMPTY);
+  private readonly hydrated = signal(false);
 
-  /** Demo data, fetched declaratively; only used until the store is hydrated. */
-  private readonly seed = httpResource<SeedFile>(() => (this.hydrated() ? undefined : 'seed.json'));
+  /** `true` once localStorage has been consulted (browser only). */
+  private readonly restored = signal(false);
+
+  /** Demo data, fetched declaratively and replayed from the transfer cache. */
+  private readonly seed = httpResource<SeedFile>(() => 'seed.json');
 
   readonly isLoading = computed(() => !this.hydrated() && this.seed.isLoading());
 
@@ -51,9 +58,20 @@ export class BoardStore {
       }
     });
 
+    // Browser only, and only after hydration has finished: swap the server's
+    // seed render for whatever the user actually has in localStorage.
+    afterNextRender(() => {
+      const persisted = this.boardService.loadPersisted();
+      if (persisted) {
+        this.state.set(persisted);
+        this.hydrated.set(true);
+      }
+      this.restored.set(true);
+    });
+
     // Persistence is a side effect of state, never a step inside an action.
     effect(() => {
-      if (this.hydrated()) {
+      if (this.hydrated() && this.restored()) {
         this.boardService.persist(this.state());
       }
     });

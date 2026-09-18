@@ -139,7 +139,17 @@
             ],
             "styles": [
               "projects/taskflow/src/styles.scss"
-            ]
+            ],
+            "server": "projects/taskflow/src/main.server.ts",
+            "outputMode": "server",
+            "security": {
+              "allowedHosts": [
+                "localhost"
+              ]
+            },
+            "ssr": {
+              "entry": "projects/taskflow/src/server.ts"
+            }
           },
           "configurations": {
             "production": {
