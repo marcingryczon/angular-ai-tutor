@@ -1,24 +1,30 @@
 <section
   class="column"
+  [attr.aria-label]="column().title + ' column'"
   [class.column--drop]="isDropTarget()"
   (dragover)="onDragOver($event)"
   (dragleave)="onDragLeave()"
   (drop)="onDrop($event)"
 >
   <header class="column__header">
-    <h2 class="column__title">{{ column().title }}</h2>
-    <span class="column__count">{{ tasks().length }}</span>
+    <h2 class="column__title" [id]="'column-' + column().id">{{ column().title }}</h2>
+    <span class="column__count" [attr.aria-label]="tasks().length + ' tasks'">
+      {{ tasks().length }}
+    </span>
   </header>
 
-  <div class="column__cards">
+  <div class="column__cards" role="list" [attr.aria-labelledby]="'column-' + column().id">
     @for (task of tasks(); track task.id) {
       <app-task-card
+        role="listitem"
         [task]="task"
         [assignee]="assigneeOf(task)"
         [selected]="task.id === selectedTaskId()"
+        [columns]="columns()"
         (select)="selectTask.emit($event)"
         (edit)="editTask.emit($event)"
         (remove)="removeTask.emit($event)"
+        (moveTo)="taskMoved.emit({ taskId: task.id, columnId: $event })"
       />
     } @empty {
       <div class="column__empty">No tasks</div>

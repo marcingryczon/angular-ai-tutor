@@ -55,7 +55,8 @@ describe('TaskCard', () => {
     fixture.componentInstance.select.subscribe(select);
 
     const element: HTMLElement = fixture.nativeElement;
-    (element.querySelector('.icon-btn') as HTMLButtonElement).click();
+    const [, editButton] = element.querySelectorAll('.icon-btn');
+    (editButton as HTMLButtonElement).click();
     (element.querySelector('.icon-btn--danger') as HTMLButtonElement).click();
     (element.querySelector('.task-card') as HTMLElement).click();
     await fixture.whenStable();
@@ -64,6 +65,32 @@ describe('TaskCard', () => {
     expect(remove).toHaveBeenCalledWith(TASK);
     // The action buttons stop propagation, so only the card click selects.
     expect(select).toHaveBeenCalledTimes(1);
+  });
+
+  it('offers a keyboard move menu over the board columns', async () => {
+    const fixture = await render(TASK, USER);
+    fixture.componentRef.setInput('columns', [
+      { id: 'c1', boardId: 'b1', title: 'To Do', status: 'todo', order: 0 },
+      { id: 'c2', boardId: 'b1', title: 'Done', status: 'done', order: 1 },
+    ]);
+    await fixture.whenStable();
+    const moveTo = vi.fn();
+    fixture.componentInstance.moveTo.subscribe(moveTo);
+    const element: HTMLElement = fixture.nativeElement;
+
+    (element.querySelector('.icon-btn') as HTMLButtonElement).click();
+    await fixture.whenStable();
+
+    const items = element.querySelectorAll<HTMLButtonElement>('.task-card__menu-item');
+    expect(items).toHaveLength(2);
+    // The card already sits in the first column, so that entry is disabled.
+    expect(items[0].disabled).toBe(true);
+
+    items[1].click();
+    await fixture.whenStable();
+
+    expect(moveTo).toHaveBeenCalledWith('c2');
+    expect(element.querySelector('.task-card__menu')).toBeNull();
   });
 
   it('marks itself selected and puts the task id on the drag payload', async () => {

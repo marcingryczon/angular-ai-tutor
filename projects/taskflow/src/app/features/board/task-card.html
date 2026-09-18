@@ -1,5 +1,7 @@
 <article
   class="task-card"
+  animate.enter="task-card--enter"
+  animate.leave="task-card--leave"
   [class.task-card--selected]="selected()"
   [priorityHighlight]="task().priority"
   (click)="select.emit(task())"
@@ -10,7 +12,17 @@
       <button
         type="button"
         class="icon-btn"
-        aria-label="Edit task"
+        [attr.aria-label]="'Move ' + task().title + ' to another column'"
+        [attr.aria-expanded]="isMenuOpen()"
+        aria-haspopup="menu"
+        (click)="toggleMenu(); $event.stopPropagation()"
+      >
+        <span class="material-symbols-rounded material-symbols-rounded--sm">move_down</span>
+      </button>
+      <button
+        type="button"
+        class="icon-btn"
+        [attr.aria-label]="'Edit ' + task().title"
         (click)="edit.emit(task()); $event.stopPropagation()"
       >
         <span class="material-symbols-rounded material-symbols-rounded--sm">edit</span>
@@ -18,13 +30,31 @@
       <button
         type="button"
         class="icon-btn icon-btn--danger"
-        aria-label="Delete task"
+        [attr.aria-label]="'Delete ' + task().title"
         (click)="remove.emit(task()); $event.stopPropagation()"
       >
         <span class="material-symbols-rounded material-symbols-rounded--sm">delete</span>
       </button>
     </div>
   </header>
+
+  @if (isMenuOpen()) {
+    <ul class="task-card__menu" role="menu" (keydown.escape)="closeMenu()">
+      @for (column of columns(); track column.id) {
+        <li role="none">
+          <button
+            type="button"
+            role="menuitem"
+            class="task-card__menu-item"
+            [disabled]="column.id === task().columnId"
+            (click)="onMove(column.id); $event.stopPropagation()"
+          >
+            {{ column.title }}
+          </button>
+        </li>
+      }
+    </ul>
+  }
 
   <h3 class="task-card__title">{{ task().title }}</h3>
   @if (task().description) {
@@ -37,7 +67,9 @@
       {{ (task().dueDate | dueDate) || 'no due date' }}
     </span>
     @if (assignee(); as user) {
-      <span class="task-card__avatar" [title]="user.name">{{ user.name.charAt(0) }}</span>
+      <span class="task-card__avatar" [attr.aria-label]="'Assigned to ' + user.name" [title]="user.name">
+        {{ user.name.charAt(0) }}
+      </span>
     }
   </footer>
 </article>

@@ -1,5 +1,20 @@
-<div class="modal__backdrop" (click)="onBackdropClick($event)">
-  <div class="modal__panel" role="dialog" aria-modal="true" [attr.aria-label]="title()">
+<div
+  class="modal__backdrop"
+  animate.enter="modal__backdrop--enter"
+  animate.leave="modal__backdrop--leave"
+  (click)="onBackdropClick($event)"
+  (keydown)="onKeydown($event)"
+>
+  <div
+    #panel
+    class="modal__panel"
+    animate.enter="modal__panel--enter"
+    animate.leave="modal__panel--leave"
+    role="dialog"
+    aria-modal="true"
+    tabindex="-1"
+    [attr.aria-label]="title()"
+  >
     <header class="modal__header">
       <h2 class="modal__title">{{ title() }}</h2>
       <button type="button" class="icon-btn" aria-label="Close dialog" (click)="closed.emit()">

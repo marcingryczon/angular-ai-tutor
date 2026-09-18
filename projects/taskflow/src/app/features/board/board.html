@@ -77,19 +77,22 @@
       </select>
     </div>
 
-    <span class="board__count">{{ taskStore.taskCount() }} task(s)</span>
+    <span class="board__count" role="status" aria-live="polite">
+      {{ taskStore.taskCount() }} task(s)
+    </span>
   </div>
 
   @if (notice(); as notice) {
-    <p class="board__notice" role="status">{{ notice }}</p>
+    <p class="board__notice" role="status" aria-live="polite">{{ notice }}</p>
   }
 
-  <div class="board__columns">
+  <div class="board__columns" role="group" aria-label="Board columns">
     @for (column of columns(); track column.id) {
       <app-column
         [column]="column"
         [tasks]="tasksOf(column)"
         [users]="users()"
+        [columns]="columns()"
         [selectedTaskId]="selectedTaskId()"
         (quickAdd)="onQuickAdd(column, $event)"
         (selectTask)="onSelect($event)"

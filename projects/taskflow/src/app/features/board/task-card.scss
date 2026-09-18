@@ -42,6 +42,39 @@
     transition: opacity 0.15s ease;
   }
 
+  &__menu {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    margin: 0;
+    padding: 4px;
+    list-style: none;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    box-shadow: var(--shadow);
+  }
+
+  &__menu-item {
+    width: 100%;
+    padding: 6px 8px;
+    border: 0;
+    border-radius: 6px;
+    background: transparent;
+    text-align: left;
+    font-size: 0.85rem;
+    cursor: pointer;
+
+    &:hover:not(:disabled) {
+      background: var(--surface-3);
+    }
+
+    &:disabled {
+      color: var(--text-subtle);
+      cursor: default;
+    }
+  }
+
   &__title {
     margin: 0;
     font-size: 0.95rem;
@@ -96,5 +129,31 @@
     font-size: 0.72rem;
     font-weight: 700;
     box-shadow: var(--shadow-sm);
+  }
+}
+
+.task-card--enter {
+  animation: task-card-in 180ms ease-out;
+}
+
+.task-card--leave {
+  animation: task-card-in 140ms ease-in reverse;
+}
+
+@keyframes task-card-in {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .task-card--enter,
+  .task-card--leave {
+    animation: none;
   }
 }

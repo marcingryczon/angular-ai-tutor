@@ -39,3 +39,49 @@
     padding: 16px 20px 20px;
   }
 }
+
+/* --- enter / leave animations (disabled under reduced motion) --- */
+.modal__backdrop--enter {
+  animation: modal-fade 160ms ease-out;
+}
+
+.modal__backdrop--leave {
+  animation: modal-fade 140ms ease-in reverse;
+}
+
+.modal__panel--enter {
+  animation: modal-rise 180ms cubic-bezier(0.2, 0.8, 0.3, 1);
+}
+
+.modal__panel--leave {
+  animation: modal-rise 140ms ease-in reverse;
+}
+
+@keyframes modal-fade {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes modal-rise {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .modal__backdrop--enter,
+  .modal__backdrop--leave,
+  .modal__panel--enter,
+  .modal__panel--leave {
+    animation: none;
+  }
+}

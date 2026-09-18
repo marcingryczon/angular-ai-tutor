@@ -19,6 +19,8 @@ export class Column {
   readonly tasks = input.required<readonly Task[]>();
   readonly users = input<readonly User[]>([]);
   readonly selectedTaskId = input<string | undefined>(undefined);
+  /** All columns of the board — offered by each card's keyboard move menu. */
+  readonly columns = input<readonly ColumnModel[]>([]);
 
   readonly quickAdd = output<string>();
   readonly selectTask = output<Task>();
