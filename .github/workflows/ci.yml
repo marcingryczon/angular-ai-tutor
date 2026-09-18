@@ -18,8 +18,10 @@ jobs:
 
       - run: npm ci
 
+      # Only the code is format-checked; the curriculum markdown under
+      # agent-skills/ and course/ is authored by hand and left as-is.
       - name: Format check
-        run: npx prettier --check .
+        run: npx prettier --check "projects/**/*.{ts,html,scss,json}" "src/**/*.{ts,html,scss}" angular.json package.json
 
       - name: Unit tests (TaskFlow, with coverage thresholds)
         run: npm run test:taskflow -- --no-watch
