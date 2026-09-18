@@ -83,12 +83,11 @@ start (clean baseline + curriculum docs)
 3. Run the development server and visually check the application
 4. Use official Angular tools, linters, and formatters where available
 5. Keep the course language consistent — phase files and skills use ONE language (EN). **Lesson files (`lessons/`) may be written in Polish (PL)** — the learner's language.
-6. Use the angular-cli MCP server as much as you can.
-7. Do not run npm commands by yourself without ask. THIS IS VERY IMPORTANT!
-8. **Tests start at Lesson 3.6**, not at Phase 11. Before 3.6 do not write or run tests (there is nothing testable yet and it would drown the first lessons); `angular.json` ships `skipTests: true` and lesson 3.6 removes it. From 3.6 on, every new service, pipe, directive or pure function ships with its spec **in the same commit**. Components, guards and resolvers wait for Phase 11, which owns the thresholds and the backfill.
-9. **Signals timeline:** before Phase 4 do not create state with `signal()` / `computed()` / `effect()` — use plain class properties. The signal-based component APIs (`input()`, `output()`, `model()`, `viewChild()`) are used from Phase 1–2 on because they are the standard Angular 22 component API.
-10. **Zoneless:** this workspace has no `zone.js`. Never add it or `provideZoneChangeDetection()` to TaskFlow; teach change detection as signal-driven (Phase 0.3, Phase 8).
-11. **Verify facts against `agent-skills/angular-skills/references/`** before teaching an API. If a phase file and a reference file disagree, the reference file wins — and the phase file must be fixed.
+6. Do not run npm commands by yourself without ask. THIS IS VERY IMPORTANT!
+7. **Tests start at Lesson 3.6**, not at Phase 11. Before 3.6 do not write or run tests (there is nothing testable yet and it would drown the first lessons); `angular.json` ships `skipTests: true` and lesson 3.6 removes it. From 3.6 on, every new service, pipe, directive or pure function ships with its spec **in the same commit**. Components, guards and resolvers wait for Phase 11, which owns the thresholds and the backfill.
+8. **Signals timeline:** before Phase 4 do not create state with `signal()` / `computed()` / `effect()` — use plain class properties. The signal-based component APIs (`input()`, `output()`, `model()`, `viewChild()`) are used from Phase 1–2 on because they are the standard Angular 22 component API.
+9. **Zoneless:** this workspace has no `zone.js`. Never add it or `provideZoneChangeDetection()` to TaskFlow; teach change detection as signal-driven (Phase 0.3, Phase 8).
+10. **Verify facts against `agent-skills/angular-skills/references/`** before teaching an API. If a phase file and a reference file disagree, the reference file wins — and the phase file must be fixed.
 
 ---
 
