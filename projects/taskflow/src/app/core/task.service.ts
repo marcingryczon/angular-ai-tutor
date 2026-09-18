@@ -1,69 +1,56 @@
-import { computed, inject, Injectable } from '@angular/core';
-import { BoardService } from './board.service';
+import { Injectable } from '@angular/core';
+import { Subject } from 'rxjs';
+import { TaskFlowData, today } from './db';
 import { newId } from './helpers';
-import { Priority, Task } from './models';
+import { Task } from './models';
 
-/** Data access for tasks; every mutation goes through here. */
+export interface TaskEvent {
+  readonly type: 'created' | 'moved' | 'deleted';
+  readonly task: Task;
+}
+
+export type NewTask = Omit<Task, 'id' | 'createdAt' | 'updatedAt'>;
+
+/** Thin data-access layer for tasks + an event bus consumed by the UI. */
 @Injectable({ providedIn: 'root' })
 export class TaskService {
-  private readonly boards = inject(BoardService);
+  private readonly events$$ = new Subject<TaskEvent>();
 
-  readonly tasks = computed(() => this.boards.snapshot().tasks);
+  /** Multicast stream of what happened to tasks (create / move / delete). */
+  readonly events$ = this.events$$.asObservable();
 
-  tasksOfBoard(boardId: string): readonly Task[] {
-    return this.tasks().filter((task) => task.boardId === boardId);
+  create(data: TaskFlowData, input: NewTask): TaskFlowData {
+    const stamp = today();
+    const task: Task = { ...input, id: newId('task'), createdAt: stamp, updatedAt: stamp };
+    this.events$$.next({ type: 'created', task });
+    return { ...data, tasks: [...data.tasks, task] };
   }
 
-  add(boardId: string, columnId: string, title: string, priority: Priority = 'medium'): Task {
-    const stamp = this.stamp();
-    const task: Task = {
-      id: newId('task'),
-      boardId,
-      columnId,
-      title,
-      description: '',
-      priority,
-      dueDate: '',
-      createdAt: stamp,
-      updatedAt: stamp,
-    };
-    this.boards.update((data) => ({ ...data, tasks: [...data.tasks, task] }));
-    return task;
-  }
-
-  create(task: Omit<Task, 'id' | 'createdAt' | 'updatedAt'>): Task {
-    const stamp = this.stamp();
-    const created: Task = { ...task, id: newId('task'), createdAt: stamp, updatedAt: stamp };
-    this.boards.update((data) => ({ ...data, tasks: [...data.tasks, created] }));
-    return created;
-  }
-
-  update(task: Task): void {
-    this.boards.update((data) => ({
+  update(data: TaskFlowData, task: Task): TaskFlowData {
+    return {
       ...data,
       tasks: data.tasks.map((item) =>
-        item.id === task.id ? { ...task, updatedAt: this.stamp() } : item,
+        item.id === task.id ? { ...task, updatedAt: today() } : item,
       ),
-    }));
+    };
   }
 
-  remove(taskId: string): void {
-    this.boards.update((data) => ({
-      ...data,
-      tasks: data.tasks.filter((task) => task.id !== taskId),
-    }));
+  remove(data: TaskFlowData, taskId: string): TaskFlowData {
+    const task = data.tasks.find((item) => item.id === taskId);
+    if (task) {
+      this.events$$.next({ type: 'deleted', task });
+    }
+    return { ...data, tasks: data.tasks.filter((item) => item.id !== taskId) };
   }
 
-  move(taskId: string, columnId: string): void {
-    this.boards.update((data) => ({
-      ...data,
-      tasks: data.tasks.map((task) =>
-        task.id === taskId ? { ...task, columnId, updatedAt: this.stamp() } : task,
-      ),
-    }));
-  }
-
-  private stamp(): string {
-    return new Date().toISOString().slice(0, 10);
+  move(data: TaskFlowData, taskId: string, columnId: string): TaskFlowData {
+    const tasks = data.tasks.map((task) =>
+      task.id === taskId ? { ...task, columnId, updatedAt: today() } : task,
+    );
+    const moved = tasks.find((task) => task.id === taskId);
+    if (moved) {
+      this.events$$.next({ type: 'moved', task: moved });
+    }
+    return { ...data, tasks };
   }
 }

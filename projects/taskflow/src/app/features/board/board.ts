@@ -1,9 +1,11 @@
 import { Component, computed, inject, linkedSignal, signal } from '@angular/core';
-import { BoardService } from '../../core/board.service';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { BoardStore } from '../../core/board.store';
 import { BOARD_CONFIG } from '../../core/config';
 import { Column as ColumnModel, Priority, Task } from '../../core/models';
 import { SessionService } from '../../core/session.service';
 import { TaskService } from '../../core/task.service';
+import { TaskStore } from '../../core/task.store';
 import { Modal } from '../../shared/modal';
 import { Column, TaskMove } from './column';
 
@@ -14,80 +16,66 @@ import { Column, TaskMove } from './column';
   styleUrl: './board.scss',
 })
 export class Board {
-  private readonly boardService = inject(BoardService);
-  private readonly taskService = inject(TaskService);
+  protected readonly boardStore = inject(BoardStore);
+  protected readonly taskStore = inject(TaskStore);
   protected readonly session = inject(SessionService);
   protected readonly config = inject(BOARD_CONFIG);
+  private readonly taskService = inject(TaskService);
 
   /** One hardcoded board until routing arrives in Phase 7. */
   protected readonly boardId = signal('b_marketing');
 
-  protected readonly board = computed(() => this.boardService.boardById(this.boardId()));
-  protected readonly columns = computed(() => this.boardService.columnsOf(this.boardId()));
-  protected readonly users = this.boardService.users;
+  protected readonly board = computed(() => this.boardStore.boardById(this.boardId()));
+  protected readonly columns = computed(() => this.boardStore.columnsOf(this.boardId()));
+  protected readonly users = this.boardStore.users;
 
-  // --- filter bar state (spec §5.2) ---
-  protected readonly search = signal('');
-  protected readonly priorityFilter = signal<Priority | ''>('');
-  protected readonly assigneeFilter = signal<string>('');
+  /** Short-lived toast driven by the task event bus. */
+  protected readonly notice = signal('');
 
-  protected readonly tasks = computed(() => this.taskService.tasksOfBoard(this.boardId()));
-
-  protected readonly filteredTasks = computed(() => {
-    const term = this.search().trim().toLowerCase();
-    const priority = this.priorityFilter();
-    const assignee = this.assigneeFilter();
-
-    return this.tasks().filter((task) => {
-      const matchesText =
-        !term ||
-        task.title.toLowerCase().includes(term) ||
-        task.description.toLowerCase().includes(term);
-      const matchesPriority = !priority || task.priority === priority;
-      const matchesAssignee =
-        !assignee ||
-        (assignee === 'none' ? !task.assigneeId : task.assigneeId === assignee);
-
-      return matchesText && matchesPriority && matchesAssignee;
-    });
-  });
-
-  /** Resets itself whenever the selected task disappears from the filtered list. */
   protected readonly selectedTaskId = linkedSignal<readonly Task[], string | undefined>({
-    source: this.filteredTasks,
+    source: this.taskStore.filteredTasks,
     computation: (tasks, previous) =>
       previous && tasks.some((task) => task.id === previous.value) ? previous.value : undefined,
   });
 
   protected readonly selectedTask = computed(() =>
-    this.filteredTasks().find((task) => task.id === this.selectedTaskId()),
+    this.taskStore.filteredTasks().find((task) => task.id === this.selectedTaskId()),
   );
 
   protected readonly editedTask = signal<Task | undefined>(undefined);
   protected readonly isCreating = signal(false);
 
+  constructor() {
+    this.taskStore.selectBoard(this.boardId());
+
+    this.taskService.events$.pipe(takeUntilDestroyed()).subscribe((event) => {
+      this.notice.set(`Task ${event.type}`);
+      setTimeout(() => this.notice.set(''), 2000);
+    });
+  }
+
   protected tasksOf(column: ColumnModel): readonly Task[] {
-    return this.filteredTasks().filter((task) => task.columnId === column.id);
+    return this.taskStore.tasksOfColumn(column.id);
   }
 
   protected onSearch(value: string): void {
-    this.search.set(value);
+    this.taskStore.searchInput.set(value);
   }
 
   protected onPriorityFilter(value: string): void {
-    this.priorityFilter.set(value as Priority | '');
+    this.taskStore.priorityFilter.set(value as Priority | '');
   }
 
   protected onAssigneeFilter(value: string): void {
-    this.assigneeFilter.set(value);
+    this.taskStore.assigneeFilter.set(value);
   }
 
   protected onQuickAdd(column: ColumnModel, title: string): void {
-    this.taskService.add(this.boardId(), column.id, title);
+    this.taskStore.quickAdd(column.id, title);
   }
 
   protected onRemove(task: Task): void {
-    this.taskService.remove(task.id);
+    this.taskStore.remove(task.id);
   }
 
   protected onEdit(task: Task): void {
@@ -99,11 +87,11 @@ export class Board {
   }
 
   protected onMove({ taskId, columnId }: TaskMove): void {
-    this.taskService.move(taskId, columnId);
+    this.taskStore.move(taskId, columnId);
   }
 
   protected resetDemoData(): void {
-    this.boardService.reset();
+    this.boardStore.reset();
   }
 
   protected closeModal(): void {

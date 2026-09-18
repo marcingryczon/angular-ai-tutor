@@ -1,3 +1,7 @@
+@if (boardStore.isLoading()) {
+  <p class="board__loading">Loading demo data…</p>
+}
+
 <section class="board">
   <header class="board__header">
     <div class="board__heading">
@@ -37,7 +41,7 @@
         class="field__input"
         type="search"
         placeholder="Filter by text…"
-        [value]="search()"
+        [value]="taskStore.searchInput()"
         (input)="onSearch($any($event.target).value)"
       />
     </div>
@@ -47,7 +51,7 @@
       <select
         id="board-priority"
         class="field__input"
-        [value]="priorityFilter()"
+        [value]="taskStore.priorityFilter()"
         (change)="onPriorityFilter($any($event.target).value)"
       >
         <option value="">All</option>
@@ -62,7 +66,7 @@
       <select
         id="board-assignee"
         class="field__input"
-        [value]="assigneeFilter()"
+        [value]="taskStore.assigneeFilter()"
         (change)="onAssigneeFilter($any($event.target).value)"
       >
         <option value="">All</option>
@@ -73,8 +77,12 @@
       </select>
     </div>
 
-    <span class="board__count">{{ filteredTasks().length }} task(s)</span>
+    <span class="board__count">{{ taskStore.taskCount() }} task(s)</span>
   </div>
+
+  @if (notice(); as notice) {
+    <p class="board__notice" role="status">{{ notice }}</p>
+  }
 
   <div class="board__columns">
     @for (column of columns(); track column.id) {

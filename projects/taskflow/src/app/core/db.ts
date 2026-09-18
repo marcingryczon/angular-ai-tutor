@@ -2,7 +2,7 @@ import { inject, Injectable, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { BOARD_CONFIG } from './config';
 import { newId } from './helpers';
-import { Board, Column, Task, User } from './models';
+import { Board, Column, Priority, Task, TaskStatus, User, Visibility } from './models';
 
 export interface TaskFlowData {
   readonly users: readonly User[];
@@ -11,13 +11,33 @@ export interface TaskFlowData {
   readonly tasks: readonly Task[];
 }
 
+/** Shape of `public/seed.json`. Due dates are offsets so the demo always looks current. */
+export interface SeedFile {
+  readonly users: readonly User[];
+  readonly boards: readonly {
+    readonly id: string;
+    readonly title: string;
+    readonly description: string;
+    readonly visibility: Visibility;
+    readonly ownerId: string;
+  }[];
+  readonly taskTemplates: readonly {
+    readonly title: string;
+    readonly description: string;
+    readonly status: TaskStatus;
+    readonly priority: Priority;
+    readonly assigneeId?: string;
+    readonly dueInDays?: number;
+  }[];
+}
+
 const STORAGE_KEY = 'taskflow.db.v1';
 
-function today(): string {
+export function today(): string {
   return new Date().toISOString().slice(0, 10);
 }
 
-function inDays(days: number): string {
+export function inDays(days: number): string {
   const date = new Date();
   date.setDate(date.getDate() + days);
   return date.toISOString().slice(0, 10);
@@ -25,31 +45,24 @@ function inDays(days: number): string {
 
 /**
  * The only place that touches browser storage.
- * Outside the browser (SSR) every operation is a no-op, which keeps the
- * rest of the app platform-agnostic.
+ * Outside the browser (SSR) reads return `undefined` and writes are no-ops,
+ * which keeps the rest of the app platform-agnostic.
  */
 @Injectable({ providedIn: 'root' })
 export class TaskFlowDb {
   private readonly config = inject(BOARD_CONFIG);
   private readonly isBrowser = isPlatformBrowser(inject(PLATFORM_ID));
 
-  /** Reads persisted data; falls back to freshly seeded data. */
-  load(): TaskFlowData {
+  /** Persisted dataset, or `undefined` on first run / outside the browser. */
+  load(): TaskFlowData | undefined {
     if (!this.isBrowser) {
-      return this.seed();
+      return undefined;
     }
-
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
-      if (!raw) {
-        const seeded = this.seed();
-        this.save(seeded);
-        return seeded;
-      }
-      return JSON.parse(raw) as TaskFlowData;
+      return raw ? (JSON.parse(raw) as TaskFlowData) : undefined;
     } catch {
-      // Corrupted or unavailable storage must never break the app.
-      return this.seed();
+      return undefined;
     }
   }
 
@@ -60,127 +73,64 @@ export class TaskFlowDb {
     try {
       localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
     } catch {
-      // Quota or private-mode errors are ignored on purpose.
+      // Quota or private-mode errors must never break the app.
     }
   }
 
   clear(): void {
-    if (!this.isBrowser) {
-      return;
+    if (this.isBrowser) {
+      localStorage.removeItem(STORAGE_KEY);
     }
-    localStorage.removeItem(STORAGE_KEY);
   }
 
-  /** Builds the demo dataset from spec §7.3. */
-  seed(): TaskFlowData {
-    const users: User[] = [
-      { id: 'u_marci', name: 'Marcin', email: 'marcin@taskflow.dev', role: 'admin' },
-      { id: 'u_anna', name: 'Anna', email: 'anna@taskflow.dev', role: 'member' },
-    ];
-
+  /** Expands `seed.json` into the full dataset (spec §7.3). */
+  seed(file: SeedFile): TaskFlowData {
     const boards: Board[] = [];
     const columns: Column[] = [];
     const tasks: Task[] = [];
+    const stamp = today();
 
-    const definitions = [
-      {
-        id: 'b_marketing',
-        title: 'Marketing Sprint',
-        description: 'Q3 launch tasks for the marketing team.',
-        visibility: 'team' as const,
-      },
-      {
-        id: 'b_bugs',
-        title: 'Bug Tracker',
-        description: 'Incoming defects and regressions.',
-        visibility: 'public' as const,
-      },
-    ];
-
-    for (const definition of definitions) {
-      const boardColumns = this.config.columns.map((column, index) => ({
-        id: `${definition.id}_${column.status}`,
-        boardId: definition.id,
-        title: column.title,
-        status: column.status,
-        order: index,
-      }));
+    for (const definition of file.boards) {
+      const boardColumns = this.columnsFor(definition.id);
       columns.push(...boardColumns);
 
       boards.push({
-        id: definition.id,
-        title: definition.title,
-        description: definition.description,
-        visibility: definition.visibility,
-        ownerId: 'u_marci',
+        ...definition,
         columnIds: boardColumns.map((column) => column.id),
-        createdAt: today(),
+        createdAt: stamp,
       });
 
-      tasks.push(
-        ...this.seedTasks(definition.id).map((task) => ({
-          ...task,
-          columnId: `${definition.id}_${task.columnId}`,
-        })),
-      );
+      for (const template of file.taskTemplates) {
+        const column = boardColumns.find((item) => item.status === template.status);
+        if (!column) {
+          continue;
+        }
+        tasks.push({
+          id: newId('task'),
+          boardId: definition.id,
+          columnId: column.id,
+          title: template.title,
+          description: template.description,
+          priority: template.priority,
+          dueDate: template.dueInDays === undefined ? '' : inDays(template.dueInDays),
+          assigneeId: template.assigneeId,
+          createdAt: stamp,
+          updatedAt: stamp,
+        });
+      }
     }
 
-    return { users, boards, columns, tasks };
+    return { users: file.users, boards, columns, tasks };
   }
 
-  private seedTasks(boardId: string): Task[] {
-    const stamp = today();
-    const base = { boardId, createdAt: stamp, updatedAt: stamp };
-
-    return [
-      {
-        ...base,
-        id: newId('task'),
-        columnId: 'todo',
-        title: 'Draft launch campaign',
-        description: 'Write the announcement copy and gather assets.',
-        priority: 'medium',
-        dueDate: '',
-        assigneeId: 'u_anna',
-      },
-      {
-        ...base,
-        id: newId('task'),
-        columnId: 'todo',
-        title: 'Design hero banner',
-        description: 'Create responsive banner for the landing page.',
-        priority: 'low',
-        dueDate: inDays(5),
-      },
-      {
-        ...base,
-        id: newId('task'),
-        columnId: 'in-progress',
-        title: 'Ship onboarding email',
-        description: 'Compose the 3-step welcome email sequence.',
-        priority: 'high',
-        dueDate: inDays(2),
-        assigneeId: 'u_marci',
-      },
-      {
-        ...base,
-        id: newId('task'),
-        columnId: 'review',
-        title: 'Review Q3 metrics',
-        description: 'Summarise funnel conversion for the exec review.',
-        priority: 'urgent',
-        dueDate: '',
-        assigneeId: 'u_anna',
-      },
-      {
-        ...base,
-        id: newId('task'),
-        columnId: 'done',
-        title: 'Update pricing page',
-        description: 'Reflect the new tiered pricing.',
-        priority: 'medium',
-        dueDate: '',
-      },
-    ];
+  /** Default columns for a board, taken from `BOARD_CONFIG`. */
+  columnsFor(boardId: string): Column[] {
+    return this.config.columns.map((column, index) => ({
+      id: `${boardId}_${column.status}`,
+      boardId,
+      title: column.title,
+      status: column.status,
+      order: index,
+    }));
   }
 }

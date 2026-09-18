@@ -1,0 +1,59 @@
+{
+  "users": [
+    { "id": "u_marci", "name": "Marcin", "email": "marcin@taskflow.dev", "role": "admin" },
+    { "id": "u_anna", "name": "Anna", "email": "anna@taskflow.dev", "role": "member" }
+  ],
+  "boards": [
+    {
+      "id": "b_marketing",
+      "title": "Marketing Sprint",
+      "description": "Q3 launch tasks for the marketing team.",
+      "visibility": "team",
+      "ownerId": "u_marci"
+    },
+    {
+      "id": "b_bugs",
+      "title": "Bug Tracker",
+      "description": "Incoming defects and regressions.",
+      "visibility": "public",
+      "ownerId": "u_marci"
+    }
+  ],
+  "taskTemplates": [
+    {
+      "title": "Draft launch campaign",
+      "description": "Write the announcement copy and gather assets.",
+      "status": "todo",
+      "priority": "medium",
+      "assigneeId": "u_anna"
+    },
+    {
+      "title": "Design hero banner",
+      "description": "Create responsive banner for the landing page.",
+      "status": "todo",
+      "priority": "low",
+      "dueInDays": 5
+    },
+    {
+      "title": "Ship onboarding email",
+      "description": "Compose the 3-step welcome email sequence.",
+      "status": "in-progress",
+      "priority": "high",
+      "assigneeId": "u_marci",
+      "dueInDays": 2
+    },
+    {
+      "title": "Review Q3 metrics",
+      "description": "Summarise funnel conversion for the exec review.",
+      "status": "review",
+      "priority": "urgent",
+      "assigneeId": "u_anna"
+    },
+    {
+      "title": "Update pricing page",
+      "description": "Reflect the new tiered pricing.",
+      "status": "done",
+      "priority": "medium"
+    }
+  ]
+}
