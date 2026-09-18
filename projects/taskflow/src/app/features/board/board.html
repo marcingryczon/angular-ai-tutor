@@ -103,12 +103,42 @@
 
 @if (isCreating() || editedTask()) {
   <app-modal [title]="editedTask() ? 'Edit task' : 'New task'" (closed)="closeModal()">
-    <p class="board__modal-placeholder">The task form arrives in Phase 6 (Signal Forms).</p>
+    <app-task-form
+      [task]="editedTask()"
+      [users]="users()"
+      [priorities]="config.priorities"
+      [existingTitles]="existingTitles()"
+      (save)="onSave($event)"
+      (cancel)="closeModal()"
+    />
   </app-modal>
 }
 
 @if (selectedTask(); as task) {
   <app-modal title="Task details" (closed)="closeModal()">
-    <p class="board__modal-placeholder">{{ task.title }}</p>
+    <div class="task-detail">
+      <h3 class="task-detail__title">{{ task.title }}</h3>
+      <span class="badge badge--{{ task.priority }}">{{ task.priority }}</span>
+
+      @if (task.description) {
+        <p class="task-detail__desc">{{ task.description }}</p>
+      }
+
+      <dl class="task-detail__meta">
+        <div class="task-detail__row">
+          <dt>Due</dt>
+          <dd>{{ task.dueDate || 'no due date' }}</dd>
+        </div>
+        <div class="task-detail__row">
+          <dt>Assignee</dt>
+          <dd>{{ assigneeName(task) }}</dd>
+        </div>
+      </dl>
+
+      <div class="task-detail__actions">
+        <button type="button" class="btn btn--primary" (click)="editSelected()">Edit</button>
+        <button type="button" class="btn btn--danger" (click)="removeSelected()">Delete</button>
+      </div>
+    </div>
   </app-modal>
 }

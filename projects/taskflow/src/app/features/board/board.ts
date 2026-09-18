@@ -8,10 +8,11 @@ import { TaskService } from '../../core/task.service';
 import { TaskStore } from '../../core/task.store';
 import { Modal } from '../../shared/modal';
 import { Column, TaskMove } from './column';
+import { TaskForm, TaskFormValue } from './task-form';
 
 @Component({
   selector: 'app-board',
-  imports: [Column, Modal],
+  imports: [Column, Modal, TaskForm],
   templateUrl: './board.html',
   styleUrl: './board.scss',
 })
@@ -44,6 +45,14 @@ export class Board {
 
   protected readonly editedTask = signal<Task | undefined>(undefined);
   protected readonly isCreating = signal(false);
+
+  /** Titles already on this board, minus the task being edited. */
+  protected readonly existingTitles = computed(() =>
+    this.taskStore
+      .tasks()
+      .filter((task) => task.id !== this.editedTask()?.id)
+      .map((task) => task.title),
+  );
 
   constructor() {
     this.taskStore.selectBoard(this.boardId());
@@ -92,6 +101,51 @@ export class Board {
 
   protected resetDemoData(): void {
     this.boardStore.reset();
+  }
+
+  protected onSave(value: TaskFormValue): void {
+    const edited = this.editedTask();
+    if (edited) {
+      this.taskStore.update({
+        ...edited,
+        title: value.title.trim(),
+        description: value.description.trim(),
+        priority: value.priority,
+        dueDate: value.dueDate,
+        assigneeId: value.assigneeId || undefined,
+      });
+    } else {
+      this.taskStore.create({
+        boardId: this.boardId(),
+        columnId: this.columns()[0]?.id ?? '',
+        title: value.title.trim(),
+        description: value.description.trim(),
+        priority: value.priority,
+        dueDate: value.dueDate,
+        assigneeId: value.assigneeId || undefined,
+      });
+    }
+    this.closeModal();
+  }
+
+  protected editSelected(): void {
+    const task = this.selectedTask();
+    if (task) {
+      this.selectedTaskId.set(undefined);
+      this.editedTask.set(task);
+    }
+  }
+
+  protected removeSelected(): void {
+    const task = this.selectedTask();
+    if (task) {
+      this.taskStore.remove(task.id);
+      this.selectedTaskId.set(undefined);
+    }
+  }
+
+  protected assigneeName(task: Task): string {
+    return this.boardStore.userById(task.assigneeId)?.name ?? 'Unassigned';
   }
 
   protected closeModal(): void {

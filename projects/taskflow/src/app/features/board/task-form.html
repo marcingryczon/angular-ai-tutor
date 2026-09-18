@@ -1,0 +1,52 @@
+<form class="task-form" (submit)="onSubmit($event)">
+  <div class="field">
+    <label class="field__label" for="task-title">Title</label>
+    <input id="task-title" class="field__input" [formField]="taskForm.title" />
+    @if (taskForm.title().touched() && taskForm.title().errors().length) {
+      <span class="field__error">{{ taskForm.title().errors()[0].message }}</span>
+    }
+  </div>
+
+  <div class="field">
+    <label class="field__label" for="task-description">Description</label>
+    <textarea
+      id="task-description"
+      class="field__input"
+      rows="3"
+      [formField]="taskForm.description"
+    ></textarea>
+  </div>
+
+  <div class="task-form__row">
+    <div class="field">
+      <label class="field__label" for="task-priority">Priority</label>
+      <select id="task-priority" class="field__input" [formField]="taskForm.priority">
+        @for (priority of priorities(); track priority) {
+          <option [value]="priority">{{ priority }}</option>
+        }
+      </select>
+    </div>
+
+    <div class="field">
+      <label class="field__label" for="task-due">Due date</label>
+      <input id="task-due" type="date" class="field__input" [formField]="taskForm.dueDate" />
+    </div>
+
+    <div class="field">
+      <label class="field__label" for="task-assignee">Assignee</label>
+      <select id="task-assignee" class="field__input" [formField]="taskForm.assigneeId">
+        <option value="">Unassigned</option>
+        @for (user of users(); track user.id) {
+          <option [value]="user.id">{{ user.name }}</option>
+        }
+      </select>
+    </div>
+  </div>
+
+  <div class="task-form__actions">
+    <button type="submit" class="btn btn--primary" [disabled]="taskForm().invalid()">
+      {{ isEdit() ? 'Save changes' : 'Add task' }}
+    </button>
+    <button type="button" class="btn btn--ghost" (click)="cancel.emit()">Cancel</button>
+  </div>
+</form>
