@@ -46,7 +46,11 @@ async function runPhase(phase, context) {
       passed++;
     } catch (error) {
       console.log(`  ${RED}✗${OFF} ${check.name}`);
-      console.log(`      ${RED}${error.message.split('\n')[0]}${OFF}`);
+      // Every line, indented: a check that quotes a failing spec or a build log is useless if
+      // only its first line survives.
+      for (const line of error.message.split('\n')) {
+        console.log(`      ${RED}${line}${OFF}`);
+      }
       failures.push(check.name);
     }
   }

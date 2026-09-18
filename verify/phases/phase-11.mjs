@@ -39,10 +39,25 @@ export default {
         const options = config.projects.taskflow.architect.test.options ?? {};
         truthy(options.coverage, 'coverage is not enabled on the test target');
         const thresholds = options.coverageThresholds ?? {};
-        atLeast(
-          thresholds.lines ?? 0,
-          90,
-          'line coverage threshold (policy: ≥ 90% for business logic)',
+
+        // Every dimension, not just lines: a threshold set on one metric and left at zero on the
+        // rest is a green light that measures nothing.
+        atLeast(thresholds.lines ?? 0, 90, 'line coverage threshold (policy: ≥ 90% for src/)');
+        atLeast(thresholds.statements ?? 0, 90, 'statement coverage threshold (policy: ≥ 90%)');
+        atLeast(thresholds.functions ?? 0, 80, 'function coverage threshold (policy: ≥ 80%)');
+        atLeast(thresholds.branches ?? 0, 80, 'branch coverage threshold (policy: ≥ 80%)');
+      },
+    },
+    {
+      name: 'the suite passes at those thresholds',
+      run: async () => {
+        // The milestone is a measurement, not a setting. Coverage is enforced by the builder, so
+        // a run that exits non-zero means either a red spec or coverage below the thresholds.
+        const { runSuite, tail } = await import('../lib/tests.mjs');
+        const suite = await runSuite({ coverage: true });
+        truthy(
+          suite.ok,
+          `the suite failed, or coverage is under the thresholds:\n${tail(suite.output, 16)}`,
         );
       },
     },

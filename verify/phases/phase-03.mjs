@@ -63,8 +63,12 @@ export default {
       name: 'the first service specs exist and the suite is green (lesson 3.6)',
       run: async () => {
         const { walk } = await import('../lib/checks.mjs');
+        const { runSuite, tail } = await import('../lib/tests.mjs');
         const specs = walk(APP, (file) => file.endsWith('.spec.ts'));
         atLeast(specs.length, 2, 'spec files under projects/taskflow/src/app');
+
+        const suite = await runSuite();
+        truthy(suite.ok, `the unit suite does not pass:\n${tail(suite.output)}`);
       },
     },
     {
