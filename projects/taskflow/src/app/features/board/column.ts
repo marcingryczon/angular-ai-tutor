@@ -56,6 +56,13 @@ export class Column {
     }
     this.quickAdd.emit(title);
     this.draft.set('');
+    // The signal is the source of truth, but the DOM value is reset directly:
+    // typing and submitting can land in the same change-detection cycle, and
+    // then the [value] binding sees no net change to write back.
+    const input = this.quickAddInput()?.nativeElement;
+    if (input) {
+      input.value = '';
+    }
   }
 
   protected onDragOver(event: DragEvent): void {

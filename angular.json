@@ -11,24 +11,13 @@
       "schematics": {
         "@schematics/angular:component": {
           "style": "scss",
-          "skipTests": true,
           "changeDetection": "OnPush"
         },
-        "@schematics/angular:directive": {
-          "skipTests": true
-        },
-        "@schematics/angular:pipe": {
-          "skipTests": true
-        },
-        "@schematics/angular:service": {
-          "skipTests": true
-        },
-        "@schematics/angular:guard": {
-          "skipTests": true
-        },
-        "@schematics/angular:resolver": {
-          "skipTests": true
-        }
+        "@schematics/angular:directive": {},
+        "@schematics/angular:pipe": {},
+        "@schematics/angular:service": {},
+        "@schematics/angular:guard": {},
+        "@schematics/angular:resolver": {}
       },
       "root": "",
       "sourceRoot": "src",
@@ -96,30 +85,15 @@
       "schematics": {
         "@schematics/angular:component": {
           "style": "scss",
-          "skipTests": true,
           "changeDetection": "OnPush"
         },
-        "@schematics/angular:class": {
-          "skipTests": true
-        },
-        "@schematics/angular:directive": {
-          "skipTests": true
-        },
-        "@schematics/angular:guard": {
-          "skipTests": true
-        },
-        "@schematics/angular:interceptor": {
-          "skipTests": true
-        },
-        "@schematics/angular:pipe": {
-          "skipTests": true
-        },
-        "@schematics/angular:resolver": {
-          "skipTests": true
-        },
-        "@schematics/angular:service": {
-          "skipTests": true
-        }
+        "@schematics/angular:class": {},
+        "@schematics/angular:directive": {},
+        "@schematics/angular:guard": {},
+        "@schematics/angular:interceptor": {},
+        "@schematics/angular:pipe": {},
+        "@schematics/angular:resolver": {},
+        "@schematics/angular:service": {}
       },
       "root": "projects/taskflow",
       "sourceRoot": "projects/taskflow/src",
@@ -186,6 +160,29 @@
             }
           },
           "defaultConfiguration": "development"
+        },
+        "test": {
+          "builder": "@angular/build:unit-test",
+          "options": {
+            "tsConfig": "projects/taskflow/tsconfig.spec.json",
+            "buildTarget": "taskflow:build:development",
+            "runner": "vitest",
+            "coverage": true,
+            "coverageInclude": [
+              "projects/taskflow/src/app/**/*.ts"
+            ],
+            "coverageExclude": [
+              "projects/taskflow/src/app/**/*.spec.ts",
+              "projects/taskflow/src/app/app.config*.ts",
+              "projects/taskflow/src/app/app.routes*.ts"
+            ],
+            "coverageThresholds": {
+              "statements": 90,
+              "lines": 90,
+              "functions": 85,
+              "branches": 80
+            }
+          }
         }
       }
     }
