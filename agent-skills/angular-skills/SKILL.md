@@ -11,7 +11,7 @@ Before answering any Angular-specific question, **load the relevant reference fi
 
 > **Source priority:** Official Skills (these files) take precedence over internal model
 > knowledge. When a conflict arises, the official source wins. Extend — never duplicate —
-> the official documentation with senior engineering experience (see `.clinerules/rules.md`).
+> the official documentation with senior engineering experience (see `agent-skills/persona.md`).
 
 ---
 

@@ -55,7 +55,7 @@ Detailed lesson plans are split across phase files. Each phase builds on all pre
 | **13** | ⬜ | Architecture & Production | [`course/phase-13-architecture.md`](course/phase-13-architecture.md) |
 | **14** | ⬜ | Global State Management with NgRx | [`course/phase-14-ngrx.md`](course/phase-14-ngrx.md) |
 
-> The full phase index is maintained as the **single source of truth** in `.clinerules/course.md`. The table above is a convenience mirror.
+> The full phase index is maintained as the **single source of truth** in `agent-skills/course.md`. The table above is a convenience mirror.
 
 ---
 
@@ -160,14 +160,22 @@ The two projects share dependencies but are otherwise fully independent. Changes
 
 ```
 angular-ai-tutor/
-├── .clinerules/                 # AI tutor configuration
+├── agent-skills/                 # Shared tutor knowledge (used by Claude, Cline, Copilot)
+│   ├── angular-skills/
+│   │   ├── SKILL.md              # Skills index & per-phase mapping
+│   │   └── references/           # 37 authoritative Angular topic files
+│   ├── persona.md                # Tutor persona & coding standards (single source of truth)
+│   ├── course.md                 # Curriculum master roadmap (single source of truth)
+│   └── rules.md                  # Skill selection policy
+├── .clinerules/                 # Cline-specific config (thin pointers into agent-skills/)
 │   ├── agents/
-│   │   └── senior.md            # Senior Angular mentor agent
-│   ├── skills/
-│   │   ├── SKILL.md             # Skills index & per-phase mapping
-│   │   └── references/          # 37 authoritative Angular topic files
-│   ├── course.md                # Curriculum master roadmap (single source of truth)
-│   └── rules.md                 # Skill selection rules
+│   │   └── senior.md            # Pointer → agent-skills/persona.md
+│   ├── course.md                # Pointer → agent-skills/course.md
+│   └── rules.md                 # Pointer → agent-skills/rules.md
+├── .github/                     # Copilot-specific config
+│   ├── agents/
+│   │   └── angular-developer.agent.md  # Pointer → agent-skills/persona.md
+│   └── copilot-instructions.md  # Repository custom instructions
 ├── course/                      # Curriculum phase documentation
 │   ├── phase-TEMPLATE.md        # Reusable phase template
 │   ├── phase-00-fundamentals.md
@@ -200,11 +208,11 @@ angular-ai-tutor/
 
 | Topic | Authoritative location |
 |---|---|
-| Phase index, Git branch strategy, learner environment, test coverage policy, workflow protocol | `.clinerules/course.md` |
-| Skill selection policy | `.clinerules/rules.md` |
-| Tutor persona, coding standards, Angular best practices | `.clinerules/agents/senior.md` |
-| Skills index & per-phase skill mapping | `.clinerules/skills/SKILL.md` |
-| Authoritative Angular topic references | `.clinerules/skills/references/` |
+| Phase index, Git branch strategy, learner environment, test coverage policy, workflow protocol | `agent-skills/course.md` |
+| Skill selection policy | `agent-skills/rules.md` |
+| Tutor persona, coding standards, Angular best practices | `agent-skills/persona.md` |
+| Skills index & per-phase skill mapping | `agent-skills/angular-skills/SKILL.md` |
+| Authoritative Angular topic references | `agent-skills/angular-skills/references/` |
 | Phase lesson plans | `course/phase-NN-<slug>.md` |
 | Phase template | `course/phase-TEMPLATE.md` |
 | Lesson content | `lessons/*.md` |
@@ -226,7 +234,7 @@ After completing **Phase 11 (Testing)**, the following policy takes effect:
    - **Config / boilerplate / entry points:** excluded from measurement
 4. **Enforcement** — Before merging any lesson branch after Phase 11, verify tests pass and coverage meets the thresholds
 
-> The authoritative policy lives in `.clinerules/course.md`.
+> The authoritative policy lives in `agent-skills/course.md`.
 
 ---
 
@@ -263,7 +271,7 @@ npm run build:taskflow
 npm test
 ```
 
-> **Learner environment:** Windows 11, PowerShell 7 (pwsh). All terminal commands must be adapted to this shell (see `.clinerules/course.md`).
+> **Learner environment:** Windows 11, PowerShell 7 (pwsh). All terminal commands must be adapted to this shell (see `agent-skills/course.md`).
 
 ---
 

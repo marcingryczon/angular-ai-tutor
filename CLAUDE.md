@@ -1,0 +1,122 @@
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
+## Project Overview
+
+This is a **progressive Angular curriculum** — an educational project where the learner builds `TaskFlow` (a Kanban app) across 15 phases. Two apps live in one Angular workspace:
+
+- **`angular-ai-tutor`** (`src/`) — Isolated training exercises per lesson
+- **`taskflow`** (`projects/taskflow/`) — The real-world Kanban app built incrementally
+
+## Commands
+
+```bash
+# Dev servers
+npm run start:edu        # Educational app on :4200
+npm run start:taskflow   # TaskFlow app on :4300
+
+# Builds
+npm run build:edu
+npm run build:taskflow
+
+# Tests
+npm test                 # All projects
+npm run test:edu
+npm run test:taskflow
+```
+
+No lint command is configured separately — use `ng lint` if needed via Angular CLI.
+
+## Architecture
+
+### Workspace Structure
+
+```
+src/app/phase-N-<topic>/N.M-<lesson>/   ← training exercises
+projects/taskflow/src/app/               ← real-world app
+course/                                  ← lesson plans (English)
+lessons/                                 ← lesson content (Polish)
+agent-skills/                            ← shared persona, curriculum & Angular references (used by Claude, Cline, Copilot)
+.clinerules/                             ← Cline-specific config (thin pointers, phase pointer)
+.github/                                 ← Copilot-specific config (repo instructions, agent registration)
+```
+
+### Two-Step Learning Pattern
+
+Every lesson follows: **train in isolation** (`src/app/phase-N-*/`) → **apply to TaskFlow** (`projects/taskflow/`). Never skip to TaskFlow without the isolated exercise first.
+
+### Lesson Branch Convention
+
+Branches use dotted lesson numbers: `lesson-1.5-component-styling`. The dot prevents collision (e.g., `1.1` vs `11`).
+
+### Phase Progression
+
+- **Phases 1–3:** No signals — use regular class properties
+- **Phase 4+:** Use Angular signals for reactive state
+- **Phase 5+:** RxJS for complex async patterns
+- **Phase 11+:** Vitest unit tests; before that, skip tests entirely
+
+## Key Conventions
+
+### Component Files — Always Separate
+
+```typescript
+@Component({
+  selector: 'app-foo',
+  templateUrl: './foo.html',  // never inline
+  styleUrl: './foo.scss',     // never inline
+})
+export class Foo { }
+```
+
+### Protected Visibility for Component Internals
+
+```typescript
+export class Counter {
+  protected count = signal(0);   // template-accessible, not public API
+  protected increment() { ... }
+}
+```
+
+### TypeScript — Strict Mode is Non-Negotiable
+
+`strict: true` plus `noImplicitOverride`, `noPropertyAccessFromIndexSignature`, `strictInjectionParameters`. No `any`. Use `readonly` where applicable. Union types for domain models (`'low' | 'medium' | 'high'`).
+
+### Test Policy
+
+- Phases 1–10: **No tests** — skip writing, updating, or running them
+- Phase 11+: Backfill all TaskFlow units; maintain ≥80% line coverage project-wide, ≥90% for `projects/taskflow/src/` business logic
+
+## Single Sources of Truth
+
+| Need | File |
+|---|---|
+| Phase index, branching, test policy | `agent-skills/course.md` |
+| Tutor persona & coding standards | `agent-skills/persona.md` |
+| Angular references (37 topics) | `agent-skills/angular-skills/references/` |
+| TaskFlow visual/domain spec | `course/taskflow-spec.md` — pixel-perfect required |
+| Detailed lesson plans | `course/phase-NN-<slug>.md` |
+| Lesson content (Polish) | `lessons/` |
+
+## TaskFlow Spec
+
+`course/taskflow-spec.md` is the **golden spec** for colors, spacing, typography, layouts, and seed data. All TaskFlow UI implementations must match it exactly. Read it before any TaskFlow visual work.
+
+## Hard Rules for AI Tutoring Mode
+
+These apply when acting as the AI tutor for the learner:
+
+1. **Do NOT create or edit files without asking first**
+2. **Do NOT run npm commands without asking first**
+3. Teach by asking guiding questions — explain Angular internals and trade-offs
+4. Lesson files (`lessons/`) are in **Polish**; course files (`course/`) are in **English**
+5. Learner's shell is **PowerShell 7** on Windows 11 — use `;` or `&&` for chaining, not `&&` only
+
+## Modern Angular Patterns (v22)
+
+- Standalone components only (no NgModules)
+- `inject()` function for DI (not constructor injection)
+- `provideRouter()`, `provideBrowserGlobalErrorListeners()` at app level
+- New control flow syntax: `@if`, `@for`, `@switch` (not `*ngIf`/`*ngFor`)
+- Signals for fine-grained reactivity (Phase 4+)

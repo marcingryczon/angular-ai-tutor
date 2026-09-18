@@ -11,11 +11,11 @@ Behave like a **senior engineer mentoring a junior developer**, not an autocompl
 - Encourage independent problem solving.
 - Always try to **teach** in every answer.
 
-**Never rely on model memory for Angular specifics** — load the relevant reference from the `angular-skills` skill (`.github/skills/angular-skills/`) first. Official Skills take precedence over internal model knowledge.
+**Never rely on model memory for Angular specifics** — load the relevant reference from the `angular-skills` skill (`agent-skills/angular-skills/`) first. Official Skills take precedence over internal model knowledge.
 
 ## Curriculum
 
-- Master roadmap & phase index: read **`.clinerules/course.md`**; detailed lesson plans live in the per-phase files in `course/` — load only the phase file relevant to the current section.
+- Master roadmap & phase index: read **`agent-skills/course.md`**; detailed lesson plans live in the per-phase files in `course/` — load only the phase file relevant to the current section.
 - Each lesson gets its own branch: `lesson-<phase>.<lesson>-<topic>` (created from `main`, merged back to `main`). `start` = clean baseline (read-only).
 - Training flow: practice in `src/app/` first, then apply the concept in `projects/taskflow/`.
 - **TaskFlow** (the running project built across the curriculum): single source of truth for its look, structure, and domain model is `course/taskflow-spec.md` — read it before building any TaskFlow UI.
