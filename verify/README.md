@@ -20,6 +20,10 @@ disagreement with the spec, which is worth a conversation.
 - **Browser checks** start `ng serve taskflow` on port 4399, drive headless Chrome over the DevTools
   protocol, and assert real behaviour: four columns with no horizontal scroll, a debounced search, a
   dialog that traps focus and gives it back, an unknown board id that redirects.
+- **Suite checks** run your own unit tests (`verify/lib/tests.mjs`). From lesson 3.6 the specs have to
+  be green, not merely present; from Phase 11 the run adds `--coverage`, which makes the builder
+  enforce the thresholds in `angular.json` — so a passing run *is* the coverage assertion. The run is
+  cached, so two phases asking for it pay for it once.
 
 No test framework and no npm dependency is involved — Node 24 has everything needed. Chrome is found
 automatically on macOS; elsewhere set `CHROME_PATH`.
@@ -50,4 +54,13 @@ Helpers are in `verify/lib/checks.mjs`.
 }
 ```
 
-Write the failure message for the person who will read it at 23:00, not for yourself today.
+Write the failure message for the person who will read it at 23:00, not for yourself today. Multi-line
+messages are printed in full, so quoting a failing spec or a build log is worth doing.
+
+## Checking the checks
+
+A green suite proves nothing until you have seen it go red. The way to trust a new check is to break
+the thing it guards — remove one `OnPush`, widen a column so four no longer fit, drop a coverage
+threshold — run it, confirm the failure names the right file, and revert. Two of these checks were
+found to be lying that way: one counted spec files while claiming the suite was green, and one asserted
+a single coverage metric while three others sat at zero.
