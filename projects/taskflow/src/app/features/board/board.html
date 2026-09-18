@@ -5,7 +5,7 @@
 <section class="board">
   <header class="board__header">
     <div class="board__heading">
-      <a class="board__back" href="/">
+      <a class="board__back" routerLink="/">
         <span class="material-symbols-rounded material-symbols-rounded--sm">arrow_back</span>
         All boards
       </a>
@@ -29,6 +29,7 @@
         <button type="button" class="btn btn--ghost" (click)="resetDemoData()">
           Reset demo data
         </button>
+        <button type="button" class="btn btn--danger" (click)="deleteBoard()">Delete board</button>
       }
     </div>
   </header>

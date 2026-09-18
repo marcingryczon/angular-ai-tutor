@@ -1,0 +1,23 @@
+:host {
+  display: block;
+}
+
+.board-settings {
+  &__title {
+    margin: 8px 0 6px;
+    font-size: 1.5rem;
+  }
+
+  &__desc {
+    color: var(--text-muted);
+  }
+}
+
+.board__back {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-muted);
+}

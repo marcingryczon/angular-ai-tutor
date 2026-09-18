@@ -1,5 +1,6 @@
-import { Component, computed, inject, linkedSignal, signal } from '@angular/core';
+import { Component, computed, effect, inject, input, linkedSignal, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Router, RouterLink } from '@angular/router';
 import { BoardStore } from '../../core/board.store';
 import { BOARD_CONFIG } from '../../core/config';
 import { Column as ColumnModel, Priority, Task } from '../../core/models';
@@ -12,7 +13,7 @@ import { TaskForm, TaskFormValue } from './task-form';
 
 @Component({
   selector: 'app-board',
-  imports: [Column, Modal, TaskForm],
+  imports: [Column, Modal, TaskForm, RouterLink],
   templateUrl: './board.html',
   styleUrl: './board.scss',
 })
@@ -23,8 +24,10 @@ export class Board {
   protected readonly config = inject(BOARD_CONFIG);
   private readonly taskService = inject(TaskService);
 
-  /** One hardcoded board until routing arrives in Phase 7. */
-  protected readonly boardId = signal('b_marketing');
+  private readonly router = inject(Router);
+
+  /** Bound from the route via `withComponentInputBinding()`. */
+  readonly boardId = input.required<string>();
 
   protected readonly board = computed(() => this.boardStore.boardById(this.boardId()));
   protected readonly columns = computed(() => this.boardStore.columnsOf(this.boardId()));
@@ -55,7 +58,10 @@ export class Board {
   );
 
   constructor() {
-    this.taskStore.selectBoard(this.boardId());
+    effect(() => {
+      this.taskStore.selectBoard(this.boardId());
+      this.taskStore.resetFilters();
+    });
 
     this.taskService.events$.pipe(takeUntilDestroyed()).subscribe((event) => {
       this.notice.set(`Task ${event.type}`);
@@ -101,6 +107,11 @@ export class Board {
 
   protected resetDemoData(): void {
     this.boardStore.reset();
+  }
+
+  protected deleteBoard(): void {
+    this.boardStore.removeBoard(this.boardId());
+    void this.router.navigate(['/']);
   }
 
   protected onSave(value: TaskFormValue): void {

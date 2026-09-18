@@ -1,5 +1,7 @@
 import { computed, effect, inject, Injectable, signal } from '@angular/core';
+import { toObservable } from '@angular/core/rxjs-interop';
 import { httpResource } from '@angular/common/http';
+import { filter, map, take } from 'rxjs';
 import { BoardService, NewBoard } from './board.service';
 import { SeedFile, TaskFlowData, TaskFlowDb } from './db';
 import { findById } from './helpers';
@@ -25,6 +27,13 @@ export class BoardStore {
   private readonly seed = httpResource<SeedFile>(() => (this.hydrated() ? undefined : 'seed.json'));
 
   readonly isLoading = computed(() => !this.hydrated() && this.seed.isLoading());
+
+  /** Emits once the dataset is available — used by the route resolver. */
+  readonly ready$ = toObservable(this.hydrated).pipe(
+    filter(Boolean),
+    take(1),
+    map(() => true),
+  );
   readonly error = computed(() => this.seed.error());
 
   readonly data = this.state.asReadonly();

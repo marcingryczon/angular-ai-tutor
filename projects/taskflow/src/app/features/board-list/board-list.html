@@ -1,0 +1,54 @@
+<section class="board-list">
+  <header class="board-list__header">
+    <h1 class="board-list__title">Your boards</h1>
+    <p class="board-list__subtitle">{{ count() }} board(s) · pick one to open</p>
+  </header>
+
+  @if (store.isLoading()) {
+    <p class="board-list__loading">Loading demo data…</p>
+  }
+
+  <ul class="board-cards">
+    @for (board of boards(); track board.id) {
+      <li class="board-card">
+        <a class="board-card__link" [routerLink]="['/boards', board.id]">
+          <span class="board-card__top">
+            <span class="board-card__title">{{ board.title }}</span>
+            <span class="visibility-{{ board.visibility }}">{{ board.visibility }}</span>
+          </span>
+          <span class="board-card__desc">{{ board.description }}</span>
+          <span class="board-card__meta">{{ taskCount(board.id) }} task(s)</span>
+        </a>
+      </li>
+    } @empty {
+      <li class="board-card board-card--empty">No boards yet. Create your first one below.</li>
+    }
+  </ul>
+
+  <form class="new-board" (submit)="onSubmit($event)">
+    <div class="new-board__row">
+      <div class="field new-board__title">
+        <label class="field__label" for="board-title">Title</label>
+        <input id="board-title" class="field__input" [formField]="boardForm.title" />
+      </div>
+
+      <div class="field new-board__visibility">
+        <label class="field__label" for="board-visibility">Visibility</label>
+        <select id="board-visibility" class="field__input" [formField]="boardForm.visibility">
+          <option value="private">private</option>
+          <option value="team">team</option>
+          <option value="public">public</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="field">
+      <label class="field__label" for="board-description">Description</label>
+      <input id="board-description" class="field__input" [formField]="boardForm.description" />
+    </div>
+
+    <button type="submit" class="btn btn--primary" [disabled]="boardForm().invalid()">
+      Create board
+    </button>
+  </form>
+</section>

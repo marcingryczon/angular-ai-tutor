@@ -1,11 +1,11 @@
 import { Component, inject } from '@angular/core';
+import { RouterLink, RouterOutlet } from '@angular/router';
 import { SessionService } from './core/session.service';
 import { RoleSwitch } from './shared/role-switch';
-import { Board } from './features/board/board';
 
 @Component({
   selector: 'app-root',
-  imports: [Board, RoleSwitch],
+  imports: [RouterOutlet, RouterLink, RoleSwitch],
   templateUrl: './app.html',
   styleUrl: './app.scss',
 })
