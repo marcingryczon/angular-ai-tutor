@@ -1,12 +1,23 @@
-<section class="column">
+<section
+  class="column"
+  [class.column--drop]="isDropTarget"
+  (dragover)="onDragOver($event)"
+  (dragleave)="onDragLeave()"
+  (drop)="onDrop($event)"
+>
   <header class="column__header">
-    <h2 class="column__title">{{ title }}</h2>
-    <span class="column__count">{{ tasks.length }}</span>
+    <h2 class="column__title">{{ column().title }}</h2>
+    <span class="column__count">{{ tasks().length }}</span>
   </header>
 
   <div class="column__cards">
-    @for (task of tasks; track task.id) {
-      <app-task-card />
+    @for (task of tasks(); track task.id) {
+      <app-task-card
+        [task]="task"
+        [assignee]="assigneeOf(task)"
+        (edit)="editTask.emit($event)"
+        (remove)="removeTask.emit($event)"
+      />
     } @empty {
       <div class="column__empty">No tasks</div>
     }
@@ -14,6 +25,13 @@
 
   <div class="column__quick-add">
     <span class="material-symbols-rounded material-symbols-rounded--sm column__quick-add-icon">add</span>
-    <input #quickAdd class="column__quick-add-input" type="text" placeholder="Quick add" />
+    <input
+      #quickAdd
+      class="column__quick-add-input"
+      type="text"
+      placeholder="Quick add"
+      [attr.aria-label]="'Quick add a task to ' + column().title"
+      (keydown.enter)="onQuickAdd(quickAdd)"
+    />
   </div>
 </section>

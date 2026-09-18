@@ -1,27 +1,26 @@
-import { Component } from '@angular/core';
-import { Task } from '../../core/models';
-
-const TODAY = new Date().toISOString().slice(0, 10);
+import { Component, input, output } from '@angular/core';
+import { Task, User } from '../../core/models';
 
 @Component({
   selector: 'app-task-card',
   templateUrl: './task-card.html',
   styleUrl: './task-card.scss',
+  host: {
+    '[attr.draggable]': 'true',
+    '(dragstart)': 'onDragStart($event)',
+  },
 })
 export class TaskCard {
-  // Hardcoded until Phase 2 wires the data through input()
-  protected readonly task: Task = {
-    id: 't1',
-    boardId: 'b1',
-    columnId: 'todo',
-    title: 'Draft launch campaign',
-    description: 'Write the announcement copy and gather assets.',
-    priority: 'medium',
-    dueDate: '',
-    assigneeId: 'u_anna',
-    createdAt: TODAY,
-    updatedAt: TODAY,
-  };
+  readonly task = input.required<Task>();
+  readonly assignee = input<User | undefined>(undefined);
 
-  protected readonly assigneeName = 'Anna';
+  readonly edit = output<Task>();
+  readonly remove = output<Task>();
+
+  protected onDragStart(event: DragEvent): void {
+    event.dataTransfer?.setData('text/plain', this.task().id);
+    if (event.dataTransfer) {
+      event.dataTransfer.effectAllowed = 'move';
+    }
+  }
 }

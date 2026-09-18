@@ -6,13 +6,7 @@
     <span class="topbar__name">TaskFlow</span>
   </a>
 
-  <div class="topbar__role">
-    <span class="topbar__role-label">Role</span>
-    <select class="field__input topbar__role-select">
-      <option value="admin">Admin</option>
-      <option value="member" selected>Member</option>
-    </select>
-  </div>
+  <app-role-switch class="topbar__role" [(role)]="role" />
 </header>
 
 <main class="page">

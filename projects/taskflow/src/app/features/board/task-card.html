@@ -1,28 +1,38 @@
 <article class="task-card">
   <header class="task-card__header">
-    <span class="badge" [class]="'badge badge--' + task.priority">{{ task.priority }}</span>
+    <span class="badge badge--{{ task().priority }}">{{ task().priority }}</span>
     <div class="task-card__actions">
-      <button type="button" class="icon-btn" title="Edit task">
+      <button
+        type="button"
+        class="icon-btn"
+        aria-label="Edit task"
+        (click)="edit.emit(task()); $event.stopPropagation()"
+      >
         <span class="material-symbols-rounded material-symbols-rounded--sm">edit</span>
       </button>
-      <button type="button" class="icon-btn icon-btn--danger" title="Delete task">
+      <button
+        type="button"
+        class="icon-btn icon-btn--danger"
+        aria-label="Delete task"
+        (click)="remove.emit(task()); $event.stopPropagation()"
+      >
         <span class="material-symbols-rounded material-symbols-rounded--sm">delete</span>
       </button>
     </div>
   </header>
 
-  <h3 class="task-card__title">{{ task.title }}</h3>
-  @if (task.description) {
-    <p class="task-card__desc">{{ task.description }}</p>
+  <h3 class="task-card__title">{{ task().title }}</h3>
+  @if (task().description) {
+    <p class="task-card__desc">{{ task().description }}</p>
   }
 
   <footer class="task-card__footer">
     <span class="task-card__due">
       <span class="task-card__dot"></span>
-      {{ task.dueDate || 'no due date' }}
+      {{ task().dueDate || 'no due date' }}
     </span>
-    @if (task.assigneeId) {
-      <span class="task-card__avatar" [title]="assigneeName">{{ assigneeName.charAt(0) }}</span>
+    @if (assignee(); as user) {
+      <span class="task-card__avatar" [title]="user.name">{{ user.name.charAt(0) }}</span>
     }
   </footer>
 </article>

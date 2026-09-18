@@ -6,7 +6,7 @@
         All boards
       </a>
       <h1 class="board__title">
-        {{ title }}
+        {{ boardTitle }}
         <span class="visibility-team">team</span>
       </h1>
       <p class="board__desc">{{ description }}</p>
@@ -14,7 +14,7 @@
     </div>
 
     <div class="board__actions">
-      <button type="button" class="btn btn--primary">
+      <button type="button" class="btn btn--primary" (click)="isCreating = true">
         <span class="material-symbols-rounded material-symbols-rounded--sm">add</span>
         New task
       </button>
@@ -22,9 +22,22 @@
   </header>
 
   <div class="board__columns">
-    <app-column />
-    <app-column />
-    <app-column />
-    <app-column />
+    @for (column of columns; track column.id) {
+      <app-column
+        [column]="column"
+        [tasks]="tasksOf(column)"
+        [users]="users"
+        (quickAdd)="onQuickAdd(column, $event)"
+        (editTask)="onEdit($event)"
+        (removeTask)="onRemove($event)"
+        (taskMoved)="onMove($event)"
+      />
+    }
   </div>
 </section>
+
+@if (isCreating || editedTask) {
+  <app-modal [title]="editedTask ? 'Edit task' : 'New task'" (closed)="closeModal()">
+    <p class="board__modal-placeholder">The task form arrives in Phase 6 (Signal Forms).</p>
+  </app-modal>
+}

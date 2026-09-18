@@ -1,8 +1,11 @@
-import { Component, ElementRef, viewChild } from '@angular/core';
-import { Task } from '../../core/models';
+import { Component, ElementRef, input, output, viewChild } from '@angular/core';
+import { Column as ColumnModel, Task, User } from '../../core/models';
 import { TaskCard } from './task-card';
 
-const TODAY = new Date().toISOString().slice(0, 10);
+export interface TaskMove {
+  readonly taskId: string;
+  readonly columnId: string;
+}
 
 @Component({
   selector: 'app-column',
@@ -11,28 +14,55 @@ const TODAY = new Date().toISOString().slice(0, 10);
   styleUrl: './column.scss',
 })
 export class Column {
-  protected readonly title = 'To Do';
+  readonly column = input.required<ColumnModel>();
+  readonly tasks = input.required<readonly Task[]>();
+  readonly users = input<readonly User[]>([]);
 
-  // Hardcoded until Phase 2 wires the data through input()
-  protected readonly tasks: Task[] = [
-    {
-      id: 't1',
-      boardId: 'b1',
-      columnId: 'todo',
-      title: 'Draft launch campaign',
-      description: 'Write the announcement copy and gather assets.',
-      priority: 'medium',
-      dueDate: '',
-      assigneeId: 'u_anna',
-      createdAt: TODAY,
-      updatedAt: TODAY,
-    },
-  ];
+  readonly quickAdd = output<string>();
+  readonly editTask = output<Task>();
+  readonly removeTask = output<Task>();
+  readonly taskMoved = output<TaskMove>();
+
+  /** `true` while a card is dragged over this column — drives `.column--drop`. */
+  protected isDropTarget = false;
 
   private readonly quickAddInput = viewChild<ElementRef<HTMLInputElement>>('quickAdd');
 
-  /** Focuses the quick-add input (used by keyboard navigation later on). */
   focusQuickAdd(): void {
     this.quickAddInput()?.nativeElement.focus();
+  }
+
+  protected assigneeOf(task: Task): User | undefined {
+    return this.users().find((user) => user.id === task.assigneeId);
+  }
+
+  protected onQuickAdd(input: HTMLInputElement): void {
+    const title = input.value.trim();
+    if (!title) {
+      return;
+    }
+    this.quickAdd.emit(title);
+    input.value = '';
+  }
+
+  protected onDragOver(event: DragEvent): void {
+    event.preventDefault();
+    if (event.dataTransfer) {
+      event.dataTransfer.dropEffect = 'move';
+    }
+    this.isDropTarget = true;
+  }
+
+  protected onDragLeave(): void {
+    this.isDropTarget = false;
+  }
+
+  protected onDrop(event: DragEvent): void {
+    event.preventDefault();
+    this.isDropTarget = false;
+    const taskId = event.dataTransfer?.getData('text/plain');
+    if (taskId) {
+      this.taskMoved.emit({ taskId, columnId: this.column().id });
+    }
   }
 }

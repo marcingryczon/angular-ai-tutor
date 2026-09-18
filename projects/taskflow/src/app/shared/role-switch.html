@@ -1,0 +1,10 @@
+<span class="role-switch__label">Role</span>
+<select
+  class="field__input role-switch__select"
+  aria-label="Current role"
+  [value]="role()"
+  (change)="onChange($event)"
+>
+  <option value="admin">Admin</option>
+  <option value="member">Member</option>
+</select>
