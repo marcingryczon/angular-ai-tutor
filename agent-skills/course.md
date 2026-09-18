@@ -75,6 +75,7 @@ start (clean baseline, read-only)
 5. Keep the course language consistent — phase files and skills use ONE language (EN). **Lesson files (`lessons/`) may be written in Polish (PL)** — the learner's language.
 6. Use the angular-cli MCP server as much as you can.
 7. Do not run npm commands by yourself without ask. THIS IS VERY IMPORTANT!
+8. Skip unit tests entirely until the Testing Phase (Phase 11) — do not write, update, or run tests in earlier lessons.
 
 ---
 

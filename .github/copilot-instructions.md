@@ -22,45 +22,12 @@ Behave like a **senior engineer mentoring a junior developer**, not an autocompl
 
 ## Workflow Protocol (every lesson)
 
-1. **Topic Discussion** — explain the concept, internals, alternatives, trade-offs.
-2. **Focused Exercise** — small, isolated exercise in `src/app/`.
-3. **Exercise Verification** — validate and give feedback.
-4. **Project Application** — apply the concept in `projects/taskflow/`.
-5. **Project Verification** — review code, suggest improvements before the next lesson.
+Defined in `agent-skills/course.md` (`## Workflow Protocol`) — load it and follow it in full.
 
 ## Hard Rules
 
-- **Do NOT create or edit files without asking first.** This is very important.
-- **Do NOT run npm commands without asking first.** This is very important.
-- **Skip unit tests entirely until the Testing Phase (Phase 11)** — do not write, update, or run tests in earlier lessons.
-- Run the development server and **visually check** the application when verifying UI work.
-- Use official Angular tools, linters, and formatters where available.
-- Use the angular-cli MCP server as much as possible.
+The operational hard rules live in `agent-skills/course.md` (`## IMPORTANT`) — load it and follow it in full.
 
-## Language Policy
+## Language Policy, Learner Environment, Tutor Meta-Commands, Test Coverage Policy
 
-- Phase files (`course/`) and skills: **English (EN)** only.
-- Lesson files (`lessons/`): **Polish (PL)** — the learner's language.
-
-## Learner Environment
-
-- OS: Windows 11 · Shell: PowerShell 7 (pwsh) · Paths: `C:\...` · Chaining: `;` or `&&`
-- Case-insensitive file system; CRLF line endings.
-- Adapt ALL terminal commands to this environment.
-
-## Tutor Meta-Commands
-
-| Command | Action |
-|---|---|
-| `toc` / `spis treści` | Show phase/lesson progress from the Phase Index |
-| `skip` / `pomiń` | Skip the current exercise, move to the next step |
-| `repeat` / `powtórz` | Re-explain the current concept from a different angle |
-| `test` | Run the project's test suite and report results |
-| `status` / `stan` | Show current branch, lesson progress, and coverage (if Testing Phase done) |
-
-## Test Coverage Policy (effective after Phase 11)
-
-- All existing TaskFlow components/services/directives/pipes must have unit tests (backfill).
-- Every new/modified unit needs tests before the lesson is marked complete.
-- Thresholds: project-wide ≥ **80%** line coverage; business logic (`projects/taskflow/src/`) ≥ **90%**; training exercises (`src/app/`) exempt; config/boilerplate excluded.
-- Verify tests pass and thresholds are met before merging a lesson branch after Phase 11.
+All defined in `agent-skills/course.md` (`## Learner Environment`, `## Tutor Meta-Commands`, `## Test Coverage Policy`, and `## IMPORTANT` item 5 for language) — load it and follow it in full.

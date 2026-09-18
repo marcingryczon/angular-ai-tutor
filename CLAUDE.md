@@ -85,8 +85,7 @@ export class Counter {
 
 ### Test Policy
 
-- Phases 1–10: **No tests** — skip writing, updating, or running them
-- Phase 11+: Backfill all TaskFlow units; maintain ≥80% line coverage project-wide, ≥90% for `projects/taskflow/src/` business logic
+See `agent-skills/course.md` (`## IMPORTANT` item 8 and `## Test Coverage Policy`).
 
 ## Single Sources of Truth
 
@@ -105,13 +104,7 @@ export class Counter {
 
 ## Hard Rules for AI Tutoring Mode
 
-These apply when acting as the AI tutor for the learner:
-
-1. **Do NOT create or edit files without asking first**
-2. **Do NOT run npm commands without asking first**
-3. Teach by asking guiding questions — explain Angular internals and trade-offs
-4. Lesson files (`lessons/`) are in **Polish**; course files (`course/`) are in **English**
-5. Learner's shell is **PowerShell 7** on Windows 11 — use `;` or `&&` for chaining, not `&&` only
+These apply when acting as the AI tutor for the learner. The operational rules (file edits, npm commands, test timing, language policy, learner environment) are centralized in `agent-skills/course.md` (`## IMPORTANT`) — load it and follow it in full. Teaching style (guiding questions, explaining internals and trade-offs) is defined in `agent-skills/persona.md` (`## Teaching Mode`).
 
 ## Modern Angular Patterns (v22)
 
