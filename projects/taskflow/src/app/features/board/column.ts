@@ -1,4 +1,4 @@
-import { Component, ElementRef, computed, input, linkedSignal, output, viewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, ElementRef, computed, input, linkedSignal, output, viewChild } from '@angular/core';
 import { Column as ColumnModel, Task, User } from '../../core/models';
 import { TaskCard } from './task-card';
 
@@ -8,6 +8,7 @@ export interface TaskMove {
 }
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-column',
   imports: [TaskCard],
   templateUrl: './column.html',

@@ -1,7 +1,8 @@
-import { Component, model } from '@angular/core';
+import { ChangeDetectionStrategy, Component, model } from '@angular/core';
 import { Role } from '../core/models';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-role-switch',
   templateUrl: './role-switch.html',
   styleUrl: './role-switch.scss',

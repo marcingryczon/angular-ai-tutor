@@ -1,6 +1,11 @@
-<article class="task-card" [class.task-card--selected]="selected()" (click)="select.emit(task())">
+<article
+  class="task-card"
+  [class.task-card--selected]="selected()"
+  [priorityHighlight]="task().priority"
+  (click)="select.emit(task())"
+>
   <header class="task-card__header">
-    <span class="badge badge--{{ task().priority }}">{{ task().priority }}</span>
+    <span class="badge badge--{{ task().priority }}">{{ task().priority | priorityLabel }}</span>
     <div class="task-card__actions">
       <button
         type="button"
@@ -29,7 +34,7 @@
   <footer class="task-card__footer">
     <span class="task-card__due">
       <span class="task-card__dot"></span>
-      {{ task().dueDate || 'no due date' }}
+      {{ (task().dueDate | dueDate) || 'no due date' }}
     </span>
     @if (assignee(); as user) {
       <span class="task-card__avatar" [title]="user.name">{{ user.name.charAt(0) }}</span>

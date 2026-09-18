@@ -1,4 +1,4 @@
-import { Component, computed, input, linkedSignal, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input, linkedSignal, output } from '@angular/core';
 import { form, FormField, required, submit, validate } from '@angular/forms/signals';
 import { Priority, Task, User } from '../../core/models';
 
@@ -15,6 +15,7 @@ function emptyValue(): TaskFormValue {
 }
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-task-form',
   imports: [FormField],
   templateUrl: './task-form.html',

@@ -1,4 +1,4 @@
-import { Component, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 
 /**
  * Reusable dialog shell: backdrop + panel + header.
@@ -6,6 +6,7 @@ import { Component, input, output } from '@angular/core';
  * Focus management and Escape handling are added in Phase 12.
  */
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-modal',
   templateUrl: './modal.html',
   styleUrl: './modal.scss',

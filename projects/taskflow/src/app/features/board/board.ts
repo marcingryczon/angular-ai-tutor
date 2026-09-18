@@ -1,4 +1,4 @@
-import { Component, computed, effect, inject, input, linkedSignal, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, input, linkedSignal, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router, RouterLink } from '@angular/router';
 import { BoardStore } from '../../core/board.store';
@@ -7,13 +7,17 @@ import { Column as ColumnModel, Priority, Task } from '../../core/models';
 import { SessionService } from '../../core/session.service';
 import { TaskService } from '../../core/task.service';
 import { TaskStore } from '../../core/task.store';
+import { AdminOnlyDirective } from '../../shared/directives/admin-only.directive';
+import { DueDatePipe } from '../../shared/pipes/due-date.pipe';
+import { PriorityLabelPipe } from '../../shared/pipes/priority-label.pipe';
 import { Modal } from '../../shared/modal';
 import { Column, TaskMove } from './column';
 import { TaskForm, TaskFormValue } from './task-form';
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-board',
-  imports: [Column, Modal, TaskForm, RouterLink],
+  imports: [Column, Modal, TaskForm, RouterLink, AdminOnlyDirective, DueDatePipe, PriorityLabelPipe],
   templateUrl: './board.html',
   styleUrl: './board.scss',
 })

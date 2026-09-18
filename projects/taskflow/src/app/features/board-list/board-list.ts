@@ -1,4 +1,4 @@
-import { Component, computed, inject, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { form, FormField, required, submit } from '@angular/forms/signals';
 import { BoardStore } from '../../core/board.store';
@@ -11,6 +11,7 @@ interface NewBoardValue {
 }
 
 @Component({
+  changeDetection: ChangeDetectionStrategy.OnPush,
   selector: 'app-board-list',
   imports: [RouterLink, FormField],
   templateUrl: './board-list.html',

@@ -11,7 +11,8 @@
       "schematics": {
         "@schematics/angular:component": {
           "style": "scss",
-          "skipTests": true
+          "skipTests": true,
+          "changeDetection": "OnPush"
         },
         "@schematics/angular:directive": {
           "skipTests": true
@@ -45,7 +46,9 @@
                 "input": "public"
               }
             ],
-            "styles": ["src/styles.scss"]
+            "styles": [
+              "src/styles.scss"
+            ]
           },
           "configurations": {
             "production": {
@@ -93,7 +96,8 @@
       "schematics": {
         "@schematics/angular:component": {
           "style": "scss",
-          "skipTests": true
+          "skipTests": true,
+          "changeDetection": "OnPush"
         },
         "@schematics/angular:class": {
           "skipTests": true
@@ -133,7 +137,9 @@
                 "input": "projects/taskflow/public"
               }
             ],
-            "styles": ["projects/taskflow/src/styles.scss"]
+            "styles": [
+              "projects/taskflow/src/styles.scss"
+            ]
           },
           "configurations": {
             "production": {
