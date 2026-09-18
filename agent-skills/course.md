@@ -105,6 +105,20 @@ start (clean baseline + curriculum docs)
 
 ---
 
+## Out of Scope (and why)
+
+TaskFlow deliberately does **not** cover the topics below. Say so when the learner asks, instead of
+improvising a lesson — each one is a conscious trade-off, not an oversight.
+
+| Not covered | Why | Where it would go |
+|---|---|---|
+| **i18n / `@angular/localize`** | Every screen would need translation keys, which buries the Angular concept under plumbing. The learner should know it exists and that it is a build-time concern. | A 15th phase, or a follow-up project |
+| **UI component libraries** (`@angular/cdk`, Material, PrimeNG) | Drag & drop, the dialog and the focus trap are written by hand in Phases 2, 6 and 12 precisely because writing them teaches the mechanics a library hides. | After the course, as a refactor |
+| **End-to-end tests** (Playwright / Cypress) | Phase 11 already carries a full unit-test backfill; adding a second runner doubles the setup cost. Covered as awareness in 11.5. | Phase 13 CI, as an extra job |
+| **A real backend, auth, multi-user sync** | State lives in `localStorage` so every learner sees identical data and no server is needed. `@ngrx/effects` is skipped in Phase 14 for the same reason. | A follow-up project |
+
+---
+
 ## Toolchain Facts (from a full end-to-end run of the course)
 
 Properties of *this* workspace, collected while building TaskFlow once from `start` through Phase 14.

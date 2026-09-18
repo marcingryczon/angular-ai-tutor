@@ -9,6 +9,7 @@
 ### Lesson {{NUMBER}}.1: {{LESSON_1_TITLE}}
 - *Objective:* {{LESSON_1_OBJECTIVE}}
 - *Branch Name:* `lesson-{{NUMBER}}.1-{{LESSON_1_SLUG}}`
+- *Reference:* `agent-skills/angular-skills/references/{{REFERENCE_FILE}}.md`
 - *Topics:*
   - {{TOPIC_1_1}}
   - {{TOPIC_1_2}}
@@ -21,6 +22,7 @@
 ### Lesson {{NUMBER}}.2: {{LESSON_2_TITLE}}
 - *Objective:* {{LESSON_2_OBJECTIVE}}
 - *Branch Name:* `lesson-{{NUMBER}}.2-{{LESSON_2_SLUG}}`
+- *Reference:* `agent-skills/angular-skills/references/{{REFERENCE_FILE}}.md`
 - *Topics:*
   - {{TOPIC_2_1}}
   - {{TOPIC_2_2}}
@@ -33,6 +35,7 @@
 ### Lesson {{NUMBER}}.3: {{LESSON_3_TITLE}}
 - *Objective:* {{LESSON_3_OBJECTIVE}}
 - *Branch Name:* `lesson-{{NUMBER}}.3-{{LESSON_3_SLUG}}`
+- *Reference:* `agent-skills/angular-skills/references/{{REFERENCE_FILE}}.md`
 - *Topics:*
   - {{TOPIC_3_1}}
   - {{TOPIC_3_2}}

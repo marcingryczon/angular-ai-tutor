@@ -11,6 +11,7 @@
 ### Lesson 10.1: SSR Setup
 - *Objective:* `@angular/ssr`, server entry, render modes.
 - *Branch Name:* `lesson-10.1-ssr-setup`
+- *Reference:* `agent-skills/angular-skills/references/rendering-strategies.md`
 - *Topics:*
   - `ng add @angular/ssr` — what it generates (`server.ts`, `main.server.ts`, `app.config.server.ts`, `app.routes.server.ts`), plus the `server` / `outputMode` / `ssr` keys it adds to the build target
   - **Two things bite here:** (1) there is no `--server-routing` flag in v22 — the schematic rejects it; (2) the schematic writes `"security": { "allowedHosts": [] }`, and the built server then answers `400 Bad Request — Header "host" … is not allowed` for `localhost`. Add `"allowedHosts": ["localhost"]` before running `npm run serve:ssr:taskflow`.
@@ -25,6 +26,7 @@
 ### Lesson 10.2: Hydration
 - *Objective:* Non-destructive hydration, incremental hydration, mismatches.
 - *Branch Name:* `lesson-10.2-hydration`
+- *Reference:* `agent-skills/angular-skills/references/rendering-strategies.md`
 - *Topics:*
   - How hydration works: reuse server DOM, attach listeners, no re-render
   - `withIncrementalHydration()` + `@defer (hydrate on …)` triggers
@@ -39,6 +41,7 @@
 ### Lesson 10.3: Platform Detection & State Transfer
 - *Objective:* Browser-only code, `TransferState`.
 - *Branch Name:* `lesson-10.3-platform`
+- *Reference:* `agent-skills/angular-skills/references/rendering-strategies.md`
 - *Topics:*
   - `PLATFORM_ID` + `isPlatformBrowser()` / `isPlatformServer()`
   - `afterNextRender()` as the preferred browser-only hook

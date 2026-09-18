@@ -11,6 +11,8 @@
 > **This is a migration, not an add-on.** By the end of the phase `core/task.store.ts` / `core/board.store.ts` (signal services) are replaced by `core/ngrx/task.store.ts` / `core/ngrx/board.store.ts` (feature slices), components read state only through selectors, and the old stores are deleted. `TaskFlowDb` and the thin `TaskService` / `BoardService` remain as infrastructure.
 >
 > Installing `@ngrx/store` and `@ngrx/store-devtools` requires `npm install` — ask the learner to run it (`ng add @ngrx/store`).
+>
+> **No local reference file covers NgRx** — `agent-skills/angular-skills/references/` documents Angular itself. For this phase the authority is the official NgRx documentation for the installed major version; verify the API there before teaching it, exactly as rule 11 asks for Angular APIs.
 
 ---
 

@@ -9,11 +9,13 @@
 ### Lesson 12.1: ARIA Fundamentals
 - *Objective:* Roles, states, properties; semantic HTML first.
 - *Branch Name:* `lesson-12.1-aria`
+- *Reference:* `agent-skills/angular-skills/references/angular-aria.md`
 - *Topics:*
   - Semantic HTML before ARIA (`<button>`, `<nav>`, `<ul>`, `<dialog>`-like patterns)
   - ARIA roles, states, and properties; `aria-label`, `aria-live`
   - Binding ARIA in Angular: `[attr.aria-*]`
   - Auditing with axe DevTools / Lighthouse
+  - Contrast is part of the audit: check the §1.2 palette against WCAG AA (4.5:1 for body text, 3:1 for large text and UI borders) — `--text-subtle` on `--surface-2` and the priority badge text on its tinted background are the pairs to measure first
 - *Training Exercise:* Add ARIA attributes to a custom component and fix its axe report
 - *Project Application:* Give the board an accessible structure (`role="list"`/`listitem` on columns/cards, `aria-label`s on icon buttons, live region for the task count)
 
@@ -22,6 +24,7 @@
 ### Lesson 12.2: Keyboard Navigation & Focus Management
 - *Objective:* Everything works without a mouse.
 - *Branch Name:* `lesson-12.2-keyboard-focus`
+- *Reference:* `agent-skills/angular-skills/references/angular-aria.md`
 - *Topics:*
   - Keyboard events, `tabindex`, roving focus
   - Focus traps, focus restoration, body scroll lock
@@ -35,6 +38,7 @@
 ### Lesson 12.3: Animations & Motion
 - *Objective:* Enter/leave animations the modern way; respect reduced motion.
 - *Branch Name:* `lesson-12.3-animations`
+- *Reference:* `agent-skills/angular-skills/references/angular-animations.md` · `agent-skills/angular-skills/references/route-animations.md`
 - *Topics:*
   - `animate.enter` / `animate.leave` (Angular 20.2+) with CSS transitions/keyframes — the recommended approach
   - `@angular/animations` — legacy awareness only (deprecated); how to read `trigger()` / `transition()` code

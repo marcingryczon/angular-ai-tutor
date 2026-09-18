@@ -45,7 +45,7 @@
   - Interceptors: `withInterceptors([fn])` — logging, headers, error mapping
   - Error handling: `HttpErrorResponse`, `catchError`
 - *Training Exercise:* Load `public/mock/users.json`, map it to a typed model, add a logging interceptor
-- *Project Application:* Move the seed data to `projects/taskflow/public/seed.json`; `TaskFlowDb.seed()` loads it with `HttpClient` (due dates stored as `dueInDays` offsets, resolved at seed time)
+- *Project Application:* Move the seed data to `projects/taskflow/public/seed.json` and load it with `HttpClient` (due dates stored as `dueInDays` offsets, resolved at seed time). **This is a deliberate intermediate step:** the fetch lives next to `TaskFlowDb` for now, and lesson 5.6 moves it into the store as an `httpResource()`. `TaskFlowDb` keeps only the pure `seed(file)` expansion and the storage access.
 
 ---
 
@@ -76,6 +76,7 @@
 ### Lesson 5.6: `resource()` & `httpResource()`
 - *Objective:* Declarative async data with built-in loading / error states.
 - *Branch Name:* `lesson-5.6-resource-api`
+- *Reference:* `agent-skills/angular-skills/references/resource.md`
 - *Topics:*
   - `resource({ params, loader })` — signal-driven async data
   - `httpResource(() => url)` — the HTTP-specialised resource

@@ -11,6 +11,7 @@
 ### Lesson 1.1: Standalone Component Basics
 - *Objective:* Master `@Component`, metadata, bootstrap, and the standalone vs NgModule paradigm.
 - *Branch Name:* `lesson-1.1-standalone-basics`
+- *Reference:* `agent-skills/angular-skills/references/components.md`
 - *Topics:*
   - `@Component()` decorator: `selector`, `templateUrl`, `styleUrl`, `imports`
   - Component file structure: behavior in `.ts`, template in `.html`, styles in `.scss` — never inline
@@ -40,6 +41,7 @@
 ### Lesson 1.3: Modern Control Flow
 - *Objective:* Use `@if`, `@else`, `@for`, `@switch`, `@empty`.
 - *Branch Name:* `lesson-1.3-modern-control-flow`
+- *Reference:* `agent-skills/angular-skills/references/components.md`
 - *Topics:*
   - `@if` / `@else if` / `@else` — built-in, no `NgIf` import needed
   - `@for (item of items; track item.id)` — why `track` is mandatory and what a bad track expression costs
@@ -66,11 +68,13 @@
 ### Lesson 1.5: Component Styling
 - *Objective:* SCSS workflows, view encapsulation, style isolation, design tokens.
 - *Branch Name:* `lesson-1.5-component-styling`
+- *Reference:* `agent-skills/angular-skills/references/component-styling.md`
 - *Topics:*
   - `ViewEncapsulation`: `Emulated` (default), `ShadowDom`, `None`
   - Component-scoped styles vs global `styles.scss`: tokens, resets, and shared primitives are global; component appearance lives in the component's own `.scss`
   - `:host`, `:host-context()`, and why `::ng-deep` is a last resort
   - CSS custom properties as design tokens; SCSS nesting and variables
+  - The alternative TaskFlow does not take: a utility-first framework (`agent-skills/angular-skills/references/tailwind-css.md`). The spec's tokens + BEM-ish class names are what keep two learners' builds visually identical — know the trade-off, then follow the spec.
 - *Training Exercise:* Style the training components with SCSS, experiment with view encapsulation
 - *Project Application:* Copy the design tokens from `taskflow-spec.md` §1.2 into `projects/taskflow/src/styles.scss`; style the topbar, board, columns, and cards to match spec §2, §5.3–5.5 pixel-for-pixel
 

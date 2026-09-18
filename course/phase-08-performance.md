@@ -37,6 +37,7 @@
 ### Lesson 8.3: Zone.js — Legacy & Interop
 - *Objective:* Understand what Zone.js did, how to recognise zone-era code, and how to interoperate.
 - *Branch Name:* `lesson-8.3-zone-legacy`
+- *Reference:* `agent-skills/angular-skills/references/migrations.md`
 - *Topics:*
   - What Zone.js is: monkey-patching async browser APIs to trigger CD after *every* task
   - `provideZoneChangeDetection()` — opting back in for legacy libraries; the cost
@@ -62,6 +63,7 @@
 ### Lesson 8.5: Rendering Optimization & `@defer`
 - *Objective:* `@for` track, pure pipes, deferred blocks.
 - *Branch Name:* `lesson-8.5-rendering-opts`
+- *Reference:* `agent-skills/angular-skills/references/loading-strategies.md`
 - *Topics:*
   - `@for` `track` — identity vs index and what a wrong track costs (DOM churn)
   - Avoiding object/function creation in templates; pure pipes as memoization

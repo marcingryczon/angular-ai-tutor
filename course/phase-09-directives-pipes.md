@@ -23,6 +23,7 @@
 ### Lesson 9.2: Attribute Directives & Host Bindings
 - *Objective:* DOM behavior and declarative `host` metadata.
 - *Branch Name:* `lesson-9.2-attribute-directives`
+- *Reference:* `agent-skills/angular-skills/references/host-elements.md`
 - *Topics:*
   - `@Directive({ selector: '[appX]' })` with `input()`s
   - `host: { '[class.x]': 'expr', '(click)': 'handler()', '[attr.role]': '"button"' }` — replaces `@HostBinding` / `@HostListener`

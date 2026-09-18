@@ -9,6 +9,7 @@
 ### Lesson 3.1: `inject()` API
 - *Objective:* Functional injection replacing constructor DI.
 - *Branch Name:* `lesson-3.1-inject-api`
+- *Reference:* `agent-skills/angular-skills/references/injection-context.md`
 - *Topics:*
   - `inject<T>(Token)` — functional DI replacing the `constructor` pattern
   - Injection context: where `inject()` is allowed (field initializers, constructors, factories, guards) and where it throws
@@ -22,6 +23,7 @@
 ### Lesson 3.2: Creating Services
 - *Objective:* Injectable services, `providedIn: 'root'`, the singleton pattern.
 - *Branch Name:* `lesson-3.2-services`
+- *Reference:* `agent-skills/angular-skills/references/creating-services.md`
 - *Topics:*
   - `@Injectable({ providedIn: 'root' })` — tree-shakable singletons
   - Root singletons vs scoped services
@@ -29,12 +31,14 @@
   - Service as the owner of shared state (still plain properties — signals in Phase 4)
 - *Training Exercise:* Create a counter service shared between two components
 - *Project Application:* Create `core/session.service.ts` (current `role`, current `user`; replaces the plain property in `App`), `core/board.service.ts` and `core/task.service.ts` holding the in-memory seed data from spec §7.3. `Board` reads from the services instead of local arrays.
+- *Binding gotcha:* the role is still a plain property here, so `[(role)]="session.role"` does not compile — keep a getter/setter on `App` (or bind `[role]` + `(roleChange)`) until Phase 4 turns it into a signal. This is a good moment to explain what `[(x)]` actually desugars to.
 
 ---
 
 ### Lesson 3.3: DI Fundamentals — Tokens & Providers
 - *Objective:* `InjectionToken`, `useValue`, `useFactory`, `useClass`, `useExisting`.
 - *Branch Name:* `lesson-3.3-di-fundamentals`
+- *Reference:* `agent-skills/angular-skills/references/defining-providers.md` · `agent-skills/angular-skills/references/di-fundamentals.md`
 - *Topics:*
   - `InjectionToken<T>`: tokens for non-class dependencies
   - `useValue`, `useFactory` (with `deps` / `inject()` inside), `useClass`, `useExisting`
@@ -48,6 +52,7 @@
 ### Lesson 3.4: Hierarchical Injectors
 - *Objective:* Element injectors, environment injectors, resolution order.
 - *Branch Name:* `lesson-3.4-hierarchical-injectors`
+- *Reference:* `agent-skills/angular-skills/references/hierarchical-injectors.md`
 - *Topics:*
   - Root / environment injector vs element injector
   - `providers` in `@Component()` — one instance per component instance
@@ -61,6 +66,7 @@
 ### Lesson 3.5: Persistence Service (`localStorage`)
 - *Objective:* Encapsulate browser storage behind an injectable service.
 - *Branch Name:* `lesson-3.5-persistence`
+- *Reference:* `agent-skills/angular-skills/references/creating-services.md`
 - *Topics:*
   - Why storage access belongs in one service (testability, SSR safety, versioning)
   - `localStorage` with a versioned key (`taskflow.db.v1`) and JSON (de)serialization

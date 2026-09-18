@@ -17,6 +17,7 @@
 ### Lesson 11.1: Vitest Setup
 - *Objective:* Test configuration, running tests, the `.spec.ts` convention.
 - *Branch Name:* `lesson-11.1-vitest-setup`
+- *Reference:* `agent-skills/angular-skills/references/testing-fundamentals.md`
 - *Topics:*
   - `@angular/build:unit-test` builder with Vitest (`ng test`, `--watch`, `--coverage`)
   - `tsconfig.spec.json` and `jsdom`
@@ -32,6 +33,7 @@
 ### Lesson 11.2: Component Testing
 - *Objective:* Render components, test behavior through the DOM.
 - *Branch Name:* `lesson-11.2-component-tests`
+- *Reference:* `agent-skills/angular-skills/references/testing-fundamentals.md` · `agent-skills/angular-skills/references/component-harnesses.md`
 - *Topics:*
   - `TestBed.configureTestingModule({ imports: [Cmp] })`, `createComponent()`, and why zoneless tests use `await fixture.whenStable()` instead of `fixture.detectChanges()`
   - Setting signal inputs: `fixture.componentRef.setInput()` — beware that a render helper with a default parameter (`assignee = USER`) also applies that default when you pass `undefined` explicitly, so the "unassigned" case silently tests the wrong thing
@@ -46,6 +48,7 @@
 ### Lesson 11.3: Service & Store Testing
 - *Objective:* Unit test services and signal stores, mock dependencies.
 - *Branch Name:* `lesson-11.3-service-tests`
+- *Reference:* `agent-skills/angular-skills/references/testing-fundamentals.md`
 - *Topics:*
   - `TestBed.inject()` vs plain `new` for services without dependencies
   - Overriding providers: `{ provide: X, useValue: mock }`
@@ -61,6 +64,7 @@
 ### Lesson 11.4: Pipe, Directive, Guard & Resolver Testing
 - *Objective:* Test the small units.
 - *Branch Name:* `lesson-11.4-pipe-directive-tests`
+- *Reference:* `agent-skills/angular-skills/references/router-testing.md`
 - *Topics:*
   - Pipes: call `transform()` directly
   - Directives: a host test component + `TestBed`
@@ -74,11 +78,13 @@
 ### Lesson 11.5: Testing Best Practices & Coverage
 - *Objective:* What to test, test structure, behavior over implementation, enforcing thresholds.
 - *Branch Name:* `lesson-11.5-testing-practices`
+- *Reference:* `agent-skills/angular-skills/references/testing-fundamentals.md` · `agent-skills/angular-skills/references/e2e-testing.md`
 - *Topics:*
   - Arrange-Act-Assert; one behavior per test
   - Testing behavior, not implementation details (no private-method tests)
   - Coverage: `ng test --coverage`, thresholds in the Vitest config, what to exclude
   - Backfill plan for TaskFlow
+  - *Awareness, not installed here:* component harnesses (`agent-skills/angular-skills/references/component-harnesses.md`) make component tests survive markup changes, and end-to-end tests (`e2e-testing.md`) cover what unit tests structurally cannot — the drag & drop and the SSR round trip. Know when you would reach for them.
 - *Training Exercise:* Refactor a test from implementation-focused to behavior-focused
 - *Project Application:* Backfill every remaining TaskFlow unit; reach ≥ 90% on `projects/taskflow/src/`; configure thresholds so the test run fails below them
 ---

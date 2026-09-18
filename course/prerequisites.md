@@ -48,6 +48,8 @@ Phase 11 (Testing) ← Phase 5, 7, 9 (needs real units to test)
 0 → 1 → 2 → 3 → 4 → 5 → 6 → 7 → 8 → 9 → 11 → 10 → 12 → 13 → 14
 ```
 
+> **Milestones are numbered by phase, not by this order.** `taskflow-spec.md` §10 lists "after phase 10", "after phase 11" and so on by phase number, so following the recommended order you reach the *phase 11* milestone before the *phase 10* one. Check the milestone of the phase you just finished, not the one above it in the table.
+
 Rationale:
 - Testing (11) before SSR (10) — test simple units first, then tackle SSR complexity
 - NgRx (14) last — it is a migration of a working, tested app and is the capstone

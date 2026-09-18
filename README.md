@@ -93,10 +93,10 @@ The repository uses a structured branching model to keep the codebase clean and 
 
 | Branch | Purpose | Modifiable? |
 |---|---|---|
-| `start` | **Clean baseline** — the original project setup. Represents the starting point of the curriculum. | ❌ No |
-| `main` | **Working branch** — mirror of `start`. All lesson branches are merged here. | ✅ Yes |
+| `start` | **Clean baseline** — project setup and the curriculum documents. | ❌ Only to update project assumptions or curriculum docs |
+| `main` | **Working branch** — receives every completed lesson branch. | ✅ Yes |
 | `lesson-<phase>.<lesson>-<slug>` | **Lesson branches** — one per lesson, created from the previous lesson branch (or `main` at phase start). Merged to `main` at least at the end of each phase. | ✅ Yes |
-| `taskflow-finished` | **Reference implementation** of the finished TaskFlow (read-only) | ❌ No |
+| `taskflow-finished`, `taskflow-preview` | **Reference implementation** of the finished TaskFlow. Consult it to verify a result against the spec; never copy from it or show it before the matching lesson. | ❌ No |
 
 ### Flow
 
@@ -111,9 +111,9 @@ start (clean baseline, read-only)
 
 ### Rules
 
-1. **`start` branch** is the source of truth for the clean project state
+1. **`start` branch** is the source of truth for the clean project state **and the curriculum files** (`course/`, `agent-skills/`, templates). Curriculum fixes land on `start` and are merged forward into `main`.
 2. **`main` tracks progress** — every completed lesson branch merges into `main`
-3. **Each lesson branches from `main`** — ensures lessons build on top of all previous work
+3. **Each lesson branches from the previous lesson branch** (or from `main` at the start of a phase) — ensures lessons build on top of all previous work
 4. **Lesson branches follow the dotted naming convention** — `lesson-<phase>.<lesson>-<slug>` (e.g. `lesson-0.1-workspace-anatomy`, `lesson-1.5-component-styling`). The dot avoids `1.1` vs `11` collisions.
 
 ---
@@ -122,11 +122,11 @@ start (clean baseline, read-only)
 
 | Tool | Version | Purpose |
 |---|---|---|
-| **Angular** | 22.0 (zoneless) | Framework |
+| **Angular** | 22.1 (zoneless, pinned) | Framework |
 | **TypeScript** | 6.0 | Type-safe development |
 | **RxJS** | 7.8 | Reactive programming |
 | **Vitest** | 4.0 | Unit testing |
-| **Angular CLI** | 22.0 | Build tool & scaffolding |
+| **Angular CLI** | 22.1 | Build tool & scaffolding |
 | **SCSS** | — | Styling |
 
 ---

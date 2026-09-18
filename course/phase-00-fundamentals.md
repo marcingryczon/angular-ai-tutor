@@ -9,6 +9,7 @@
 ### Lesson 0.1: Workspace Anatomy
 - *Objective:* Navigate `angular.json`, `package.json`, project structure, and CLI commands.
 - *Branch Name:* `lesson-0.1-workspace-anatomy`
+- *Reference:* `agent-skills/angular-skills/references/cli.md` · `agent-skills/angular-skills/references/mcp.md`
 - *Topics:*
   - Project tree: `angular.json`, `package.json`, `tsconfig.json`, `src/`, `projects/`
   - Build targets: `ng serve`, `ng build`, `ng test` (Vitest via `@angular/build:unit-test`)
@@ -67,6 +68,7 @@
 ### Lesson 0.3: Angular Mental Model (Zoneless)
 - *Objective:* Understand the bootstrap process, the component tree, and how a zoneless Angular app knows when to re-render.
 - *Branch Name:* `lesson-0.3-angular-mental-model`
+- *Reference:* `agent-skills/angular-skills/references/components.md` · `agent-skills/angular-skills/references/signals-overview.md`
 - *Topics:*
   - Entry point: `main.ts` → `bootstrapApplication(App, appConfig)`
   - `ApplicationConfig` providers: `provideRouter()`, `provideBrowserGlobalErrorListeners()`

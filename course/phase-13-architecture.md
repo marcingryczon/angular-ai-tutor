@@ -47,6 +47,7 @@
 ### Lesson 13.4: Error Handling, Production Build & CI
 - *Objective:* Ship with confidence.
 - *Branch Name:* `lesson-13.4-production`
+- *Reference:* `agent-skills/angular-skills/references/environment-configuration.md`
 - *Topics:*
   - Error handling layers: `provideBrowserGlobalErrorListeners()`, custom `ErrorHandler`, `withNavigationErrorHandler()`, HTTP interceptor
   - Environment-specific builds (`fileReplacements`, environment files)

@@ -297,16 +297,21 @@ projects/taskflow/
    │  ├─ board.service.ts     # thin service layer over the db for boards
    │  ├─ task.service.ts      # thin service layer over the db for tasks
    │  ├─ board.resolver.ts    # resolves a board by id into route data
-   │  └─ role.guard.ts        # role-based route guard (admin/member)
-   ├─ shared/role-switch.ts   # topbar Admin/Member select (model())
+   │  ├─ role.guard.ts        # role-based route guard (admin/member)
+   │  ├─ domain/              # Phase 13: pure rules extracted from the store
+   │  │  └─ task-filters.ts   # filterTasks / tasksOfBoard / tasksOfColumn
+   │  ├─ logging.interceptor.ts # Phase 5: dev-only HTTP log
+   │  └─ error-handler.ts     # Phase 13: global ErrorHandler with context
    ├─ features/
    │  ├─ board-list/board-list.ts   # "/" screen: gallery + create-board form
    │  └─ board/
    │     ├─ board.ts          # orchestrator: header, filter bar, columns, modals
    │     ├─ column.ts         # one Kanban column (DnD target, quick-add)
    │     ├─ task-card.ts      # one card (draggable, hover actions, avatar)
-   │     └─ task-form.ts      # create/edit form (shared by both modals)
+   │     ├─ task-form.ts      # create/edit form (shared by both modals)
+   │     └─ board-settings.ts # Phase 7: admin-only placeholder behind role.guard
    └─ shared/
+      ├─ role-switch.ts       # topbar Admin/Member select (model())
       ├─ modal.ts             # reusable dialog (backdrop + panel + close)
       ├─ directives/
       │  ├─ admin-only.directive.ts        # *adminOnly — show only for Admin role
@@ -315,6 +320,11 @@ projects/taskflow/
          ├─ due-date.pipe.ts              # yyyy-mm-dd → "Aug 22, 2026" (empty when unset)
          └─ priority-label.pipe.ts        # 'urgent' → "Urgent"
 ```
+
+**Added by Phase 10 (`ng add @angular/ssr`)**, next to the files above: `src/main.server.ts`,
+`src/server.ts`, `src/app/app.config.server.ts`, `src/app/app.routes.server.ts`.
+
+Files are annotated with the phase that introduces them; before that phase they simply do not exist yet.
 
 Every component listed above has a matching `.html` and `.scss` next to its `.ts` (omitted for brevity).
 
@@ -349,7 +359,7 @@ Use this to verify your build matches the reference look:
 
 ## 10. Build Milestones per Phase (what TaskFlow looks like after each phase)
 
-Use this so every learner's TaskFlow is in the *same* state at each phase boundary. A milestone lists only what is **new**; everything from earlier milestones remains.
+Use this so every learner's TaskFlow is in the *same* state at each phase boundary. A milestone lists only what is **new**; everything from earlier milestones remains. Rows are keyed by **phase number**; the recommended working order in `course/prerequisites.md` puts 11 before 10, so read the row of the phase you actually finished.
 
 | After phase | TaskFlow state |
 |---|---|
