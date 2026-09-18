@@ -4,7 +4,7 @@
     <p class="board-list__subtitle">{{ count() }} board(s) · pick one to open</p>
   </header>
 
-  @if (store.isLoading()) {
+  @if (state.isLoading()) {
     <p class="board-list__loading">Loading demo data…</p>
   }
 

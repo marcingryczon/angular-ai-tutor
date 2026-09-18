@@ -2,6 +2,9 @@ import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed, ComponentFixture } from '@angular/core/testing';
 import { provideRouter } from '@angular/router';
+import { provideStore } from '@ngrx/store';
+import { boardsFeature } from '../../core/ngrx/board.store';
+import { tasksFeature } from '../../core/ngrx/task.store';
 import { SeedFile } from '../../core/db';
 import { BoardList } from './board-list';
 
@@ -26,7 +29,15 @@ describe('BoardList', () => {
   beforeEach(async () => {
     localStorage.clear();
     TestBed.configureTestingModule({
-      providers: [provideRouter([]), provideHttpClient(), provideHttpClientTesting()],
+      providers: [
+        provideRouter([]),
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        provideStore({
+          [boardsFeature.name]: boardsFeature.reducer,
+          [tasksFeature.name]: tasksFeature.reducer,
+        }),
+      ],
     });
     fixture = TestBed.createComponent(BoardList);
     http = TestBed.inject(HttpTestingController);

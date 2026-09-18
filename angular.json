@@ -35,7 +35,9 @@
                 "input": "public"
               }
             ],
-            "styles": ["src/styles.scss"]
+            "styles": [
+              "src/styles.scss"
+            ]
           },
           "configurations": {
             "production": {
@@ -109,11 +111,15 @@
                 "input": "projects/taskflow/public"
               }
             ],
-            "styles": ["projects/taskflow/src/styles.scss"],
+            "styles": [
+              "projects/taskflow/src/styles.scss"
+            ],
             "server": "projects/taskflow/src/main.server.ts",
             "outputMode": "server",
             "security": {
-              "allowedHosts": ["localhost"]
+              "allowedHosts": [
+                "localhost"
+              ]
             },
             "ssr": {
               "entry": "projects/taskflow/src/server.ts"
@@ -124,8 +130,8 @@
               "budgets": [
                 {
                   "type": "initial",
-                  "maximumWarning": "360kB",
-                  "maximumError": "420kB"
+                  "maximumWarning": "400kB",
+                  "maximumError": "450kB"
                 },
                 {
                   "type": "anyComponentStyle",
@@ -162,7 +168,9 @@
             "buildTarget": "taskflow:build:development",
             "runner": "vitest",
             "coverage": true,
-            "coverageInclude": ["projects/taskflow/src/app/**/*.ts"],
+            "coverageInclude": [
+              "projects/taskflow/src/app/**/*.ts"
+            ],
             "coverageExclude": [
               "projects/taskflow/src/app/**/*.spec.ts",
               "projects/taskflow/src/app/app.config*.ts",

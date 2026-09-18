@@ -8,18 +8,34 @@ import {
   linkedSignal,
   signal,
 } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { Router, RouterLink } from '@angular/router';
-import { BoardStore } from '../../core/board.store';
+import { Store } from '@ngrx/store';
+import { debounceTime, distinctUntilChanged, map } from 'rxjs';
 import { BOARD_CONFIG } from '../../core/config';
 import { Column as ColumnModel, Priority, Task } from '../../core/models';
+import {
+  selectBoardById,
+  selectColumnsOfBoard,
+  selectUserById,
+  selectUsers,
+} from '../../core/ngrx/board.store';
+import {
+  selectAssigneeFilter,
+  selectBoardTasks,
+  selectFilteredTasks,
+  selectPriorityFilter,
+  selectSearch,
+  selectTaskCount,
+  TaskActions,
+} from '../../core/ngrx/task.store';
+import { TaskFlowState } from '../../core/ngrx/taskflow-state.service';
 import { SessionService } from '../../core/session.service';
 import { TaskService } from '../../core/task.service';
-import { TaskStore } from '../../core/task.store';
 import { AdminOnlyDirective } from '../../shared/directives/admin-only.directive';
+import { Modal } from '../../shared/modal';
 import { DueDatePipe } from '../../shared/pipes/due-date.pipe';
 import { PriorityLabelPipe } from '../../shared/pipes/priority-label.pipe';
-import { Modal } from '../../shared/modal';
 import { Column, TaskMove } from './column';
 import { TaskForm, TaskFormValue } from './task-form';
 
@@ -39,32 +55,53 @@ import { TaskForm, TaskFormValue } from './task-form';
   styleUrl: './board.scss',
 })
 export class Board {
-  protected readonly boardStore = inject(BoardStore);
-  protected readonly taskStore = inject(TaskStore);
+  private readonly store = inject(Store);
+  private readonly router = inject(Router);
+  private readonly taskService = inject(TaskService);
+  protected readonly state = inject(TaskFlowState);
   protected readonly session = inject(SessionService);
   protected readonly config = inject(BOARD_CONFIG);
-  private readonly taskService = inject(TaskService);
-
-  private readonly router = inject(Router);
 
   /** Bound from the route via `withComponentInputBinding()`. */
   readonly boardId = input.required<string>();
 
-  protected readonly board = computed(() => this.boardStore.boardById(this.boardId()));
-  protected readonly columns = computed(() => this.boardStore.columnsOf(this.boardId()));
-  protected readonly users = this.boardStore.users;
+  protected readonly board = computed(() =>
+    this.store.selectSignal(selectBoardById(this.boardId()))(),
+  );
+  protected readonly columns = computed(() =>
+    this.store.selectSignal(selectColumnsOfBoard(this.boardId()))(),
+  );
+  protected readonly users = this.store.selectSignal(selectUsers);
+
+  protected readonly filteredTasks = this.store.selectSignal(selectFilteredTasks);
+  protected readonly taskCount = this.store.selectSignal(selectTaskCount);
+  protected readonly boardTasks = this.store.selectSignal(selectBoardTasks);
+  protected readonly search = this.store.selectSignal(selectSearch);
+  protected readonly priorityFilter = this.store.selectSignal(selectPriorityFilter);
+  protected readonly assigneeFilter = this.store.selectSignal(selectAssigneeFilter);
+
+  /** Raw keystrokes; the store only sees the debounced value. */
+  protected readonly searchInput = signal('');
+  private readonly debouncedSearch = toSignal(
+    toObservable(this.searchInput).pipe(
+      debounceTime(300),
+      map((term) => term.trim().toLowerCase()),
+      distinctUntilChanged(),
+    ),
+    { initialValue: '' },
+  );
 
   /** Short-lived toast driven by the task event bus. */
   protected readonly notice = signal('');
 
   protected readonly selectedTaskId = linkedSignal<readonly Task[], string | undefined>({
-    source: this.taskStore.filteredTasks,
+    source: this.filteredTasks,
     computation: (tasks, previous) =>
       previous && tasks.some((task) => task.id === previous.value) ? previous.value : undefined,
   });
 
   protected readonly selectedTask = computed(() =>
-    this.taskStore.filteredTasks().find((task) => task.id === this.selectedTaskId()),
+    this.filteredTasks().find((task) => task.id === this.selectedTaskId()),
   );
 
   protected readonly editedTask = signal<Task | undefined>(undefined);
@@ -72,16 +109,17 @@ export class Board {
 
   /** Titles already on this board, minus the task being edited. */
   protected readonly existingTitles = computed(() =>
-    this.taskStore
-      .tasks()
+    this.boardTasks()
       .filter((task) => task.id !== this.editedTask()?.id)
       .map((task) => task.title),
   );
 
   constructor() {
+    effect(() => this.store.dispatch(TaskActions.boardSelected({ boardId: this.boardId() })));
+
     effect(() => {
-      this.taskStore.selectBoard(this.boardId());
-      this.taskStore.resetFilters();
+      const search = this.debouncedSearch();
+      this.store.dispatch(TaskActions.searchChanged({ search }));
     });
 
     this.taskService.events$.pipe(takeUntilDestroyed()).subscribe((event) => {
@@ -91,27 +129,34 @@ export class Board {
   }
 
   protected tasksOf(column: ColumnModel): readonly Task[] {
-    return this.taskStore.tasksOfColumn(column.id);
+    return this.filteredTasks().filter((task) => task.columnId === column.id);
   }
 
   protected onSearch(value: string): void {
-    this.taskStore.searchInput.set(value);
+    this.searchInput.set(value);
   }
 
   protected onPriorityFilter(value: string): void {
-    this.taskStore.priorityFilter.set(value as Priority | '');
+    this.store.dispatch(TaskActions.priorityFilterChanged({ priority: value as Priority | '' }));
   }
 
   protected onAssigneeFilter(value: string): void {
-    this.taskStore.assigneeFilter.set(value);
+    this.store.dispatch(TaskActions.assigneeFilterChanged({ assignee: value }));
   }
 
   protected onQuickAdd(column: ColumnModel, title: string): void {
-    this.taskStore.quickAdd(column.id, title);
+    this.state.createTask({
+      boardId: this.boardId(),
+      columnId: column.id,
+      title,
+      description: '',
+      priority: 'medium',
+      dueDate: '',
+    });
   }
 
   protected onRemove(task: Task): void {
-    this.taskStore.remove(task.id);
+    this.state.removeTask(task.id);
   }
 
   protected onEdit(task: Task): void {
@@ -123,38 +168,26 @@ export class Board {
   }
 
   protected onMove({ taskId, columnId }: TaskMove): void {
-    this.taskStore.move(taskId, columnId);
-  }
-
-  protected resetDemoData(): void {
-    this.boardStore.reset();
-  }
-
-  protected deleteBoard(): void {
-    this.boardStore.removeBoard(this.boardId());
-    void this.router.navigate(['/']);
+    this.state.moveTask(taskId, columnId);
   }
 
   protected onSave(value: TaskFormValue): void {
     const edited = this.editedTask();
+    const fields = {
+      title: value.title.trim(),
+      description: value.description.trim(),
+      priority: value.priority,
+      dueDate: value.dueDate,
+      assigneeId: value.assigneeId || undefined,
+    };
+
     if (edited) {
-      this.taskStore.update({
-        ...edited,
-        title: value.title.trim(),
-        description: value.description.trim(),
-        priority: value.priority,
-        dueDate: value.dueDate,
-        assigneeId: value.assigneeId || undefined,
-      });
+      this.store.dispatch(TaskActions.updated({ task: { ...edited, ...fields } }));
     } else {
-      this.taskStore.create({
+      this.state.createTask({
         boardId: this.boardId(),
         columnId: this.columns()[0]?.id ?? '',
-        title: value.title.trim(),
-        description: value.description.trim(),
-        priority: value.priority,
-        dueDate: value.dueDate,
-        assigneeId: value.assigneeId || undefined,
+        ...fields,
       });
     }
     this.closeModal();
@@ -171,13 +204,22 @@ export class Board {
   protected removeSelected(): void {
     const task = this.selectedTask();
     if (task) {
-      this.taskStore.remove(task.id);
+      this.state.removeTask(task.id);
       this.selectedTaskId.set(undefined);
     }
   }
 
   protected assigneeName(task: Task): string {
-    return this.boardStore.userById(task.assigneeId)?.name ?? 'Unassigned';
+    return this.store.selectSignal(selectUserById(task.assigneeId))()?.name ?? 'Unassigned';
+  }
+
+  protected resetDemoData(): void {
+    this.state.reset();
+  }
+
+  protected deleteBoard(): void {
+    this.state.removeBoard(this.boardId());
+    void this.router.navigate(['/']);
   }
 
   protected closeModal(): void {

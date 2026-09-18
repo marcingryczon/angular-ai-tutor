@@ -8,7 +8,10 @@ import {
   RedirectCommand,
   RouterStateSnapshot,
 } from '@angular/router';
+import { provideStore } from '@ngrx/store';
 import { boardResolver } from './board.resolver';
+import { boardsFeature } from './ngrx/board.store';
+import { tasksFeature } from './ngrx/task.store';
 import { SeedFile } from './db';
 import { Board } from './models';
 
@@ -31,7 +34,15 @@ describe('boardResolver', () => {
   beforeEach(() => {
     localStorage.clear();
     TestBed.configureTestingModule({
-      providers: [provideRouter([]), provideHttpClient(), provideHttpClientTesting()],
+      providers: [
+        provideRouter([]),
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        provideStore({
+          [boardsFeature.name]: boardsFeature.reducer,
+          [tasksFeature.name]: tasksFeature.reducer,
+        }),
+      ],
     });
     http = TestBed.inject(HttpTestingController);
   });

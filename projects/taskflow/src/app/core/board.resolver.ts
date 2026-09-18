@@ -1,20 +1,25 @@
 import { inject } from '@angular/core';
 import { RedirectCommand, ResolveFn, Router } from '@angular/router';
+import { Store } from '@ngrx/store';
 import { firstValueFrom } from 'rxjs';
-import { BoardStore } from './board.store';
 import { Board } from './models';
+import { selectBoardById } from './ngrx/board.store';
+import { TaskFlowState } from './ngrx/taskflow-state.service';
 
 /**
  * Resolves the board before the page renders.
- * Waits for the store to hydrate (the seed may still be in flight) and
+ * Waits for the state to hold data (the seed may still be in flight) and
  * redirects to the board list when the id does not exist.
  */
 export const boardResolver: ResolveFn<Board | RedirectCommand> = async (route) => {
-  const store = inject(BoardStore);
+  const state = inject(TaskFlowState);
+  const store = inject(Store);
   const router = inject(Router);
 
-  await firstValueFrom(store.ready$);
+  await firstValueFrom(state.ready$);
 
   const boardId = route.paramMap.get('boardId') ?? '';
-  return store.boardById(boardId) ?? new RedirectCommand(router.parseUrl('/'));
+  const board = store.selectSignal(selectBoardById(boardId))();
+
+  return board ?? new RedirectCommand(router.parseUrl('/'));
 };

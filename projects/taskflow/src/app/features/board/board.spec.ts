@@ -3,8 +3,12 @@ import { HttpTestingController, provideHttpClientTesting } from '@angular/common
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideRouter, Router } from '@angular/router';
 import { SeedFile } from '../../core/db';
+import { provideStore, Store } from '@ngrx/store';
+import { boardsFeature } from '../../core/ngrx/board.store';
+import { tasksFeature } from '../../core/ngrx/task.store';
 import { SessionService } from '../../core/session.service';
-import { TaskStore } from '../../core/task.store';
+import { selectBoardTasks, TaskActions } from '../../core/ngrx/task.store';
+import { TaskFlowState } from '../../core/ngrx/taskflow-state.service';
 import { Board } from './board';
 
 const SEED: SeedFile = {
@@ -38,7 +42,15 @@ describe('Board', () => {
   beforeEach(async () => {
     localStorage.clear();
     TestBed.configureTestingModule({
-      providers: [provideRouter([]), provideHttpClient(), provideHttpClientTesting()],
+      providers: [
+        provideRouter([]),
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        provideStore({
+          [boardsFeature.name]: boardsFeature.reducer,
+          [tasksFeature.name]: tasksFeature.reducer,
+        }),
+      ],
     });
     fixture = TestBed.createComponent(Board);
     fixture.componentRef.setInput('boardId', 'b_1');
@@ -72,8 +84,7 @@ describe('Board', () => {
   });
 
   it('filters the columns through the store', async () => {
-    const store = TestBed.inject(TaskStore);
-    store.priorityFilter.set('urgent');
+    TestBed.inject(Store).dispatch(TaskActions.priorityFilterChanged({ priority: 'urgent' }));
     await fixture.whenStable();
 
     expect(element.querySelectorAll('app-task-card')).toHaveLength(1);
@@ -81,7 +92,8 @@ describe('Board', () => {
   });
 
   it('drives the store from the filter bar inputs', async () => {
-    const store = TestBed.inject(TaskStore);
+    const store = TestBed.inject(Store);
+    const dispatch = vi.spyOn(store, 'dispatch');
 
     const search = element.querySelector('#board-search') as HTMLInputElement;
     search.value = 'banner';
@@ -96,13 +108,15 @@ describe('Board', () => {
     assignee.dispatchEvent(new Event('change'));
     await fixture.whenStable();
 
-    expect(store.searchInput()).toBe('banner');
-    expect(store.priorityFilter()).toBe('urgent');
-    expect(store.assigneeFilter()).toBe('u_1');
+    expect(dispatch).toHaveBeenCalledWith(
+      TaskActions.priorityFilterChanged({ priority: 'urgent' }),
+    );
+    expect(dispatch).toHaveBeenCalledWith(TaskActions.assigneeFilterChanged({ assignee: 'u_1' }));
 
-    // Past the 300 ms debounce the columns follow the filters.
+    // Past the 300 ms debounce the search reaches the store too.
     await new Promise((resolve) => setTimeout(resolve, 350));
     await fixture.whenStable();
+    expect(dispatch).toHaveBeenCalledWith(TaskActions.searchChanged({ search: 'banner' }));
     expect(element.querySelectorAll('app-task-card')).toHaveLength(1);
   });
 
@@ -184,7 +198,8 @@ describe('Board', () => {
 
   it('moves a task between columns on drop', async () => {
     const columns = element.querySelectorAll('.column');
-    const taskId = TestBed.inject(TaskStore).tasks()[0].id;
+    const store = TestBed.inject(Store);
+    const taskId = store.selectSignal(selectBoardTasks)()[0].id;
     const doneColumn = columns[3];
 
     doneColumn.dispatchEvent(
@@ -192,7 +207,7 @@ describe('Board', () => {
     );
     await fixture.whenStable();
 
-    expect(TestBed.inject(TaskStore).tasks()[0].columnId).toBe('b_1_done');
+    expect(store.selectSignal(selectBoardTasks)()[0].columnId).toBe('b_1_done');
     expect(element.querySelector('.board__notice')?.textContent).toContain('Task moved');
   });
 
@@ -201,7 +216,14 @@ describe('Board', () => {
     await fixture.whenStable();
     (element.querySelector('.column__quick-add-input') as HTMLInputElement).value = 'temp';
 
-    TestBed.inject(TaskStore).quickAdd('b_1_todo', 'Temporary');
+    TestBed.inject(TaskFlowState).createTask({
+      boardId: 'b_1',
+      columnId: 'b_1_todo',
+      title: 'Temporary',
+      description: '',
+      priority: 'medium',
+      dueDate: '',
+    });
     await fixture.whenStable();
     expect(element.textContent).toContain('Temporary');
 

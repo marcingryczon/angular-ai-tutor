@@ -1,8 +1,11 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { form, FormField, required, submit } from '@angular/forms/signals';
-import { BoardStore } from '../../core/board.store';
+import { Store } from '@ngrx/store';
 import { Visibility } from '../../core/models';
+import { selectBoards } from '../../core/ngrx/board.store';
+import { selectTaskCountOfBoard } from '../../core/ngrx/task.store';
+import { TaskFlowState } from '../../core/ngrx/taskflow-state.service';
 
 interface NewBoardValue {
   title: string;
@@ -18,9 +21,10 @@ interface NewBoardValue {
   styleUrl: './board-list.scss',
 })
 export class BoardList {
-  protected readonly store = inject(BoardStore);
+  private readonly store = inject(Store);
+  protected readonly state = inject(TaskFlowState);
 
-  protected readonly boards = this.store.boards;
+  protected readonly boards = this.store.selectSignal(selectBoards);
   protected readonly count = computed(() => this.boards().length);
 
   private readonly model = signal<NewBoardValue>({
@@ -34,13 +38,13 @@ export class BoardList {
   });
 
   protected taskCount(boardId: string): number {
-    return this.store.taskCountOf(boardId);
+    return this.store.selectSignal(selectTaskCountOfBoard(boardId))();
   }
 
   protected onSubmit(event: Event): void {
     event.preventDefault();
     submit(this.boardForm, async () => {
-      this.store.createBoard(this.model());
+      this.state.createBoard(this.model());
       this.model.set({ title: '', description: '', visibility: 'private' });
     });
   }
