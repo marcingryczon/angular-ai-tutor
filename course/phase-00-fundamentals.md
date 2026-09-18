@@ -13,7 +13,7 @@
 - *Topics:*
   - Project tree: `angular.json`, `package.json`, `tsconfig.json`, `src/`, `projects/`
   - Build targets: `ng serve`, `ng build`, `ng test` (Vitest via `@angular/build:unit-test`)
-  - Workspace vs project configuration in `angular.json`; the `schematics` block (`style: scss`, `skipTests: true` until Phase 11)
+  - Workspace vs project configuration in `angular.json`; the `schematics` block (`style: scss`, and `skipTests: true` which lesson 3.6 removes once there is something worth testing)
   - Every project needs its own `architect` targets — both `angular-ai-tutor` and `taskflow` have `build`, `serve`, and `test`; a missing target is why a CLI command "does not exist" for one project only
   - What is **not** in `package.json`: no `zone.js` — Angular 22 apps are zoneless by default (explained in 0.3)
   - **Exact versions, not ranges:** the `@angular/*` packages are pinned (`22.1.4`, tooling `22.1.6`) instead of `^22.0.0`. Ranges plus a lockfile that drifted are what make a later `ng add @angular/ssr` (Phase 10) fail with `ERESOLVE` peer conflicts. The fix is to align the versions and regenerate `package-lock.json`, never `--force`.

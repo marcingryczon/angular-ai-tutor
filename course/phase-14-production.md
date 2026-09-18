@@ -53,7 +53,8 @@
   - Environment-specific builds (`fileReplacements`, environment files)
   - `ng build` production flags; verifying the output
   - CI outline: lint → test (with coverage thresholds) → build; a GitHub Actions workflow
-  - Scope the format check to the code (`projects/**`, `src/**`, `angular.json`): running `prettier --check .` over the course's hand-written markdown turns every CI run red
+  - Scope the format check to the code (`projects/**`, `src/**`, `verify/**`, `angular.json`): running `prettier --check .` over the course's hand-written markdown turns every CI run red
+  - CI should end with `npm run verify` — the milestones are executable, so let the pipeline say whether the app still matches the spec
   - Deploying static output (SSR server vs static host): a prerendered `/` on a CDN plus the Node server for `/boards/:id` — and what `allowedHosts` must contain once the host is not `localhost`
 - *Training Exercise:* Add a global `ErrorHandler` that reports to the console with context; build for production
 - *Project Application:* Add error handling to TaskFlow, add the GitHub Actions workflow (format → tests with thresholds → build), and **deploy it**: `npm run build:taskflow` and serve the SSR output, or publish the prerendered `/` to any static host. The course ends with your application running somewhere other than your laptop.
