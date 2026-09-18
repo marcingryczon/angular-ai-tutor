@@ -1,448 +1,133 @@
 # Phase 14: Global State Management with NgRx
-*Focus: Centralized state management with predictable data flow, from NgRx Store fundamentals to @ngrx/signals (signalStore), Entity, DevTools, debugging, and comprehensive testing.*
+*Focus: Predictable state with `@ngrx/store` — actions, reducers, selectors, DevTools, testing — and a real migration of TaskFlow from the signal service store.*
 
-**Prerequisite:** Lesson 5.6 (Service-Based State Store). Before learning NgRx, you must understand the problems it solves: scattered state, prop drilling, unpredictable mutations, and the need for a single source of truth.
+## Git Branch: `lesson-14.<n>-*`
+## Training dir: `src/app/phase-14-ngrx/14.<n>-<slug>/` · Lesson notes: `lessons/phase-14-ngrx/14.<n>-<slug>.md`
 
-> **⚠️ This is a full rewrite, not an add-on.**
+**Prerequisite:** Lesson 5.7 (Service-Based State Store) and Phase 11 (Testing). Before learning NgRx, you must have felt the problems it solves: scattered mutations, no audit trail, hard-to-trace bugs.
+
+> **Scope decision.** This phase teaches the **`@ngrx/store`** package (actions → reducers → selectors, consumed as signals via `store.selectSignal()`), plus DevTools and testing — exactly what the reference implementation uses. `@ngrx/effects`, `@ngrx/entity`, and `@ngrx/signals` are covered as *awareness* in 14.9 so the learner can choose them later, but are not installed in TaskFlow.
 >
-> Phase 14 does NOT add NgRx alongside the existing service store. The goal is to **completely replace** the service-based state management in TaskFlow with NgRx. By the end of this phase:
-> - All `TaskStore` / `BoardStore` service methods are replaced by NgRx actions + reducers
-> - All components read state via `store.select()` or `signalStore` — no direct service calls for state
-> - The old service store is **removed** from the codebase
-> - TaskFlow runs 100% on NgRx for all shared state
+> **This is a migration, not an add-on.** By the end of the phase `core/task.store.ts` / `core/board.store.ts` (signal services) are replaced by `core/ngrx/task.store.ts` / `core/ngrx/board.store.ts` (feature slices), components read state only through selectors, and the old stores are deleted. `TaskFlowDb` and the thin `TaskService` / `BoardService` remain as infrastructure.
 >
-> This is intentional: the learner experiences the full migration lifecycle (audit → plan → migrate → verify → remove legacy) on a real project.
-
-## Git Branch: `lesson-14*-*`
+> Installing `@ngrx/store` and `@ngrx/store-devtools` requires `npm install` — ask the learner to run it (`ng add @ngrx/store`).
 
 ---
 
-#### 14.1: NgRx Fundamentals — Why & What
-
-##### Lesson 14.1.1: Why Global State Management?
-- *Objective:* Understand the problems with service-based stores and why NgRx exists.
-- *Branch Name:* `lesson-1411-why-ngrx`
+### Lesson 14.1: Why Global State Management?
+- *Objective:* Understand the problems with service stores and the Redux pattern.
+- *Branch Name:* `lesson-14.1-why-ngrx`
 - *Topics:*
-  - Problems with service stores: scattered state, implicit mutations, no history, hard-to-trace bugs
-  - Redux pattern: unidirectional data flow, single source of truth, immutable state
-  - NgRx ecosystem overview: Store, Effects, Entity, Runtime Config, Component Store, Signals
-  - When to use NgRx vs service store vs signals: decision matrix
-  - Bundle size impact: NgRx adds ~30-50KB gzipped — is it worth it?
-  - TaskFlow case study: why our service store from Lesson 5.6 needs evolution
-- *Training Exercise:* Analyze the `TaskStore` from Lesson 5.6 — identify: where are mutations hidden? Can you trace a state change? What happens when 3 components update the same task?
-- *Project Application:* Document the state management problems in current TaskFlow. Create a "state flow diagram" showing how data moves between components via the service store.
+  - Pain points of the 5.7 service store: any method can mutate anything, no history, no single place to reason about a change
+  - Redux pattern: single source of truth, state is read-only, changes are described by actions and applied by pure reducers
+  - NgRx packages overview: `store`, `store-devtools`, `effects`, `entity`, `signals` — and what TaskFlow will actually use
+  - Decision matrix: signals in a service vs `signalStore` vs `@ngrx/store`
+  - Cost: bundle size, boilerplate, learning curve — when it is *not* worth it
+- *Training Exercise:* Analyze the training `CounterStore` / `TodoStore` from 5.7 — where are mutations hidden? Can you trace a state change from a click?
+- *Project Application:* Document TaskFlow's state touchpoints (every component that reads or writes a store) — this is the migration checklist for 14.8
 
 ---
 
-#### 14.2: NgRx Store — Actions, Reducers, State
-
-##### Lesson 14.2.1: Actions — The What Happened
-- *Objective:* Create typed actions with `createAction()` and `props()`.
-- *Branch Name:* `lesson-1421-actions`
+### Lesson 14.2: Actions
+- *Objective:* Describe *what happened* with typed actions.
+- *Branch Name:* `lesson-14.2-actions`
 - *Topics:*
-  - What is an action: `{ type, payload }` — the "event" that describes what happened
-  - `createAction('TYPE')` — actions without payload
-  - `createAction('TYPE', props<{ T }>())` — actions with typed payload
-  - Action groups: organizing related actions
-  - Action creators: functions that return actions
-  - Why actions are the only way to trigger state changes in NgRx
-  - Comparison: RxJS Subject from Lesson 5.6 vs NgRx actions
-- *Training Exercise:* Define actions for a counter: `increment()`, `decrement()`, `reset()`. Define actions for a todo: `addTodo({ text })`, `toggleTodo({ id })`, `deleteTodo({ id })`.
-- *Project Application:* Define TaskFlow actions: `TaskAdded`, `TaskUpdated`, `TaskDeleted`, `TaskMoved`, `BoardLoaded`, `BoardSelected`
+  - `createActionGroup({ source, events })` — the modern way to define a family of actions
+  - `props<{ ... }>()` for payloads; `emptyProps()`
+  - Naming: `[Source] Event` — events, not commands (`Task Moved`, not `Move Task`)
+  - Actions as the only way to change state
+- *Training Exercise:* Define action groups for a counter (`increment`, `decrement`, `reset`) and a todo list (`added`, `toggled`, `removed`)
+- *Project Application:* Define `TaskActions` (`loaded`, `added`, `updated`, `removed`, `moved`, `searchChanged`, `priorityFilterChanged`, `assigneeFilterChanged`) and `BoardActions` (`loaded`, `created`, `removed`, `reset`) in `core/ngrx/`
 
-##### Lesson 14.2.2: Reducers — The How State Changes
+---
+
+### Lesson 14.3: Reducers & State Shape
 - *Objective:* Pure functions that transform state immutably.
-- *Branch Name:* `lesson-1422-reducers`
+- *Branch Name:* `lesson-14.3-reducers`
 - *Topics:*
-  - What is a reducer: `(state, action) => newState` — pure, deterministic, no side effects
-  - `on()` helper: matching actions to reducer logic
-  - `createReducer()` — functional reducer creation
-  - Immutable updates: spread operator, immutable.js patterns
-  - Why reducers must be pure: predictability, time-travel debugging, testing
-  - Default state: the initial state of the store slice
-  - Handling multiple actions in a single reducer
-- *Training Exercise:* Create a counter reducer with `increment`, `decrement`, `reset`. Create a todo reducer with `add`, `toggle`, `delete`. Verify purity: same input → same output.
-- *Project Application:* Create `taskReducer` and `boardReducer` for TaskFlow. Handle all CRUD operations immutably.
-
-##### Lesson 14.2.3: State & Store Configuration
-- *Objective:* Define the global state shape and provide the store.
-- *Branch Name:* `lesson-1423-state`
-- *Topics:*
-  - `State` interface: the global shape of the application state
-  - Feature states: splitting state into domains (tasks, boards, ui)
-  - `provideStore()` — registering the store with reducer functions
-  - `Store` interface: `select()`, `dispatch()`, `setState()`
-  - How the store wires actions → reducers → new state
-  - Store as an Observable: subscribing to state slices
-- *Training Exercise:* Define a `AppState` interface with `counter` and `todos` slices. Provide the store with both reducers.
-- *Project Application:* Define `TaskFlowState` with `tasks`, `boards`, `ui` slices. Provide the store in `app.config.ts`.
-
-##### Lesson 14.2.4: Selectors — Reading State
-- *Objective:* Derive data from the store with memoized selectors.
-- *Branch Name:* `lesson-1424-selectors`
-- *Topics:*
-  - `createSelector()` — memoized selectors (like `computed()` for the store)
-  - `createSelectorFactory()` — creating a namespace of selectors
-  - Selector composition: building complex selectors from simple ones
-  - Memoization: why selectors only recompute when inputs change
-  - Selectors vs computed signals: comparison of derived state patterns
-  - Default values and handling undefined state
-- *Training Exercise:* Create selectors: `selectAllTodos`, `selectCompletedTodos`, `selectTodoCount`, `selectTodoById`. Compose: `selectUrgentTodoCount` from `selectTodosByPriority`.
-- *Project Application:* Create `TaskSelectors`: `selectAllTasks`, `selectTasksByColumn`, `selectTaskById`, `selectTaskCountByPriority`. Create `BoardSelectors`: `selectCurrentBoard`, `selectBoardTasks`.
+  - `createReducer(initialState, on(Action, (state, props) => newState))`
+  - Purity: same input → same output; no side effects; no mutation (spread, `map`, `filter`)
+  - Designing the state shape: `TaskState { tasks, loaded, search, priorityFilter, assigneeFilter }`
+  - Handling several actions with one handler; unknown actions return the same state
+- *Training Exercise:* Write the counter and todo reducers; prove purity by calling them twice with the same input
+- *Project Application:* Write `taskReducer` and `boardReducer` covering every action from 14.2
 
 ---
 
-#### 14.3: createFeature API — Modern NgRx
-
-##### Lesson 14.3.1: createFeature — Declarative Store Slices
-- *Objective:* Replace manual `provideStore()` + `State` interface with `createFeature()`.
-- *Branch Name:* `lesson-1431-create-feature`
+### Lesson 14.4: Selectors & Reading State as Signals
+- *Objective:* Derive data from the store with memoized selectors and consume it with signals.
+- *Branch Name:* `lesson-14.4-selectors`
 - *Topics:*
-  - What is `createFeature()`: declarative, self-documenting feature slices
-  - `createFeature({ name, reducer, extraReducers })` — the modern API
-  - Auto-generated selectors: `selectAll`, `selectName` — no manual `createSelector()` needed
-  - Auto-generated action adapters: seamless integration
-  - `name` collision: why the `name` field matters (it becomes the state key)
-  - `createFeature` vs manual approach: code comparison
-  - Initial state as part of the feature definition
-- *Training Exercise:* Convert the manual counter/todo store from Lesson 14.2 to `createFeature()`. Compare the code reduction.
-- *Project Application:* Convert `tasks` and `boards` reducers to `createFeature()`. Use auto-generated selectors.
-
-##### Lesson 14.3.2: Multiple Features & Feature Composition
-- *Objective:* Manage multiple feature slices and compose them.
-- *Branch Name:* `lesson-1432-feature-composition`
-- *Topics:*
-  - Registering multiple features with `provideStore()`
-  - Feature initialization order and dependencies
-  - Selecting across features: `getSelectors()` from another feature
-  - Feature state as a tree: how features map to the global state shape
-  - `initialState` per feature
-  - Lazy-loaded features: features loaded on demand
-- *Training Exercise:* Create 3 features: `counter`, `todos`, `ui`. Select data across features (e.g., show todo count in UI header).
-- *Project Application:* Compose `tasks`, `boards`, `ui` features. Select board name in task header. Select UI filter in task list.
-
-##### Lesson 14.3.3: extraReducers & Cross-Feature Actions
-- *Objective:* Handle actions from other features using `extraReducers`.
-- *Branch Name:* `lesson-1433-extra-reducers`
-- *Topics:*
-  - `extraReducers`: handling actions that originate from other features
-  - Why cross-feature actions need `extraReducers` (not the main reducer)
-  - Example: `UI_RESET` action affecting both `tasks` and `boards` features
-  - Action routing: which feature handles which action
-  - Preventing feature coupling: when cross-feature actions are a code smell
-- *Training Exercise:* Create a `RESET_ALL` action that clears both `counter` and `todos` features using `extraReducers`.
-- *Project Application:* Handle `BoardSelected` action in `tasks` feature (clear tasks when board changes). Handle `TaskMoved` in `ui` feature (update column highlight).
+  - `createFeatureSelector<TaskState>('tasks')` and `createSelector()` composition
+  - Memoization: recompute only when inputs change — `createSelector` vs `computed()`
+  - `store.selectSignal(selector)` — the bridge to templates and `computed()`; `store.select()` when an Observable is needed
+  - Parameterised selectors via factory functions
+- *Training Exercise:* Selectors for `selectAllTodos`, `selectCompleted`, `selectCount`, `selectById(id)`; read them with `selectSignal`
+- *Project Application:* `selectFilteredTasks`, `selectTasksByColumn(columnId)`, `selectTaskCount`, `selectCurrentBoard(boardId)`; components consume them via `selectSignal`
 
 ---
 
-#### 14.4: NgRx Effects — Side Effects
-
-##### Lesson 14.4.1: Effects Fundamentals
-- *Objective:* Handle side effects (API calls, navigation, logging) with `createEffect()`.
-- *Branch Name:* `lesson-1441-effects-basics`
+### Lesson 14.5: `createFeature` & Store Setup
+- *Objective:* Declarative feature slices and providing the store.
+- *Branch Name:* `lesson-14.5-create-feature`
 - *Topics:*
-  - What are Effects: observers of actions, not reducers
-  - `createEffect()` — creating an effect from an action stream
-  - `Actions` service: injecting and listening to actions
-  - Effect lifecycle: dispatch → effect → API → dispatch result actions
-  - Why side effects belong in Effects, not reducers or components
-  - `dispatch: true` (default) vs `dispatch: false` (fire-and-forget effects)
-  - Comparison: Effects vs service methods from Lesson 5.6
-- *Training Exercise:* Create an effect that logs every action to console (`dispatch: false`). Create an effect that dispatches a `RESET` action after 5 seconds of `INCREMENT`.
-- *Project Application:* Create `LoadTasksEffect` that listens for `TasksLoadRequested` and dispatches `TasksLoaded` or `TasksLoadFailed`.
-
-##### Lesson 14.4.2: Effects & HTTP Requests
-- *Objective:* Chain HTTP calls with effects using RxJS operators.
-- *Branch Name:* `lesson-1442-effects-http`
-- *Topics:*
-  - `concatMap` vs `switchMap` vs `mergeMap` in effects — which to choose and why
-  - Error handling in effects: `catchError`, retry logic
-  - Multiple action dispatching from a single effect
-  - Loading states: `Requested` → `Loading` → `Loaded`/`Failed` pattern
-  - Optimistic vs pessimistic updates
-  - Effect composition: splitting complex effects into smaller ones
-- *Training Exercise:* Create an effect that fetches todos from a mock API. Handle loading, success, and error states with separate actions.
-- *Project Application:* Create effects for: `LoadBoardEffect`, `AddTaskEffect` (POST), `UpdateTaskEffect` (PUT), `DeleteTaskEffect` (DELETE). Implement loading/error UI states.
-
-##### Lesson 14.4.3: Effects — Advanced Patterns
-- *Objective:* Handle complex effect scenarios.
-- *Branch Name:* `lesson-1443-effects-advanced`
-- *Topics:*
-  - `ofType()` vs `filter()` — matching actions in effects
-  - Chaining effects: one effect triggers another
-  - `initialState` and effects: loading data on app boot with `INIT` action
-  - WebSockets in effects: bidirectional communication
-  - Throttling and debouncing effects
-  - Effect cancellation with `takeUntilDestroyed()`
-  - Testing side effects: mocking HTTP in effects (preview)
-- *Training Exercise:* Create an effect that loads data on app initialization. Create a debounced search effect.
-- *Project Application:* Create `InitBoardEffect` that loads the default board on app start. Create a debounced task search effect.
+  - `createFeature({ name, reducer, extraSelectors })` — auto-generated selectors (`selectTasks`, `selectSearch`, …)
+  - `provideStore({ tasks: tasksFeature.reducer, boards: … })` in `app.config.ts`; `provideState()` for lazy routes
+  - Dispatching from components: `store.dispatch(TaskActions.moved({ … }))`
+  - Persistence without Effects: a small `effect()` in a root service that watches `selectSignal(selectTasks)` and calls `TaskFlowDb.save()`
+- *Training Exercise:* Convert the counter/todo reducers to `createFeature()`; compare the code
+- *Project Application:* Provide `tasksFeature` and `boardsFeature`; wire the persistence effect; dispatch instead of calling store methods
 
 ---
 
-#### 14.5: @ngrx/entity — Collections
-
-##### Lesson 14.5.1: Entity Adapter
-- *Objective:* Manage collections of typed entities with generated CRUD operations.
-- *Branch Name:* `lesson-1451-entity-adapter`
-- *Topics:*
-  - What is an entity: a typed object with a unique `id`
-  - `EntityAdapter<T>`: generated collection operations
-  - `createAdapter<T>()` — defining an entity adapter with `selectId`
-  - Entity state: `{ entities: Dictionary<T>, ids: string[] }` — why this shape (O(1) lookup)
-  - Generated adapter methods: `addOne`, `addMany`, `addAll`, `updateOne`, `updateMany`, `removeOne`, `removeAll`, `setAll`, `upsertOne`, `upsertMany`
-  - Why Entity: eliminates boilerplate, prevents bugs, consistent collection operations
-- *Training Exercise:* Create an adapter for `Todo` entities. Practice: add, update, remove, upsert. Verify the internal state shape.
-- *Project Application:* Create `taskAdapter` for `Task` entities. Create `boardAdapter` for `Board` entities. Replace manual array operations in reducers.
-
-##### Lesson 14.5.2: Entity Selectors
-- *Objective:* Use generated entity selectors for efficient data access.
-- *Branch Name:* `lesson-1452-entity-selectors`
-- *Topics:*
-  - `adapter.getSelectors()`: auto-generated selectors (`selectAll`, `selectIds`, `selectTotal`)
-  - `selectId`: custom ID selectors
-  - Entity selector composition: filtering and sorting with custom selectors
-  - `getSelectors` vs manual `createSelector`: performance comparison
-  - Selecting a single entity by ID: `selectEntity` pattern
-- *Training Exercise:* Use entity selectors to select all todos, count, and a specific todo by ID. Create a filtered selector for completed todos.
-- *Project Application:* Use `taskAdapter.getSelectors()` to select all tasks, task count, task by ID. Create `selectTasksByColumn` and `selectTasksByPriority` custom selectors.
-
-##### Lesson 14.5.3: Entity in Reducers with createFeature
-- *Objective:* Integrate Entity adapter with `createFeature()` reducers.
-- *Branch Name:* `lesson-1453-entity-feature`
-- *Topics:*
-  - Entity reducer helpers: `adapter.reduce()` — the functional entity reducer pattern
-  - Combining `createFeature()` with entity state shape
-  - Handling entity CRUD actions with adapter methods in reducers
-  - Initial entity state: empty collection vs preloaded data
-  - Migration: converting a manual array reducer to entity-based reducer
-- *Training Exercise:* Convert the todo reducer from Lesson 14.2 to use entity adapter. Compare code before/after.
-- *Project Application:* Convert `tasks` feature to use entity adapter. All CRUD operations should use `adapter.addOne()`, `adapter.updateOne()`, `adapter.removeOne()`.
-
----
-
-#### 14.6: @ngrx/signals — signalStore
-
-##### Lesson 14.6.1: signalStore Fundamentals
-- *Objective:* Build reactive stores with `signalStore()` — the modern NgRx + Signals fusion.
-- *Branch Name:* `lesson-1461-signal-store`
-- *Topics:*
-  - What is `signalStore()`: a signal-based store API from @ngrx/signals
-  - Why signalStore: combines NgRx patterns with Angular Signals reactivity
-  - `signalStore()` vs `Store`: comparison of APIs
-  - `getState()` and `setState()` — reading/writing signal state
-  - `computed()` signals in signalStore — derived state
-  - `method()` — imperative methods in the store (like store actions)
-  - Providers: `type`, `providers`, `extraProviders`
-  - signalStore vs service store from Lesson 5.6: direct comparison
-- *Training Exercise:* Create a `signalStore()` for a counter: state, computed double, methods for increment/decrement.
-- *Project Application:* Create a `UiSignalStore` for TaskFlow: selected board, filter state, modal visibility. Use `getState()`, `computed()`, `method()`.
-
-##### Lesson 14.6.2: signalStore with RxJS & Effects
-- *Objective:* Integrate RxJS streams and side effects in signalStore.
-- *Branch Name:* `lesson-1462-signal-store-rxjs`
-- *Topics:*
-  - `rxMethod()` — creating RxJS-based methods in signalStore
-  - `rxMethod()` return type: `Signal<Operation>` with status, value, error
-  - Operation states: `idle`, `loading`, `success`, `error`
-  - `rxMethod()` vs NgRx Effects: when to use which
-  - Source signals: `source()` for reactive data sources
-  - `computed()` with `rxMethod()`: deriving state from async operations
-- *Training Exercise:* Create a signalStore with `rxMethod()` that fetches data from an API. Handle loading, success, error states.
-- *Project Application:* Create `TaskSignalStore` with `rxMethod('loadTasks')`, `rxMethod('addTask')`, `rxMethod('deleteTask')`. Connect to TaskFlow components.
-
-##### Lesson 14.6.3: signalStore with Entity (withMethods, withSource)
-- *Objective:* Use `@ngrx/signals` entity adapters and advanced signalStore patterns.
-- *Branch Name:* `lesson-1463-signal-store-entity`
-- *Topics:*
-  - `withEntity()` — entity support in signalStore (if available in version)
-  - `withMethods()` — adding methods to the store
-  - `withComputed()` — adding computed signals
-  - `withHooks()` — `onPush`, `onInit` lifecycle hooks in signalStore
-  - `signalStore` feature composition: combining multiple stores
-  - `signalStore` with `NgRx Store`: hybrid patterns (using both)
-  - Migration path: from `signalStore` to full NgRx Store (or vice versa)
-- *Training Exercise:* Build a complete signalStore for a todo app: state, entity-like collection, computed filters, rxMethods for CRUD, hooks for auto-loading.
-- *Project Application:* Refactor TaskFlow to use `signalStore` for the UI layer (filters, selection) while keeping NgRx Store for the domain layer (tasks, boards).
-
----
-
-#### 14.7: NgRx Runtime Configuration
-
-##### Lesson 14.7.1: Runtime Config & Middleware
-- *Objective:* Configure the store at runtime with middleware and meta-reducers.
-- *Branch Name:* `lesson-1471-runtime-config`
-- *Topics:*
-  - `runtimeConfig` — runtime store configuration
-  - Middleware: `logger()` — logging actions and state changes
-  - Meta-reducers: transforming reducers at runtime
-  - `maxActions`: limiting the action buffer size
-  - Feature composition in runtime config
-  - Environment-specific config: dev (logger on) vs prod (logger off)
-- *Training Exercise:* Enable logger middleware. Observe action flow in the console. Disable for production.
-- *Project Application:* Configure NgRx runtime config for TaskFlow: logger in dev, disabled in prod. Set `maxActions: 500`.
-
----
-
-#### 14.8: NgRx DevTools & Debugging
-
-##### Lesson 14.8.1: NgRx DevTools Extension
+### Lesson 14.6: DevTools & Debugging
 - *Objective:* Time-travel debugging, action inspection, state diffing.
-- *Branch Name:* `lesson-1481-devtools`
+- *Branch Name:* `lesson-14.6-devtools`
 - *Topics:*
-  - Installing NgRx DevTools browser extension (Chrome/Firefox)
-  - `StoreDevtoolsModule.instrument()` — configuring DevTools
-  - Action log: inspecting every action dispatched
-  - State tree: browsing the current state
-  - Time-travel: reverting to previous states
-  - Action dispatching from DevTools: testing actions manually
-  - State diffing: seeing what changed between actions
-  - Configuration options: `maxAge`, `logOnly`, `autoPause`, `trace`
-- *Training Exercise:* Install DevTools. Dispatch counter actions. Inspect the action log. Revert to a previous state.
-- *Project Application:* Enable NgRx DevTools for TaskFlow. Visually trace: add task → update task → delete task. Verify each action and state change. Debug a state inconsistency.
-
-##### Lesson 14.8.2: Debugging NgRx Applications
-- *Objective:* Systematic debugging strategies for NgRx apps.
-- *Branch Name:* `lesson-1482-debugging`
-- *Topics:*
-  - Common NgRx bugs: mutating state in reducers, forgetting to dispatch, selector memoization issues
-  - Debugging technique 1: console.log in reducers (temporary)
-  - Debugging technique 2: DevTools action replay
-  - Debugging technique 3: selector debugging — verifying memoization
-  - Debugging technique 4: effect debugging — verifying action streams
-  - Immutable state violations: how to detect and fix
-  - Performance debugging: excessive selector recomputation
-- *Training Exercise:* Intentionally introduce a state mutation bug. Use DevTools to detect it. Fix it.
-- *Project Application:* Debug a scenario in TaskFlow where a task update doesn't reflect in the UI. Trace through: action → reducer → selector → component.
+  - `provideStoreDevtools({ maxAge, logOnly: !isDevMode() })` + the Redux DevTools browser extension
+  - Action log, state tree, diff, time travel, dispatching from DevTools
+  - Common bugs: mutating state in a reducer (runtime checks `strictStateImmutability`, `strictActionImmutability`), forgetting to dispatch, selectors that always recompute
+  - Meta-reducers (e.g. a logger) — awareness
+- *Training Exercise:* Introduce a state mutation on purpose; watch runtime checks catch it; fix it
+- *Project Application:* Enable DevTools for TaskFlow; trace add → move → delete → filter; verify each action and state diff
 
 ---
 
-#### 14.9: Testing NgRx
-
-##### Lesson 14.9.1: Testing Reducers
-- *Objective:* Unit test reducer purity and state transitions.
-- *Branch Name:* `lesson-1491-testing-reducers`
+### Lesson 14.7: Testing NgRx
+- *Objective:* Test reducers, selectors, and connected components.
+- *Branch Name:* `lesson-14.7-testing-ngrx`
 - *Topics:*
-  - Why reducer testing is simple: pure functions = easy to test
-  - Test structure: given initialState + action → expect nextState
-  - Testing all action handlers in a reducer
-  - Testing default state (unknown action)
-  - Testing entity adapter operations in reducers
-  - Testing with `createReducer` and `on()`
-- *Training Exercise:* Test the counter reducer: increment from 0 → 1, decrement from 5 → 4, reset from 10 → 0.
-- *Project Application:* Test `taskReducer`: add task, update task, delete task, load tasks. Test `boardReducer`: select board, load boards.
-
-##### Lesson 14.9.2: Testing Selectors
-- *Objective:* Verify selector memoization and derived state.
-- *Branch Name:* `lesson-1492-testing-selectors`
-- *Topics:*
-  - Testing selector output for given state
-  - Testing selector memoization: same input → same reference
-  - Testing composed selectors
-  - Testing entity selectors
-  - Edge cases: empty state, partial state, undefined inputs
-- *Training Exercise:* Test todo selectors: selectAll, selectCompleted, selectById. Verify memoization.
-- *Project Application:* Test `TaskSelectors`: selectTasksByColumn with various filters. Test `selectTaskCountByPriority`.
-
-##### Lesson 14.9.3: Testing Effects
-- *Objective:* Test effect logic with mocked actions and services.
-- *Branch Name:* `lesson-1493-testing-effects`
-- *Topics:*
-  - `runEffects()` — testing effect execution
-  - Mocking actions: `hot()`, `cold()` from `@ngrx/effects/testing`
-  - Mocking HTTP services with `TestingModule` / Vitest mocks
-  - Testing effect dispatch: verifying output actions
-  - Testing error paths in effects
-  - Testing `dispatch: false` effects
-  - Testing effect cleanup
-- *Training Exercise:* Test an effect that fetches data: verify it dispatches success on 200, error on 500.
-- *Project Application:* Test `LoadTasksEffect`: mock HTTP response, verify `TasksLoaded` dispatched. Test error path: verify `TasksLoadFailed`.
-
-##### Lesson 14.9.4: Testing signalStore
-- *Objective:* Test signalStore state, methods, and rxMethods.
-- *Branch Name:* `lesson-1494-testing-signal-store`
-- *Topics:*
-  - Testing signalStore state signals
-  - Testing computed signals in signalStore
-  - Testing methods: invoking and verifying state changes
-  - Testing rxMethods: mocking HTTP, verifying operation states
-  - Testing signalStore hooks
-  - `signalStore` testing utilities from `@ngrx/signals/testing`
-- *Training Exercise:* Test a signalStore with counter state, computed double, and increment method.
-- *Project Application:* Test `UiSignalStore`: verify filter changes, board selection. Test `TaskSignalStore`: verify rxMethod loading/success/error states.
-
-##### Lesson 14.9.5: Integration Testing with NgRx
-- *Objective:* Test components connected to the NgRx store.
-- *Branch Name:* `lesson-1495-testing-integration`
-- *Topics:*
-  - Providing a mock store with `provideMockStore()`
-  - Mocking selectors with `selector`: { getter, value }
-  - Mocking dispatch: verifying actions dispatched
-  - Testing component → store → component data flow
-  - Testing with `render()` and NgRx store
-  - Overriding store providers in tests
-- *Training Exercise:* Test a component that displays counter value from the store. Verify increment button dispatches the correct action.
-- *Project Application:* Test TaskFlow board component: verify it dispatches `TasksLoadRequested` on init. Verify task list updates when store state changes.
+  - Reducers: `expect(reducer(state, action)).toEqual(expected)` — the easiest tests you will write
+  - Selectors: `selector.projector(...)` for pure projection tests; memoization checks
+  - Components: `provideMockStore({ initialState })`, `MockStore.overrideSelector()`, spying on `dispatch`
+- *Training Exercise:* Test the counter reducer, the todo selectors, and a component that dispatches on click
+- *Project Application:* Test `taskReducer`, `boardReducer`, all selectors, and `Board` / `Column` with `provideMockStore` — coverage policy still applies
 
 ---
 
-#### 14.10: Refactoring TaskFlow to NgRx
-
-##### Lesson 14.10.1: Migration Strategy — Service Store to NgRx
-- *Objective:* Plan and execute the migration from service-based store to NgRx.
-- *Branch Name:* `lesson-14101-migration-strategy`
+### Lesson 14.8: Migration — Replace the Service Stores
+- *Objective:* Execute the migration and delete the legacy stores.
+- *Branch Name:* `lesson-14.8-migration`
 - *Topics:*
-  - Migration audit: identifying all state management touchpoints
-  - Phase 1: Define actions and reducers (no component changes yet)
-  - Phase 2: Replace service selectors with store selectors
-  - Phase 3: Replace service action methods with dispatch()
-  - Phase 4: Add effects for async operations
-  - Phase 5: Add entity adapters for collections
-  - Strangler pattern: migrating one feature at a time
-  - Rollback strategy: keeping the service store as a fallback
-- *Training Exercise:* Create a migration checklist for the training counter/todo app.
-- *Project Application:* Audit TaskFlow: list all components that read/write store state. Create a migration plan.
-
-##### Lesson 14.10.2: Full Migration — Tasks Feature
-- *Objective:* Migrate the tasks feature from service store to NgRx Store + Entity.
-- *Branch Name:* `lesson-14102-migrate-tasks`
-- *Topics:*
-  - Define `TasksFeature` with `createFeature()` + entity adapter
-  - Define task actions: `AddTask`, `UpdateTask`, `DeleteTask`, `LoadTasks`, etc.
-  - Create task effects: `LoadTasksEffect`, `AddTaskEffect`, etc.
-  - Replace `taskStore.selectXxx` with `store.select(selectXxx)`
-  - Replace `taskStore.addAction()` with `store.dispatch(TasksAction.added())`
-  - Verify all task components work after migration
-- *Training Exercise:* Migrate the todo feature from service store to NgRx.
-- *Project Application:* Migrate all task-related state in TaskFlow to NgRx. Verify: add, edit, delete, move tasks. Visually check with Chrome DevTools.
-
-##### Lesson 14.10.3: Full Migration — Boards & UI Features
-- *Objective:* Complete the migration of boards and UI state to NgRx.
-- *Branch Name:* `lesson-14103-migrate-boards-ui`
-- *Topics:*
-  - Define `BoardsFeature` with `createFeature()` + entity adapter
-  - Define `UiFeature` for UI state (filters, selection, modals)
-  - Migrate board components to use the store
-  - Migrate UI components to use signalStore for local UI state
-  - Final verification: full TaskFlow app with NgRx
-  - DevTools verification: trace a complete user flow
-- *Training Exercise:* Migrate the UI feature (filter, sort) to signalStore.
-- *Project Application:* Complete NgRx migration for TaskFlow. Open NgRx DevTools. Trace: load board → add task → move task → delete task → filter tasks. Verify every action and state change.
+  - Strangler approach: one feature at a time (tasks first, then boards), app keeps working between steps
+  - Mapping: `taskStore.moveTask()` → `dispatch(TaskActions.moved())`, `taskStore.filteredTasks()` → `selectSignal(selectFilteredTasks)`
+  - Finding dead code after the switch; deleting `core/task.store.ts` / `core/board.store.ts`
+  - Post-migration verification with DevTools and the test suite
+- *Training Exercise:* Migrate the training todo app from its service store to NgRx using the same steps
+- *Project Application:* Complete the TaskFlow migration; remove the old stores; all tests green; spec §9 checklist still passes
 
 ---
 
-### Phase 14 Summary
-
-After completing Phase 14, the student will:
-1. **Understand** why global state management is needed (from Lesson 5.6 problems)
-2. **Build** NgRx Store with `createFeature()`, actions, reducers, selectors
-3. **Handle** side effects with Effects and HTTP integration
-4. **Manage** collections with @ngrx/entity
-5. **Use** @ngrx/signals `signalStore()` for reactive, signal-based stores
-6. **Configure** the store with runtime config and middleware
-7. **Debug** with NgRx DevTools: time-travel, action inspection, state diffing
-8. **Test** every layer: reducers, selectors, effects, signalStore, integration
-9. **Migrate** a real application from service store to NgRx (TaskFlow)
+### Lesson 14.9: Beyond `@ngrx/store` — Effects, Entity, signalStore (Awareness)
+- *Objective:* Know the rest of the ecosystem well enough to choose it.
+- *Branch Name:* `lesson-14.9-ngrx-ecosystem`
+- *Topics:*
+  - `@ngrx/effects`: `createEffect()`, `Actions` + `ofType()`, flattening operators — where TaskFlow *would* use it if it had an HTTP backend
+  - `@ngrx/entity`: `createEntityAdapter()`, `{ ids, entities }` shape, generated CRUD and selectors
+  - `@ngrx/signals`: `signalStore()`, `withState()`, `withComputed()`, `withMethods()`, `withHooks()`, `rxMethod()`, `withEntities()` — the signal-native alternative; comparison with 5.7 and with `@ngrx/store`
+  - Decision guide for the learner's next project
+- *Training Exercise:* Rebuild the training todo store as a `signalStore()` in the training app and compare line count and readability with the `@ngrx/store` version
+- *Project Application:* N/A (awareness lesson) — optionally write an ADR in `course/` recording why TaskFlow uses `@ngrx/store`
 ---
 
 ## Phase Completion Criteria
@@ -452,8 +137,8 @@ Before marking this phase as complete:
 - [ ] All lessons implemented and merged to `main`
 - [ ] All training exercises completed
 - [ ] All project applications integrated into TaskFlow
-- [ ] Code reviewed and follows best practices
-- [ ] Tests pass (if Testing Phase already completed)
+- [ ] Legacy service stores removed; `taskflow-spec.md` §9 checklist still passes
+- [ ] Tests pass and coverage thresholds are met
 
 ---
 
@@ -462,9 +147,9 @@ Before marking this phase as complete:
 After completing this phase, the learner should be able to:
 
 - Explain the Redux pattern and why unidirectional data flow reduces bugs
-- Build NgRx Store with `createFeature()`, typed actions, reducers, and selectors
-- Handle side effects with Effects and integrate with HTTP services
-- Manage entity collections with `@ngrx/entity` (normalize, denormalize)
-- Use `@ngrx/signals` `signalStore()` for signal-based reactive stores
-- Debug state changes with NgRx DevTools: time-travel, action inspection, state diffing
-- Migrate a service-based store to NgRx incrementally (strangler pattern)
+- Build a store with `createActionGroup`, `createReducer`, `createSelector`, and `createFeature`
+- Consume store state as signals with `selectSignal()` and dispatch actions from components
+- Debug with Redux DevTools and runtime immutability checks
+- Test reducers, selectors, and connected components with `provideMockStore`
+- Migrate a service-based store to NgRx incrementally and remove the legacy code
+- Choose between `@ngrx/store`, `signalStore`, and a plain signal service for a given project

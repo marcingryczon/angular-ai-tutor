@@ -85,7 +85,7 @@ The look is reproduced by reusing these exact class names:
 - **Element**: `block__element` → `.task-card__title`, `.column__count`, `.field__input`.
 - **Modifier**: `block--modifier` / `element--modifier` → `.btn--primary`, `.badge--urgent`, `.board-card--empty`.
 
-If you need a new visual, add it to the global stylesheet following this scheme — do not scope styles inside components.
+If you need a new visual, follow this naming scheme. Put it in the owning component's `.scss` file; add it to `styles.scss` only when it is a token, reset, or a primitive intentionally shared by several components (buttons, badges, form fields).
 
 ---
 
@@ -210,7 +210,7 @@ Pill shape, uppercase bold 0.72rem; each level uses its palette color for text w
 - **Accessibility behaviors** (built into `Modal`, match them): closes on **Escape** or a click outside the panel; moves focus into the dialog when opened and restores it to the previously-focused element when closed; locks body scroll while open. The parent controls visibility by conditionally rendering with `@if` — there is no separate "open" state inside the component.
 
 ### 5.7 Task form (`features/board/task-form.ts`, `.task-form`)
-A **reactive (typed) form** shared by create and edit. Fields, in order: **Title** (required; shows a "Title is required." error when touched+invalid), **Description** (textarea, rows=3), then a row of three — **Priority** select, **Due date** (`<input type="date">`), **Assignee** select (Unassigned + each user). Actions row: primary button first (**"Add task"** on create / **"Save changes"** on edit; disabled while the form is invalid) followed by a plain **Cancel** button. When editing, the form pre-fills from the existing task in `ngOnInit`.
+A **Signal Form** (`form()` + schema from `@angular/forms/signals`) shared by create and edit. Fields, in order: **Title** (required; shows a "Title is required." error when touched+invalid), **Description** (textarea, rows=3), then a row of three — **Priority** select, **Due date** (`<input type="date">`), **Assignee** select (Unassigned + each user). Actions row: primary button first (**"Add task"** on create / **"Save changes"** on edit; disabled while the form is invalid) followed by a plain **Cancel** button. When editing, the form model is initialised from the `task` input (a `linkedSignal` so it resets when a different task is edited).
 
 ---
 
@@ -273,7 +273,9 @@ On first run (or after "Reset demo data") the store is seeded with:
 ## 8. File & Folder Layout (the structure)
 
 ```
-projects/taskflow/src/
+projects/taskflow/
+├─ public/seed.json           # seed users / boards / tasks (§7.3)
+└─ src/
 ├─ index.html                 # loads Material Symbols Rounded; <app-root/>
 ├─ main.ts                    # bootstrapApplication(App, appConfig)
 ├─ styles.scss                # ★ the entire design system (single source of look)
@@ -287,12 +289,16 @@ projects/taskflow/src/
    │  ├─ db.ts                # TaskFlowDb: localStorage persistence + seed data
    │  ├─ helpers.ts           # newId() and small utilities
    │  ├─ session.service.ts   # role + current user (drives admin-only UI)
-   │  ├─ board.store.ts       # boards state (create/delete/reset, counts)
-   │  ├─ task.store.ts        # tasks state: filters, computed filteredTasks, CRUD, move
+   │  ├─ board.store.ts       # boards state (create/delete/reset, counts)  — Phases 5–13
+   │  ├─ task.store.ts        # tasks state: filters, computed filteredTasks, CRUD, move — Phases 5–13
+   │  ├─ ngrx/                # Phase 14 only: replaces the two stores above
+   │  │  ├─ board.store.ts    # BoardActions + boardReducer + boardsFeature + selectors
+   │  │  └─ task.store.ts     # TaskActions + taskReducer + tasksFeature + selectors
    │  ├─ board.service.ts     # thin service layer over the db for boards
    │  ├─ task.service.ts      # thin service layer over the db for tasks
    │  ├─ board.resolver.ts    # resolves a board by id into route data
    │  └─ role.guard.ts        # role-based route guard (admin/member)
+   ├─ shared/role-switch.ts   # topbar Admin/Member select (model())
    ├─ features/
    │  ├─ board-list/board-list.ts   # "/" screen: gallery + create-board form
    │  └─ board/
@@ -310,10 +316,12 @@ projects/taskflow/src/
          └─ priority-label.pipe.ts        # 'urgent' → "Urgent"
 ```
 
+Every component listed above has a matching `.html` and `.scss` next to its `.ts` (omitted for brevity).
+
 **Architecture invariants (keep these to stay on-brand):**
 - **Feature-first**: `core/` holds domain + state with no UI; `features/` hold screens; `shared/` holds reusable primitives.
 - **Standalone components**, signal inputs (`input()`), outputs (`output()`), and `inject()`.
-- **State lives in stores** (`board.store`, `task.store`) as signals + `computed`; components dispatch mutations to the store rather than mutating data directly.
+- **State lives in stores** (`board.store`, `task.store`) as signals + `computed`; components dispatch mutations to the store rather than mutating data directly. In Phase 14 the two signal stores are replaced by NgRx feature slices in `core/ngrx/` — components then read via `store.selectSignal()` and `dispatch()`; the invariant (state outside components) is unchanged.
 - **Component file separation** — keep component behavior in `.ts`, templates in `.html`, and component-specific styles in `.scss` files.
 - **Global styles are foundational** — use `styles.scss` for design tokens, resets, and styles intentionally shared across components; do not make it the primary source of component-specific styles.
 
@@ -336,3 +344,27 @@ Use this to verify your build matches the reference look:
 - [ ] Drag & drop moves cards between columns with a drop highlight; quick-add works per column.
 - [ ] Role toggle hides/shows admin-only actions.
 - [ ] Data persists to `localStorage` (`taskflow.db.v1`) and seeds the 2 users / 2 boards / 5 tasks from §7.3 on first run or reset.
+
+---
+
+## 10. Build Milestones per Phase (what TaskFlow looks like after each phase)
+
+Use this so every learner's TaskFlow is in the *same* state at each phase boundary. A milestone lists only what is **new**; everything from earlier milestones remains.
+
+| After phase | TaskFlow state |
+|---|---|
+| **0** | Unchanged UI. `core/models.ts` (§7.1 types) and `core/helpers.ts` (`newId`, `findById`) exist. |
+| **1** | `styles.scss` holds the §1.2 tokens. `App` renders the static topbar (§2) and one hardcoded board via `features/board/board.ts` → `column.ts` → `task-card.ts`. Four columns, cards from a hardcoded `Task[]`, "No tasks" empty state, header task count. No interactivity. Layout is already `core/` / `features/` / `shared/`. |
+| **2** | Data flows through `input()`s; cards emit `edit`/`delete`; quick-add emits on Enter; role switch is `shared/role-switch.ts` with `model()`; `shared/modal.ts` shell exists (projected body, `@if`-controlled). Drag & drop moves cards between columns with the `.column--drop` highlight. Edit still does nothing visible (no form yet). |
+| **3** | `SessionService`, `BoardService`, `TaskService`, `BOARD_CONFIG`, and `TaskFlowDb` exist; state persists to `localStorage` (`taskflow.db.v1`); "Reset demo data" re-seeds. Still one board, no routing. |
+| **4** | All state is signals. Filter bar (§5.2) works: search, priority, assignee, filtered count. Persistence runs through an `effect()`. |
+| **5** | Seed comes from `public/seed.json` via `httpResource()`. Search is debounced. `core/task.store.ts` / `core/board.store.ts` are the only state owners; services are thin. |
+| **6** | Task form (§5.7) with Signal Forms opens in the modal for create and edit; title required; duplicate-title validator. View modal shows detail + Edit/Delete. |
+| **7** | Routes per §3. Board list (§4) with board cards and the create-board form; board page reads `boardId` as an input; `boardResolver` redirects unknown boards; routes lazy-loaded with `PreloadAllModules`; `role.guard.ts` protects an admin placeholder route. |
+| **8** | Every component is `OnPush`; every `@for` tracks by id; modal body under `@defer`. No visual change. |
+| **9** | `*adminOnly` hides Reset/Delete for members; `[priorityHighlight]` accent on cards; `DueDatePipe` and `PriorityLabelPipe` used in templates. |
+| **10** | SSR enabled: `/` prerendered, board page server-rendered, hydration clean, `TaskFlowDb` no-op on the server. |
+| **11** | Unit tests for every unit; coverage ≥ 90% in `projects/taskflow/src/`. No visual change. |
+| **12** | ARIA structure on board/columns/cards; modal has focus trap, Escape, focus restore, scroll lock; keyboard "move task" alternative; enter/leave animations with reduced-motion fallback. |
+| **13** | Boundaries audited, domain functions extracted, bundle budgets tightened, global error handling, CI workflow. No visual change. |
+| **14** | State managed by `@ngrx/store` (`core/ngrx/`); old signal stores deleted; DevTools enabled in dev; tests updated. No visual change — §9 checklist still passes. |

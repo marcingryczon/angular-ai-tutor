@@ -1,86 +1,103 @@
-# Phase 5: RxJS & Async Patterns
-*Focus: Streaming data and the RxJS + Signals synergy.*
+# Phase 5: RxJS, HTTP & Async Patterns
+*Focus: Streams, HTTP, and the RxJS + Signals synergy.*
 
-## Git Branch: `lesson-5*-*`
+## Git Branch: `lesson-5.<n>-*`
+## Training dir: `src/app/phase-5-rxjs/5.<n>-<slug>/` · Lesson notes: `lessons/phase-5-rxjs/5.<n>-<slug>.md`
+
+> TaskFlow has no backend. HTTP lessons use static JSON files served from `projects/taskflow/public/` (see `taskflow-spec.md` §7.3) so every learner sees the same data.
 
 ---
 
 ### Lesson 5.1: RxJS Fundamentals
 - *Objective:* Observables, Subjects, subscriptions, unsubscription.
-- *Branch Name:* `lesson-51-rxjs-basics`
+- *Branch Name:* `lesson-5.1-rxjs-basics`
 - *Topics:*
-  - Observable vs Promise: lazy, async streams
-  - Subject: multicasting, manual emission
+  - Observable vs Promise: lazy, cancellable, multi-value
+  - `Subject` / `BehaviorSubject`: multicasting, manual emission, current value
   - Subscription lifecycle and memory leaks
+  - Signals vs Observables: state vs events over time — when each is the right tool
 - *Training Exercise:* Create an Observable, subscribe to it, emit values via Subject
-- *Project Application:* Simulate API responses with Observables in TaskFlow services
+- *Project Application:* Add a `Subject<TaskEvent>` "event bus" to `TaskService` that emits `created` / `moved` / `deleted` events (consumed by the toast in 5.5)
 
 ---
 
 ### Lesson 5.2: Essential Operators
-- *Objective:* `map`, `filter`, `switchMap`, `takeUntil`, `catchError`.
-- *Branch Name:* `lesson-52-rxjs-operators`
+- *Objective:* `map`, `filter`, `switchMap`, `debounceTime`, `distinctUntilChanged`, `catchError`.
+- *Branch Name:* `lesson-5.2-rxjs-operators`
 - *Topics:*
-  - `map` — transform emitted values
-  - `filter` — conditionally pass values
-  - `switchMap` — flatten nested observables with cancellation
-  - `catchError` — handle errors in the stream
+  - Transformation: `map`, `filter`, `tap`
+  - Flattening: `switchMap` vs `mergeMap` vs `concatMap` vs `exhaustMap` — cancellation semantics
+  - Timing: `debounceTime`, `distinctUntilChanged`
+  - Combining: `combineLatest`, `forkJoin`
+  - Errors: `catchError`, `retry`
 - *Training Exercise:* Chain operators to transform and handle an HTTP-like stream
-- *Project Application:* Transform and handle task API responses in TaskFlow
+- *Project Application:* Debounce the filter-bar search input (300 ms, distinct) before it reaches the `search` signal
 
 ---
 
-### Lesson 5.3: `toSignal()` - Bridges
-- *Objective:* Convert Observables to Signals for synchronous access.
-- *Branch Name:* `lesson-53-to-signal`
+### Lesson 5.3: `HttpClient`
+- *Objective:* Fetch typed data over HTTP the Angular way.
+- *Branch Name:* `lesson-5.3-http-client`
 - *Topics:*
-  - `toSignal(obs, { requireSync, initialValue })` — bridge Observable to Signal
-  - Why bridge: synchronous access to async data in templates and effects
-  - Alias signals: `aliasSignal()` for computed aliases
+  - `provideHttpClient()` in `app.config.ts`; `withFetch()`
+  - `HttpClient.get<T>()` returns a cold Observable — nothing happens until subscribed
+  - Typed responses and DTO → domain mapping with `map`
+  - Interceptors: `withInterceptors([fn])` — logging, headers, error mapping
+  - Error handling: `HttpErrorResponse`, `catchError`
+- *Training Exercise:* Load `public/mock/users.json`, map it to a typed model, add a logging interceptor
+- *Project Application:* Move the seed data to `projects/taskflow/public/seed.json`; `TaskFlowDb.seed()` loads it with `HttpClient` (due dates stored as `dueInDays` offsets, resolved at seed time)
+
+---
+
+### Lesson 5.4: `toSignal()` / `toObservable()` — Bridges
+- *Objective:* Convert between Observables and Signals.
+- *Branch Name:* `lesson-5.4-to-signal`
+- *Topics:*
+  - `toSignal(obs$, { initialValue })` / `{ requireSync: true }` — subscribe once, read synchronously
+  - `toObservable(signal)` — when an operator pipeline needs a signal as input
+  - Where the subscription lives (injection context, `DestroyRef`)
 - *Training Exercise:* Convert an Observable to a Signal and use it in a component
-- *Project Application:* Bridge TaskFlow service Observables to Signals for template use
+- *Project Application:* Implement the debounced search from 5.2 as `toObservable(searchInput)` → `debounceTime` → `toSignal()`
 
 ---
 
-### Lesson 5.4: `takeUntilDestroyed()`
+### Lesson 5.5: `takeUntilDestroyed()` & `DestroyRef`
 - *Objective:* Automatic subscription cleanup, prevent memory leaks.
-- *Branch Name:* `lesson-54-takeuntil-destroyed`
+- *Branch Name:* `lesson-5.5-takeuntil-destroyed`
 - *Topics:*
-  - `takeUntilDestroyed()` — auto-unsubscribe on component destroy
-  - `DestroyRef` — manual cleanup registration
-  - Why manual unsubscribe is no longer needed
-- *Training Exercise:* Subscribe to an Observable with `takeUntilDestroyed()`
-- *Project Application:* Safe subscriptions in TaskFlow components
+  - `takeUntilDestroyed()` — auto-unsubscribe on destroy (needs injection context or an explicit `DestroyRef`)
+  - `DestroyRef.onDestroy()` — manual cleanup registration
+  - When you still need manual unsubscribe (services, long-lived subscriptions)
+- *Training Exercise:* Subscribe to an Observable with `takeUntilDestroyed()`; prove the leak without it
+- *Project Application:* `Board` subscribes to the `TaskService` event bus with `takeUntilDestroyed()` to show a short "Task moved" notice
 
 ---
 
-### Lesson 5.5: Resource API
-- *Objective:* `resource()` for data fetching, the modern async pattern.
-- *Branch Name:* `lesson-55-resource-api`
+### Lesson 5.6: `resource()` & `httpResource()`
+- *Objective:* Declarative async data with built-in loading / error states.
+- *Branch Name:* `lesson-5.6-resource-api`
 - *Topics:*
-  - `resource()` — declarative data fetching API
-  - `ResourceRef` states: loading, resolved, expired, errored
-  - Dependencies between resources
-- *Training Exercise:* Fetch data using `resource()`, handle loading/error states
-- *Project Application:* Load board and task data declaratively in TaskFlow
+  - `resource({ params, loader })` — signal-driven async data
+  - `httpResource(() => url)` — the HTTP-specialised resource
+  - `ResourceRef` states: `value()`, `status()`, `error()`, `isLoading()`, `reload()`
+  - Resource vs `HttpClient` + `toSignal()`: when each fits
+- *Training Exercise:* Fetch data using `httpResource()`, render loading and error states
+- *Project Application:* Replace the manual `HttpClient` seed load with `httpResource()`; show a loading state on first run
 
 ---
 
-### Lesson 5.6: Service-Based State Store Pattern
-- *Objective:* Build a centralized state store using `injectable()` services, Signals, and RxJS — the foundation for understanding why NgRx exists.
-- *Branch Name:* `lesson-56-service-store`
+### Lesson 5.7: Service-Based State Store Pattern
+- *Objective:* Build a centralized signal store — the foundation for understanding why NgRx exists.
+- *Branch Name:* `lesson-5.7-service-store`
 - *Topics:*
-  - Why centralized state: the problem of "prop drilling" and scattered state
-  - Service Store pattern: singleton service as a state container
-  - State interface: defining the shape of application state
-  - Writable signals as state backend in services
-  - Selectors as computed signals derived from state
-  - Actions as service methods that mutate state (addTask, updateTask, deleteTask)
-  - RxJS Subject as a command bus (prelude to NgRx actions)
-  - Loading/error states in the store
-  - When service store is enough vs when you need NgRx
-- *Training Exercise:* Build a minimal `CounterStore` service with state, selectors, and action methods. Connect two unrelated components to it.
-- *Project Application:* Create `TaskStore` and `BoardStore` services for TaskFlow. Move all imperative component state into centralized stores. Components read from store selectors and dispatch via store action methods. This is the "before NgRx" baseline.
+  - Why centralized state: prop drilling and scattered state
+  - Store = `@Injectable` service with private `signal()` state, public `computed()` selectors, and action methods
+  - State interface: the shape of application state
+  - Loading / error state in the store
+  - Persistence effect in the store (moved from 4.3)
+  - When a service store is enough vs when you need NgRx (Phase 14)
+- *Training Exercise:* Build a minimal `CounterStore` with state, selectors, and action methods; connect two unrelated components
+- *Project Application:* Create `core/task.store.ts` and `core/board.store.ts` per spec §8. Components read only store selectors and call store actions. `TaskService` / `BoardService` become thin data-access layers over `TaskFlowDb`.
 ---
 
 ## Phase Completion Criteria
@@ -99,9 +116,9 @@ Before marking this phase as complete:
 
 After completing this phase, the learner should be able to:
 
-- Compose observables with `map`, `switchMap`, `mergeMap`, `combineLatest`, `debounceTime`
-- Explain the difference between `switchMap`, `mergeMap`, `concatMap`, and `exhaustMap`
-- Use `toSignal()` to bridge RxJS streams into the signal world
-- Implement a service-based state store with `BehaviorSubject` + selectors
-- Handle HTTP requests with `HttpClient` + interceptors and convert to signals
-- Apply the `resource()` / `httpResource()` pattern for declarative async data
+- Explain Observable vs Promise vs Signal and pick the right tool
+- Compose streams with `map`, `switchMap`, `debounceTime`, `combineLatest` and explain `switchMap` vs `mergeMap` vs `concatMap` vs `exhaustMap`
+- Fetch typed data with `HttpClient`, add an interceptor, and handle errors
+- Bridge both ways with `toSignal()` / `toObservable()` and clean up with `takeUntilDestroyed()`
+- Use `resource()` / `httpResource()` for declarative async data with loading and error states
+- Implement a signal-based service store with selectors and action methods

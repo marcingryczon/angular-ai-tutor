@@ -15,14 +15,18 @@ The phases below were derived from the concepts most unique to **Angular** — s
 
 **Status legend:** ⬜ not started ◐ in progress ✅ completed
 
+> **Keep this table current.** When a lesson branch is merged, update the status here (and mirror it in `README.md`). Progress is also visible from `git branch --list 'lesson-*'`.
+
+**Phase dependencies and the recommended order** live in `course/prerequisites.md`. **What TaskFlow must look like after each phase** is defined in `course/taskflow-spec.md` §10 (Build Milestones) — check the milestone before starting a phase and verify it before closing one.
+
 | Phase | Status | Topic | File |
 |---|---|---|---|
-| **0** | ⬜ | Project Setup & Angular Fundamentals | `course/phase-00-fundamentals.md` |
-| **1** | ⬜ | Standalone Components & Templates | `course/phase-01-components.md` |
+| **0** | ✅ | Project Setup & Angular Fundamentals | `course/phase-00-fundamentals.md` |
+| **1** | ◐ | Standalone Components & Templates | `course/phase-01-components.md` |
 | **2** | ⬜ | Component Communication | `course/phase-02-communication.md` |
 | **3** | ⬜ | Dependency Injection | `course/phase-03-di.md` |
 | **4** | ⬜ | Signals & Reactive State | `course/phase-04-signals.md` |
-| **5** | ⬜ | RxJS & Async Patterns (incl. Service Store) | `course/phase-05-rxjs.md` |
+| **5** | ⬜ | RxJS, HTTP & Async Patterns (incl. Service Store) | `course/phase-05-rxjs.md` |
 | **6** | ⬜ | Forms | `course/phase-06-forms.md` |
 | **7** | ⬜ | Routing & Navigation | `course/phase-07-routing.md` |
 | **8** | ⬜ | Change Detection & Performance | `course/phase-08-performance.md` |
@@ -43,21 +47,27 @@ The repository uses a structured branching model to keep the codebase clean and 
 
 | Branch | Purpose | Modifiable? |
 |---|---|---|
-| `start` | **Clean baseline** — the original project setup. Represents the starting point of the curriculum. | ❌ No (only to update project assumptions) |
-| `main` | **Working branch** — mirror of `start`. All lesson branches are merged here. | ✅ Yes (merge target for lesson branches) |
-| `lesson-<phase>.<lesson>-*` | **Lesson branches** — each lesson gets its own branch created from the previous lesson (or `main`). After completion, merged back to `main`. | ✅ Yes (active development) |
+| `start` | **Clean baseline** — the original project setup and the curriculum documents. | ❌ Only to update project assumptions or curriculum docs |
+| `main` | **Working branch** — receives every completed lesson branch. | ✅ Yes (merge target) |
+| `lesson-<phase>.<lesson>-<slug>` | **Lesson branches** — one per lesson. | ✅ Yes (active development) |
+| `taskflow-finished`, `taskflow-preview` | **Reference implementation** of the finished TaskFlow. The tutor may consult it to verify the learner's result against the spec, but must never copy from it or show it to the learner before the corresponding lesson. | ❌ Read-only |
 
 ### Rules
 
-1. **`start` branch is the source of truth** for the clean project state. Do not modify it directly unless updating foundational project setup.
-2. **`main` tracks progress** — every completed lesson branch merges into `main`.
-3. **Each lesson branches from `main`** — ensures lessons build on top of all previous work.
-4. **Lesson branches follow naming convention** — `lesson-<phase>.<lesson>-<topic-name>` (e.g., `lesson-0.2.1-ts-strict-why`, `lesson-1.1-standalone-basics`). The dotted prefix avoids collisions between lesson numbers (e.g. lesson `1.1` vs lesson `11`).
+1. **`start` is the source of truth** for the clean project state and the curriculum files (`course/`, `agent-skills/`, templates). Curriculum fixes go to `start` and are merged forward into `main`.
+2. **Naming is dotted**: `lesson-<phase>.<lesson>-<slug>`, e.g. `lesson-0.2.1-ts-strict-why`, `lesson-1.5-component-styling`, `lesson-14.2-actions`. The dot prevents collisions (`1.1` vs `11`). The slug must match the *Branch Name* in the phase file. Never use the undotted form (`lesson-11-…`).
+3. **Each lesson branches from the previous lesson branch** (or from `main` at the start of a phase), so lessons build on top of all previous work.
+4. **Merge into `main` at least at the end of every phase** (merging after every lesson is fine too). A phase is not "completed" in the Phase Index until its last lesson is on `main`.
+5. **Directory convention** (must match the branch):
+   - Training exercises: `src/app/phase-<N>-<topic>/<N>.<M>-<slug>/`
+   - Lesson notes (Polish): `lessons/phase-<N>-<topic>/<N>.<M>-<slug>.md`
+   - Phase topic slugs: `0-fundamentals`, `1-components`, `2-communication`, `3-di`, `4-signals`, `5-rxjs`, `6-forms`, `7-routing`, `8-performance`, `9-directives-pipes`, `10-ssr`, `11-testing`, `12-accessibility`, `13-architecture`, `14-ngrx`
+   - Lessons created before this convention (flat `src/app/0.2.1-…/`, `lessons/0.1-….md`) are moved into the phase folders when their branch is next touched or merged.
 
 ### Flow
 
 ```
-start (clean baseline, read-only)
+start (clean baseline + curriculum docs)
   └── main (merge target)
         ├── lesson-0.1-workspace-anatomy ──┐
         ├── lesson-0.2.1-ts-strict-why ────┤── merged after completion
@@ -75,20 +85,23 @@ start (clean baseline, read-only)
 5. Keep the course language consistent — phase files and skills use ONE language (EN). **Lesson files (`lessons/`) may be written in Polish (PL)** — the learner's language.
 6. Use the angular-cli MCP server as much as you can.
 7. Do not run npm commands by yourself without ask. THIS IS VERY IMPORTANT!
-8. Skip unit tests entirely until the Testing Phase (Phase 11) — do not write, update, or run tests in earlier lessons.
+8. Skip unit tests entirely until the Testing Phase (Phase 11) — do not write, update, or run tests in earlier lessons. `angular.json` sets `skipTests: true` for schematics so `ng generate` does not create `.spec.ts` files; lesson 11.1 removes it.
+9. **Signals timeline:** before Phase 4 do not create state with `signal()` / `computed()` / `effect()` — use plain class properties. The signal-based component APIs (`input()`, `output()`, `model()`, `viewChild()`) are used from Phase 1–2 on because they are the standard Angular 22 component API.
+10. **Zoneless:** this workspace has no `zone.js`. Never add it or `provideZoneChangeDetection()` to TaskFlow; teach change detection as signal-driven (Phase 0.3, Phase 8).
+11. **Verify facts against `agent-skills/angular-skills/references/`** before teaching an API. If a phase file and a reference file disagree, the reference file wins — and the phase file must be fixed.
 
 ---
 
 ## Learner Environment
 
-> Filled in during instantiation.
 > ALL terminal commands MUST be adapted to this environment (shell syntax, path style, quoting).
+> If the detected OS differs from the one below (e.g. the learner switches machines), ask once and update this section.
 
-- **OS:** Windows 11
-- **Shell:** PowerShell 7 (pwsh)
-- **Path style:** Windows (`C:\...`)
-- **Command chaining:** `;` (PowerShell 5) or `&&` (PowerShell 7)
-- **Notes:** Case-insensitive file system; CRLF line endings; GUI tools available.
+- **OS:** macOS
+- **Shell:** zsh
+- **Path style:** POSIX (`/Users/...`)
+- **Command chaining:** `&&`
+- **Notes:** Case-insensitive (by default) file system; LF line endings; GUI tools available.
 
 ---
 
@@ -101,7 +114,7 @@ The learner can invoke these at any point during a session:
 | `toc` / `spis treści` | Show phase/lesson progress from the Phase Index |
 | `skip` / `pomiń` | Skip the current exercise and move to the next step |
 | `repeat` / `powtórz` | Re-explain the current concept from a different angle |
-| `test` | Run the project's test suite and report results |
+| `test` | Run the project's test suite and report results — **only from Phase 11 on**; before that, reply that tests are introduced in Phase 11. This is the learner's explicit permission to run `npm test`. |
 | `status` / `stan` | Show current branch, lesson progress, and coverage (if Testing Phase done) |
 
 ---

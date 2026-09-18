@@ -1,91 +1,82 @@
 # Phase 7: Routing & Navigation
 *Focus: Multi-page applications and advanced routing.*
 
-## Git Branch: `lesson-7*-*`
+## Git Branch: `lesson-7.<n>-*`
+## Training dir: `src/app/phase-7-routing/7.<n>-<slug>/` · Lesson notes: `lessons/phase-7-routing/7.<n>-<slug>.md`
 
 ---
 
 ### Lesson 7.1: Route Configuration
-- *Objective:* `provideRoutes`, route definitions, basic navigation.
-- *Branch Name:* `lesson-71-route-config`
+- *Objective:* `provideRouter`, route definitions, basic navigation.
+- *Branch Name:* `lesson-7.1-route-config`
 - *Topics:*
-  - `provideRoutes()` — configure routes declaratively
-  - Route definitions: path, component, children
-  - Route matching strategies
-- *Training Exercise:* Define routes for 2-3 pages, navigate between them
-- *Project Application:* Configure routes for TaskFlow board pages
+  - `provideRouter(routes, ...features)` in `app.config.ts`
+  - `Routes`: `path`, `component`, `children`, `redirectTo`, `pathMatch`
+  - Wildcard `**` and redirects
+  - Route `title`
+- *Training Exercise:* Define routes for 2–3 pages, navigate between them
+- *Project Application:* Configure `app.routes.ts` per spec §3: `''` and `boards` → `BoardList` (placeholder), `boards/:boardId` → `Board`, `**` → redirect
 
 ---
 
 ### Lesson 7.2: Router Outlet & Links
 - *Objective:* `<router-outlet>`, `routerLink`, active link states.
-- *Branch Name:* `lesson-72-router-outlet`
+- *Branch Name:* `lesson-7.2-router-outlet`
 - *Topics:*
-  - `<router-outlet>` — where routed components render
-  - `routerLink` — declarative navigation
-  - `routerLinkActive` — styling active links
+  - `<router-outlet />` — where routed components render
+  - `routerLink` (string vs array form) and `routerLinkActive`
+  - `Router.navigate()` / `navigateByUrl()` for programmatic navigation
 - *Training Exercise:* Build a navigation bar with active link highlighting
-- *Project Application:* Add board navigation bar to TaskFlow
+- *Project Application:* Build `features/board-list/board-list.ts` per spec §4 (board cards linking to `/boards/:id`, create-board signal form); topbar brand links to `/`; board page gets the "← All boards" back link
 
 ---
 
 ### Lesson 7.3: Route Parameters & Query Params
-- *Objective:* Dynamic segments, reading params.
-- *Branch Name:* `lesson-73-route-params`
+- *Objective:* Dynamic segments, reading params as inputs.
+- *Branch Name:* `lesson-7.3-route-params`
 - *Topics:*
-  - Dynamic route segments: `:id`
-  - `paramsFromRoute()`, `queryParamsFromRoute()`
-  - Reading params in components
-- *Training Exercise:* Build a detail page that reads an ID from the URL
-- *Project Application:* Navigate to specific boards by ID in TaskFlow
+  - Dynamic segments: `:boardId`
+  - `withComponentInputBinding()` — route params, query params, and `data` become `input()`s
+  - `ActivatedRoute` — when you still need it (observables of params, parent routes)
+  - Query params for shareable state
+- *Training Exercise:* Build a detail page that reads an ID from the URL via `input()`
+- *Project Application:* `Board` gets `boardId = input.required<string>()`; the store selects the current board from it
 
 ---
 
 ### Lesson 7.4: Route Guards
-- *Objective:* `canActivate`, `canMatch`, protected routes.
-- *Branch Name:* `lesson-74-route-guards`
+- *Objective:* Functional guards: `canActivate`, `canMatch`, `canDeactivate`.
+- *Branch Name:* `lesson-7.4-route-guards`
 - *Topics:*
-  - `canActivate` — guard route activation
-  - `canMatch` — guard route matching (hide from URL tree)
-  - Redirect logic in guards
+  - `CanActivateFn` — with `inject()` and `Router.createUrlTree()` for redirects
+  - `CanMatchFn` — hide a route entirely
+  - `CanDeactivateFn` — "unsaved changes" prompts
 - *Training Exercise:* Create a guard that checks a simulated auth state
-- *Project Application:* Protect TaskFlow admin routes with role-based guards
+- *Project Application:* Create `core/role.guard.ts` and use it to protect an admin-only route (e.g. `boards/:boardId/settings` placeholder)
 
 ---
 
 ### Lesson 7.5: Resolvers & Data Fetching
-- *Objective:* `resolve`, pre-fetching route data.
-- *Branch Name:* `lesson-75-resolvers`
+- *Objective:* Pre-fetching route data.
+- *Branch Name:* `lesson-7.5-resolvers`
 - *Topics:*
-  - `resolve()` — pre-fetch data before route activation
-  - Resolved data access in components
-  - Resolver vs lazy data loading trade-offs
+  - `ResolveFn<T>` and the `resolve` route property
+  - Reading resolved data via `input()` (with `withComponentInputBinding()`)
+  - Resolver vs loading inside the component (`resource()`): trade-offs, `withNavigationErrorHandler`
 - *Training Exercise:* Create a resolver that loads data before rendering
-- *Project Application:* Preload board data when navigating to a board in TaskFlow
+- *Project Application:* Create `core/board.resolver.ts` that resolves the board (redirects to `/` when missing) — spec §3
 
 ---
 
-### Lesson 7.6: Lazy Loading
+### Lesson 7.6: Lazy Loading & Preloading
 - *Objective:* `loadComponent`, route-level code splitting.
-- *Branch Name:* `lesson-76-lazy-loading`
+- *Branch Name:* `lesson-7.6-lazy-loading`
 - *Topics:*
-  - `loadComponent` — lazy-load route components
-  - Route-level code splitting and bundle impact
-  - Eager vs lazy loading strategies
-- *Training Exercise:* Lazy-load a feature module in a route
-- *Project Application:* Lazy-load TaskFlow board detail pages
-
----
-
-### Lesson 7.7: Deferred Loading (`@defer`)
-- *Objective:* Block-level lazy loading, triggers, placeholders.
-- *Branch Name:* `lesson-77-defer-blocks`
-- *Topics:*
-  - `@defer` — block-level lazy loading
-  - Triggers: `on viewport`, `on timer`, `on interaction`
-  - Placeholder and minimum/maximum delays
-- *Training Exercise:* Defer-load a heavy component on viewport entry
-- *Project Application:* Defer-load heavy board views in TaskFlow
+  - `loadComponent` / `loadChildren` with dynamic `import()`
+  - Bundle impact: inspect the chunks in `ng build` output
+  - Preloading: `withPreloading(PreloadAllModules)` and custom strategies
+- *Training Exercise:* Lazy-load a feature route and verify a separate chunk is produced
+- *Project Application:* Make both TaskFlow routes lazy (`loadComponent`) and enable `PreloadAllModules`
 ---
 
 ## Phase Completion Criteria
@@ -104,9 +95,9 @@ Before marking this phase as complete:
 
 After completing this phase, the learner should be able to:
 
-- Configure lazy-loaded routes with `loadComponent` and `loadChildren`
-- Use route resolvers to preload data before component activation
-- Implement route guards (`CanActivate`, `CanDeactivate`) and child guards
-- Pass and read route parameters, query params, and data
-- Use `deferBlock` for deferred content loading within a route
-- Handle 404, redirect, and wildcard routes correctly
+- Configure routes with `provideRouter()`, redirects, wildcard, and route titles
+- Navigate declaratively (`routerLink`) and programmatically (`Router`)
+- Read params, query params, and resolved data as component `input()`s
+- Implement functional `canActivate`, `canMatch`, and `canDeactivate` guards
+- Choose between resolvers and in-component loading
+- Lazy-load routes with `loadComponent` and configure preloading

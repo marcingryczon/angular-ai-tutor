@@ -23,13 +23,15 @@
 
 ---
 
-## Training Exercise (`src/app/`)
+## Training Exercise (`src/app/phase-{{NUMBER}}-{{PHASE_SLUG}}/{{NUMBER}}.{{SUB}}-{{LESSON_SLUG}}/`)
 
 {{TRAINING_EXERCISE}}
 
 ---
 
 ## Project Application (`projects/taskflow/`)
+
+> Target state after this phase: see `course/taskflow-spec.md` §10.
 
 {{PROJECT_APPLICATION}}
 
@@ -41,7 +43,7 @@ The mentor verifies ALL of the following before the lesson is marked complete:
 
 - [ ] Training exercise runs without errors and matches the expected output
 - [ ] Project application in `projects/taskflow/` integrates the concept and the application still runs
-- [ ] Linter/formatter pass with no new violations
+- [ ] `npx prettier --check` passes for the changed files (and `ng lint`, if ESLint has been added)
 - [ ] {{LESSON_SPECIFIC_CRITERION_1}}
 - [ ] {{LESSON_SPECIFIC_CRITERION_2}}
 

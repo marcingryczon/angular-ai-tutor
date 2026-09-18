@@ -39,12 +39,12 @@ Detailed lesson plans are split across phase files. Each phase builds on all pre
 
 | Phase | Status | Topic | File |
 |---|---|---|---|
-| **0** | ⬜ | Project Setup & Angular Fundamentals | [`course/phase-00-fundamentals.md`](course/phase-00-fundamentals.md) |
-| **1** | ⬜ | Standalone Components & Templates | [`course/phase-01-components.md`](course/phase-01-components.md) |
+| **0** | ✅ | Project Setup & Angular Fundamentals | [`course/phase-00-fundamentals.md`](course/phase-00-fundamentals.md) |
+| **1** | ◐ | Standalone Components & Templates | [`course/phase-01-components.md`](course/phase-01-components.md) |
 | **2** | ⬜ | Component Communication | [`course/phase-02-communication.md`](course/phase-02-communication.md) |
 | **3** | ⬜ | Dependency Injection | [`course/phase-03-di.md`](course/phase-03-di.md) |
 | **4** | ⬜ | Signals & Reactive State | [`course/phase-04-signals.md`](course/phase-04-signals.md) |
-| **5** | ⬜ | RxJS & Async Patterns (incl. Service Store) | [`course/phase-05-rxjs.md`](course/phase-05-rxjs.md) |
+| **5** | ⬜ | RxJS, HTTP & Async Patterns (incl. Service Store) | [`course/phase-05-rxjs.md`](course/phase-05-rxjs.md) |
 | **6** | ⬜ | Forms | [`course/phase-06-forms.md`](course/phase-06-forms.md) |
 | **7** | ⬜ | Routing & Navigation | [`course/phase-07-routing.md`](course/phase-07-routing.md) |
 | **8** | ⬜ | Change Detection & Performance | [`course/phase-08-performance.md`](course/phase-08-performance.md) |
@@ -95,16 +95,17 @@ The repository uses a structured branching model to keep the codebase clean and 
 |---|---|---|
 | `start` | **Clean baseline** — the original project setup. Represents the starting point of the curriculum. | ❌ No |
 | `main` | **Working branch** — mirror of `start`. All lesson branches are merged here. | ✅ Yes |
-| `lesson-XX-*` | **Lesson branches** — each lesson gets its own branch created from `main`. After completion, merged back to `main`. | ✅ Yes |
+| `lesson-<phase>.<lesson>-<slug>` | **Lesson branches** — one per lesson, created from the previous lesson branch (or `main` at phase start). Merged to `main` at least at the end of each phase. | ✅ Yes |
+| `taskflow-finished` | **Reference implementation** of the finished TaskFlow (read-only) | ❌ No |
 
 ### Flow
 
 ```
 start (clean baseline, read-only)
   └── main (merge target)
-        ├── lesson-01-workspace-anatomy ──┐
-        ├── lesson-02-typescript-strict ──┤── merged after completion
-        ├── lesson-11-standalone-basics ──┘
+        ├── lesson-0.1-workspace-anatomy ──┐
+        ├── lesson-0.2.1-ts-strict-why ────┤── merged after completion
+        ├── lesson-1.1-standalone-basics ──┘
         └── ...
 ```
 
@@ -113,7 +114,7 @@ start (clean baseline, read-only)
 1. **`start` branch** is the source of truth for the clean project state
 2. **`main` tracks progress** — every completed lesson branch merges into `main`
 3. **Each lesson branches from `main`** — ensures lessons build on top of all previous work
-4. **Lesson branches follow naming convention** — `lesson-XX-topic-name` (e.g., `lesson-01-workspace-anatomy`)
+4. **Lesson branches follow the dotted naming convention** — `lesson-<phase>.<lesson>-<slug>` (e.g. `lesson-0.1-workspace-anatomy`, `lesson-1.5-component-styling`). The dot avoids `1.1` vs `11` collisions.
 
 ---
 
@@ -121,7 +122,7 @@ start (clean baseline, read-only)
 
 | Tool | Version | Purpose |
 |---|---|---|
-| **Angular** | 22.0 | Framework |
+| **Angular** | 22.0 (zoneless) | Framework |
 | **TypeScript** | 6.0 | Type-safe development |
 | **RxJS** | 7.8 | Reactive programming |
 | **Vitest** | 4.0 | Unit testing |
@@ -180,19 +181,19 @@ angular-ai-tutor/
 │   ├── phase-TEMPLATE.md        # Reusable phase template
 │   ├── phase-00-fundamentals.md
 │   └── ... (15 phase files)
-├── lessons/                     # Individual lesson files
+├── lessons/                     # Lesson content (Polish), one folder per phase
 │   ├── lesson-TEMPLATE.md       # Reusable lesson template
-│   └── 01-workspace-anatomy.md
+│   └── phase-N-<topic>/N.M-<slug>.md
 ├── meta/
 │   └── INSTANTIATION.md         # One-time setup record (not loaded in tutoring sessions)
 ├── src/                         # Educational app (training exercises)
-│   ├── app/                     # Training components, services, etc.
+│   ├── app/phase-N-<topic>/N.M-<slug>/   # One folder per lesson
 │   ├── main.ts                  # Educational app entry point
 │   └── styles.scss              # Global styles
 ├── projects/
 │   └── taskflow/                # TaskFlow Kanban application
 │       ├── src/
-│       │   ├── app/             # TaskFlow components, services, etc.
+│       │   ├── app/             # core/ · features/ · shared/ (see course/taskflow-spec.md §8)
 │       │   ├── main.ts          # TaskFlow entry point
 │       │   └── styles.scss      # TaskFlow styles
 │       ├── public/              # TaskFlow static assets
@@ -214,6 +215,8 @@ angular-ai-tutor/
 | Skills index & per-phase skill mapping | `agent-skills/angular-skills/SKILL.md` |
 | Authoritative Angular topic references | `agent-skills/angular-skills/references/` |
 | Phase lesson plans | `course/phase-NN-<slug>.md` |
+| Phase dependencies & order | `course/prerequisites.md` |
+| TaskFlow look, structure, seed data, per-phase milestones | `course/taskflow-spec.md` |
 | Phase template | `course/phase-TEMPLATE.md` |
 | Lesson content | `lessons/*.md` |
 | Lesson template | `lessons/lesson-TEMPLATE.md` |
@@ -271,7 +274,7 @@ npm run build:taskflow
 npm test
 ```
 
-> **Learner environment:** Windows 11, PowerShell 7 (pwsh). All terminal commands must be adapted to this shell (see `agent-skills/course.md`).
+> **Learner environment:** macOS, zsh. All terminal commands must be adapted to this shell (see `agent-skills/course.md`).
 
 ---
 

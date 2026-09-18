@@ -33,10 +33,10 @@ No lint command is configured separately — use `ng lint` if needed via Angular
 ### Workspace Structure
 
 ```
-src/app/phase-N-<topic>/N.M-<lesson>/   ← training exercises
-projects/taskflow/src/app/               ← real-world app
-course/                                  ← lesson plans (English)
-lessons/                                 ← lesson content (Polish)
+src/app/phase-N-<topic>/N.M-<lesson>/    ← training exercises
+lessons/phase-N-<topic>/N.M-<lesson>.md  ← lesson content (Polish)
+projects/taskflow/src/app/               ← real-world app (core/ · features/ · shared/ from lesson 1.1)
+course/                                  ← lesson plans (English) + taskflow-spec.md (incl. §10 milestones)
 agent-skills/                            ← shared persona, curriculum & Angular references (used by Claude, Cline, Copilot)
 .clinerules/                             ← Cline-specific config (thin pointers, phase pointer)
 .github/                                 ← Copilot-specific config (repo instructions, agent registration)
@@ -48,14 +48,16 @@ Every lesson follows: **train in isolation** (`src/app/phase-N-*/`) → **apply 
 
 ### Lesson Branch Convention
 
-Branches use dotted lesson numbers: `lesson-1.5-component-styling`. The dot prevents collision (e.g., `1.1` vs `11`).
+Branches use dotted lesson numbers: `lesson-1.5-component-styling`, `lesson-0.2.1-ts-strict-why`. The dot prevents collision (e.g., `1.1` vs `11`). The undotted form (`lesson-15-…`) is wrong. Reference implementation of the finished app: `taskflow-finished` (read-only, never shown to the learner ahead of a lesson).
 
 ### Phase Progression
 
-- **Phases 1–3:** No signals — use regular class properties
-- **Phase 4+:** Use Angular signals for reactive state
-- **Phase 5+:** RxJS for complex async patterns
-- **Phase 11+:** Vitest unit tests; before that, skip tests entirely
+- **Phases 1–3:** No `signal()` / `computed()` / `effect()` for state — regular class properties. `input()`, `output()`, `model()`, `viewChild()` are used (standard component API).
+- **Phase 4+:** Angular signals for reactive state
+- **Phase 5+:** RxJS + `HttpClient` + `resource()` for async; signal service store
+- **Phase 11+:** Vitest unit tests; before that, skip tests entirely (`skipTests: true` in `angular.json` schematics)
+- **Phase 14:** `@ngrx/store` replaces the signal service store (migration)
+- **Zoneless throughout:** no `zone.js` in the workspace — change detection is signal-driven
 
 ## Key Conventions
 
@@ -108,8 +110,11 @@ These apply when acting as the AI tutor for the learner. The operational rules (
 
 ## Modern Angular Patterns (v22)
 
-- Standalone components only (no NgModules)
+- Standalone components only (no NgModules); class names without `Component` suffix (`Board`, files `board.ts`)
 - `inject()` function for DI (not constructor injection)
-- `provideRouter()`, `provideBrowserGlobalErrorListeners()` at app level
-- New control flow syntax: `@if`, `@for`, `@switch` (not `*ngIf`/`*ngFor`)
-- Signals for fine-grained reactivity (Phase 4+)
+- `provideRouter()`, `provideBrowserGlobalErrorListeners()`, `provideHttpClient()` at app level
+- New control flow syntax: `@if`, `@for`, `@switch`, `@defer` (not `*ngIf`/`*ngFor`)
+- Signals for fine-grained reactivity (Phase 4+); `OnPush` everywhere from Phase 8
+- Signal Forms (`@angular/forms/signals`) for TaskFlow forms; legacy Reactive Forms for awareness only
+- `animate.enter` / `animate.leave` instead of the deprecated `@angular/animations`
+- Verify every API against `agent-skills/angular-skills/references/` — reference files win over phase files and model memory

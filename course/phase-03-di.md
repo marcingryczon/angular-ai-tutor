@@ -1,56 +1,73 @@
 # Phase 3: Dependency Injection
 *Focus: The power of Angular's DI system.*
 
-## Git Branch: `lesson-3*-*`
+## Git Branch: `lesson-3.<n>-*`
+## Training dir: `src/app/phase-3-di/3.<n>-<slug>/` · Lesson notes: `lessons/phase-3-di/3.<n>-<slug>.md`
 
 ---
 
 ### Lesson 3.1: `inject()` API
 - *Objective:* Functional injection replacing constructor DI.
-- *Branch Name:* `lesson-31-inject-api`
+- *Branch Name:* `lesson-3.1-inject-api`
 - *Topics:*
-  - `inject<T>()` function: functional DI replacing `constructor` pattern
-  - Injection context and injector hierarchy basics
-  - Why `inject()` is preferred over constructor DI in modern Angular
+  - `inject<T>(Token)` — functional DI replacing the `constructor` pattern
+  - Injection context: where `inject()` is allowed (field initializers, constructors, factories, guards) and where it throws
+  - `runInInjectionContext()` for the edge cases
+  - Why `inject()` is preferred: inheritance, mixins, readability
 - *Training Exercise:* Create a service and inject it using `inject()` instead of constructor
-- *Project Application:* Refactor TaskFlow components to use `inject()` for services
+- *Project Application:* Nothing to refactor yet — every service from 3.2 onward is injected with `inject()`
 
 ---
 
 ### Lesson 3.2: Creating Services
-- *Objective:* Injectable services, environment providers, singleton pattern.
-- *Branch Name:* `lesson-32-services`
+- *Objective:* Injectable services, `providedIn: 'root'`, the singleton pattern.
+- *Branch Name:* `lesson-3.2-services`
 - *Topics:*
-  - `injectable()` decorator and `providedIn: 'root'`
-  - Singleton services vs scoped services
-  - Providing services via `providers` array
+  - `@Injectable({ providedIn: 'root' })` — tree-shakable singletons
+  - Root singletons vs scoped services
+  - Providing services via a `providers` array (component or route)
+  - Service as the owner of shared state (still plain properties — signals in Phase 4)
 - *Training Exercise:* Create a counter service shared between two components
-- *Project Application:* Create `BoardService` and `TaskService` for TaskFlow
+- *Project Application:* Create `core/session.service.ts` (current `role`, current `user`; replaces the plain property in `App`), `core/board.service.ts` and `core/task.service.ts` holding the in-memory seed data from spec §7.3. `Board` reads from the services instead of local arrays.
 
 ---
 
-### Lesson 3.3: DI Fundamentals
-- *Objective:* Provider tokens, `useValue`, `useFactory`, `useClass`.
-- *Branch Name:* `lesson-33-di-fundamentals`
+### Lesson 3.3: DI Fundamentals — Tokens & Providers
+- *Objective:* `InjectionToken`, `useValue`, `useFactory`, `useClass`, `useExisting`.
+- *Branch Name:* `lesson-3.3-di-fundamentals`
 - *Topics:*
-  - InjectionToken<T>: abstract tokens for non-class dependencies
-  - `useValue`: provide a static value
-  - `useFactory`: provide a value computed by a factory function
-  - `useClass`: provide an implementation for an abstract token
+  - `InjectionToken<T>`: tokens for non-class dependencies
+  - `useValue`, `useFactory` (with `deps` / `inject()` inside), `useClass`, `useExisting`
+  - Built-in tokens: `DOCUMENT`, `PLATFORM_ID`
+  - `inject(Token, { optional: true })`
 - *Training Exercise:* Provide configuration via `useValue`, swap implementations via `useClass`
-- *Project Application:* Provide board configuration (column names, priorities) via provider tokens
+- *Project Application:* Create `core/config.ts` with the `BOARD_CONFIG` token and `DEFAULT_BOARD_CONFIG` (four columns, four priorities — spec §7.2); provide it in `app.config.ts`
 
 ---
 
 ### Lesson 3.4: Hierarchical Injectors
-- *Objective:* Component injectors, `EnvironmentInjector`, injector trees.
-- *Branch Name:* `lesson-34-hierarchical-injectors`
+- *Objective:* Element injectors, environment injectors, resolution order.
+- *Branch Name:* `lesson-3.4-hierarchical-injectors`
 - *Topics:*
-  - Root injector vs element injector
-  - `providers` in `@Component()` — scoped providers
-  - How child components discover parents via injector hierarchy
+  - Root / environment injector vs element injector
+  - `providers` in `@Component()` — one instance per component instance
+  - Resolution modifiers: `{ self, skipSelf, host, optional }`
+  - Common failure: `NullInjectorError` and how to read it
 - *Training Exercise:* Create a scoped provider that differs between parent and child
-- *Project Application:* Scope TaskFlow board-specific providers per board instance
+- *Project Application:* Provide a component-level `providers` override of `BOARD_CONFIG` on a demo board to prove scoping, then remove it (TaskFlow keeps the root config)
+
+---
+
+### Lesson 3.5: Persistence Service (`localStorage`)
+- *Objective:* Encapsulate browser storage behind an injectable service.
+- *Branch Name:* `lesson-3.5-persistence`
+- *Topics:*
+  - Why storage access belongs in one service (testability, SSR safety, versioning)
+  - `localStorage` with a versioned key (`taskflow.db.v1`) and JSON (de)serialization
+  - Guarding browser-only APIs: `inject(PLATFORM_ID)` + `isPlatformBrowser()` (deepened in Phase 10)
+  - Seeding: first run vs "Reset demo data"
+- *Training Exercise:* Build a `StorageService<T>` with `load()`, `save()`, `clear()` and a fallback when storage is unavailable
+- *Project Application:* Create `core/db.ts` (`TaskFlowDb`): `load()`, `save()`, `seed()` per spec §7.3. `BoardService` / `TaskService` read and write through it. Add the admin "Reset demo data" action (role check done inline for now; the `*adminOnly` directive comes in Phase 9)
 ---
 
 ## Phase Completion Criteria
@@ -69,8 +86,8 @@ Before marking this phase as complete:
 
 After completing this phase, the learner should be able to:
 
-- Explain the injector hierarchy: root → environment → component → element
-- Create and inject services at different scopes (root, feature, component-level)
-- Use `InjectionToken` for non-class dependencies (strings, configs, factories)
-- Implement lazy services with `forwardRef` and factory providers
-- Debug DI issues: circular dependencies, `NullInjectorError`, provider scope mistakes
+- Explain the injector hierarchy: root / environment → element, and how resolution walks up
+- Create and inject services at different scopes (root, route, component)
+- Use `InjectionToken` with `useValue` / `useFactory` / `useClass` for non-class dependencies
+- Debug DI issues: `NullInjectorError`, injection-context errors, provider scope mistakes
+- Isolate browser storage behind a service that is safe to run outside the browser

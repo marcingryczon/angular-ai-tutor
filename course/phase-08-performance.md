@@ -1,67 +1,73 @@
 # Phase 8: Change Detection & Performance
-*Focus: Rendering efficiency and optimization.*
+*Focus: Rendering efficiency and optimization in a zoneless app.*
 
-## Git Branch: `lesson-8*-*`
+## Git Branch: `lesson-8.<n>-*`
+## Training dir: `src/app/phase-8-performance/8.<n>-<slug>/` · Lesson notes: `lessons/phase-8-performance/8.<n>-<slug>.md`
 
 ---
 
-### Lesson 8.1: Change Detection Internals
-- *Objective:* How CD works, dirty checking, unidirectional flow.
-- *Branch Name:* `lesson-81-cd-internals`
+### Lesson 8.1: Change Detection Internals (Zoneless)
+- *Objective:* How Angular decides *what* to re-check and *when*, without Zone.js.
+- *Branch Name:* `lesson-8.1-cd-internals`
 - *Topics:*
-  - Change detection cycle: how Angular checks for updates
-  - Zone.js: how Angular knows when to run CD
-  - Unidirectional flow: parent → child only
-- *Training Exercise:* Trace CD cycles using `ChangeDetectorRef`
-- *Project Application:* Understand CD behavior in TaskFlow component tree
+  - The change detection pass: top-down, unidirectional, template bindings compared
+  - What schedules a pass in a zoneless app: signal writes read by a template, template event listeners, `markForCheck()`, `async` pipe, `ComponentRef.setInput()`
+  - What does **not** schedule a pass: a `setTimeout` mutating a plain property — the classic zoneless bug
+  - `ChangeDetectorRef`: `markForCheck()`, `detectChanges()`, `detach()` — and why you rarely need them with signals
+  - `ExpressionChangedAfterItHasBeenCheckedError` explained
+- *Training Exercise:* Mutate a plain property from `setTimeout` (no update) vs a signal (update); add `console.log` in a template getter to count checks
+- *Project Application:* Audit TaskFlow for any state that is not a signal and could silently go stale
 
 ---
 
 ### Lesson 8.2: `OnPush` Strategy
-- *Objective:* Triggering updates, the OnPush mental model.
-- *Branch Name:* `lesson-82-onpush`
+- *Objective:* Skip untouched subtrees.
+- *Branch Name:* `lesson-8.2-onpush`
 - *Topics:*
   - `changeDetection: ChangeDetectionStrategy.OnPush`
-  - When OnPush components update: input change, event, async pipe, signal
-  - Migrating from Default to OnPush
-- *Training Exercise:* Convert a component to OnPush, verify updates still work
-- *Project Application:* Migrate TaskFlow components to OnPush
+  - When an OnPush view is checked: input reference change, event in the view, signal read in the template changed, `markForCheck()`
+  - Why OnPush + signals is the default recommendation in Angular 20+ (and the CLI schematic option)
+  - Immutability as the contract that makes OnPush safe
+- *Training Exercise:* Convert a component to OnPush, break it with a mutated input, fix it with a new reference
+- *Project Application:* Set `OnPush` on every TaskFlow component; set `changeDetection: OnPush` as the schematic default in `angular.json`
 
 ---
 
-### Lesson 8.3: Zoneless Preparation
-- *Objective:* Removing NgZone dependencies, zone-free APIs.
-- *Branch Name:* `lesson-83-zoneless-prep`
+### Lesson 8.3: Zone.js — Legacy & Interop
+- *Objective:* Understand what Zone.js did, how to recognise zone-era code, and how to interoperate.
+- *Branch Name:* `lesson-8.3-zone-legacy`
 - *Topics:*
-  - What is Zone.js and why remove it
-  - Identifying NgZone-dependent APIs
-  - Zoneless-compatible alternatives
-- *Training Exercise:* Audit a component for NgZone dependencies
-- *Project Application:* Audit TaskFlow for zoneless compatibility
+  - What Zone.js is: monkey-patching async browser APIs to trigger CD after *every* task
+  - `provideZoneChangeDetection()` — opting back in for legacy libraries; the cost
+  - `NgZone.run()` / `runOutsideAngular()` — reading old code
+  - Migrating a zone app to zoneless: the checklist (`ng generate @angular/core:...` migrations, finding non-signal state)
+- *Training Exercise:* Toggle `provideZoneChangeDetection()` on the training app and observe the `setTimeout` case from 8.1 start working — then explain why that is *worse*
+- *Project Application:* Confirm TaskFlow has no `NgZone` usage; document the zoneless guarantee in the project README
 
 ---
 
 ### Lesson 8.4: Performance Profiling
-- *Objective:* Angular DevTools, change detection timing.
-- *Branch Name:* `lesson-84-profiling`
+- *Objective:* Angular DevTools, measuring change detection.
+- *Branch Name:* `lesson-8.4-profiling`
 - *Topics:*
-  - Angular DevTools extension
-  - Measuring change detection performance
-  - Identifying bottlenecks and excessive renders
+  - Angular DevTools: component tree, signal graph, profiler
+  - Measuring CD passes and their duration
+  - Identifying excessive renders and expensive template expressions
 - *Training Exercise:* Profile a component and identify CD bottlenecks
-- *Project Application:* Profile TaskFlow with large boards and optimize
+- *Project Application:* Seed 500 tasks temporarily, profile the board, and record the findings
 
 ---
 
-### Lesson 8.5: Rendering Optimization
-- *Objective:* `@for` track, pure pipes, avoiding unnecessary renders.
-- *Branch Name:* `lesson-85-rendering-opts`
+### Lesson 8.5: Rendering Optimization & `@defer`
+- *Objective:* `@for` track, pure pipes, deferred blocks.
+- *Branch Name:* `lesson-8.5-rendering-opts`
 - *Topics:*
-  - `@for` track expression — why it matters for performance
-  - Pure pipes as memoization
-  - Avoiding object/function creation in templates
-- *Training Exercise:* Optimize a list with proper track expression
-- *Project Application:* Optimize TaskFlow task list rendering with proper tracking
+  - `@for` `track` — identity vs index and what a wrong track costs (DOM churn)
+  - Avoiding object/function creation in templates; pure pipes as memoization
+  - `@defer` — block-level lazy loading; triggers `on viewport`, `on idle`, `on interaction`, `on timer`; `@placeholder`, `@loading`, `@error`
+  - `NgOptimizedImage` for images (awareness)
+- *Training Exercise:* Optimize a list with a proper track expression; defer-load a heavy component on viewport entry
+- *Project Application:* Verify every `@for` in TaskFlow tracks by `id`; wrap the task modal contents in `@defer (on interaction)` where it makes sense
 ---
 
 ## Phase Completion Criteria
@@ -80,9 +86,8 @@ Before marking this phase as complete:
 
 After completing this phase, the learner should be able to:
 
-- Explain how Angular's change detection works (Zone.js vs. zoneless)
-- Apply `ChangeDetectionStrategy.OnPush` and explain when it helps / hurts
-- Use `markForCheck()` and `refresh()` for manual CD in specific scenarios
-- Profile rendering with the Angular DevTools performance panel
-- Reduce bundle size with lazy loading, `deferBlock`, and tree-shaking
-- Explain the zoneless change detection architecture (Angular 20+)
+- Explain what schedules change detection in a zoneless app and diagnose "my view didn't update"
+- Apply `OnPush` everywhere and explain the immutability contract behind it
+- Describe what Zone.js did, read `NgZone` code, and explain why zoneless is the default now
+- Profile rendering with Angular DevTools and find hot templates
+- Optimize lists with `track`, avoid template allocations, and defer heavy UI with `@defer`

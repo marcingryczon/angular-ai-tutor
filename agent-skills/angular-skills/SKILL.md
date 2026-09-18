@@ -94,23 +94,24 @@ Use this to quickly find which reference files support a given phase
 | Phase | Topic | Key reference files |
 |---|---|---|
 | 00 | Fundamentals & Workspace | `cli.md`, `migrations.md`, `mcp.md`, `environment-configuration.md` |
-| 01 | Components & Templates | `components.md`, `component-styling.md`, `host-elements.md`, `angular-animations.md` |
-| 02 | Component Communication | `inputs.md`, `outputs.md`, `host-elements.md` |
+| 01 | Components & Templates | `components.md`, `component-styling.md`, `host-elements.md` |
+| 02 | Component Communication | `inputs.md`, `outputs.md`, `components.md` (content projection) |
 | 03 | Dependency Injection | `di-fundamentals.md`, `creating-services.md`, `defining-providers.md`, `hierarchical-injectors.md`, `injection-context.md` |
-| 04 | Signals & Reactive State | `signals-overview.md`, `effects.md`, `resource.md`, `linked-signal.md` |
-| 05 | RxJS & Async Patterns | *(see rxjs.dev — no dedicated file yet)*, `resource.md` |
+| 04 | Signals & Reactive State | `signals-overview.md`, `effects.md`, `linked-signal.md` |
+| 05 | RxJS, HTTP & Async Patterns | *(see rxjs.dev and angular.dev/guide/http — no dedicated file yet)*, `resource.md` |
 | 06 | Forms | `reactive-forms.md`, `template-driven-forms.md`, `signal-forms.md` |
 | 07 | Routing & Navigation | `define-routes.md`, `route-guards.md`, `router-lifecycle.md`, `navigate-to-routes.md`, `data-resolvers.md`, `loading-strategies.md`, `show-routes-with-outlets.md`, `route-animations.md` |
-| 08 | Change Detection & Performance | `signals-overview.md`, `effects.md`, `rendering-strategies.md` |
-| 09 | Directives & Pipes | `host-elements.md`, `components.md` |
+| 08 | Change Detection & Performance | `signals-overview.md`, `effects.md`, `loading-strategies.md` (`@defer`) |
+| 09 | Directives & Pipes | `host-elements.md`, `component-styling.md`, `components.md` |
 | 10 | SSR & Hydration | `rendering-strategies.md`, `environment-configuration.md` |
 | 11 | Testing | `testing-fundamentals.md`, `component-harnesses.md`, `e2e-testing.md`, `router-testing.md` |
-| 12 | Accessibility & Polish | `angular-aria.md`, `component-styling.md` |
+| 12 | Accessibility & Polish | `angular-aria.md`, `angular-animations.md`, `route-animations.md` |
 | 13 | Architecture & Production | `migrations.md`, `environment-configuration.md`, `rendering-strategies.md`, `cli.md` |
-| 14 | Global State (NgRx) | *(see ngrx.io — no dedicated file yet)*, `signals-overview.md`, `resource.md` |
+| 14 | Global State (NgRx) | *(see ngrx.io — no dedicated file yet)*, `signals-overview.md` |
 
-> **Coverage note:** Phases 05 (RxJS) and 14 (NgRx) currently rely on the official
-> rxjs.dev and ngrx.io documentation rather than a local reference file. When a local
+> **Coverage note:** Phases 05 (RxJS, HttpClient) and 14 (NgRx) currently rely on the official
+> rxjs.dev, angular.dev/guide/http, and ngrx.io documentation rather than a local reference file.
+> Known gaps worth adding as reference files: `http-client.md`, `rxjs-interop.md` (`toSignal`/`toObservable`/`takeUntilDestroyed`), `ngrx-store.md`, `pipes.md`, `directives.md`, `lifecycle-and-queries.md`. When a local
 > reference file is added, register it above and in the Reference Files list.
 
 ---

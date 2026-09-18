@@ -1,55 +1,60 @@
 # Phase 13: Architecture & Production
-*Focus: Real-world application structure.*
+*Focus: Real-world application structure and shipping.*
 
-## Git Branch: `lesson-13*-*`
+## Git Branch: `lesson-13.<n>-*`
+## Training dir: `src/app/phase-13-architecture/13.<n>-<slug>/` · Lesson notes: `lessons/phase-13-architecture/13.<n>-<slug>.md`
 
 ---
 
-### Lesson 13.1: Feature-First Architecture
-- *Objective:* Organize by feature, folder structure conventions.
-- *Branch Name:* `lesson-131-feature-architecture`
+### Lesson 13.1: Feature-First Architecture — Review & Boundaries
+- *Objective:* Understand *why* TaskFlow is laid out as `core/` / `features/` / `shared/` and enforce the boundaries.
+- *Branch Name:* `lesson-13.1-feature-architecture`
 - *Topics:*
-  - Feature-based folder organization
-  - Shared vs core vs feature modules
-  - Naming conventions and file structure
-- *Training Exercise:* Refactor a flat structure into feature folders
-- *Project Application:* Refactor TaskFlow into feature-first architecture (boards, tasks, shared)
+  - `core/` (domain + state, no UI) vs `features/` (screens) vs `shared/` (reusable UI primitives)
+  - Dependency direction: features → core/shared; never core → features
+  - Barrel files (`index.ts`) — pros, cons, tree-shaking pitfalls
+  - Route-level providers as feature boundaries
+  - Optional: enforcing boundaries with ESLint import rules
+- *Training Exercise:* Refactor a flat structure into feature folders and draw the dependency graph
+- *Project Application:* Audit TaskFlow against spec §8; fix any boundary violation; add `index.ts` barrels where they help
 
 ---
 
 ### Lesson 13.2: Clean Architecture in Angular
 - *Objective:* Separation of concerns, layers.
-- *Branch Name:* `lesson-132-clean-architecture`
+- *Branch Name:* `lesson-13.2-clean-architecture`
 - *Topics:*
-  - Domain layer: business logic and models
-  - Presentation layer: components and templates
-  - Adaptation layer: services, APIs, external integrations
+  - Domain (models, pure functions) / application (stores) / infrastructure (`TaskFlowDb`, HTTP) / presentation (components)
+  - Smart vs presentational components
+  - Where business rules live (not in templates, not in components)
 - *Training Exercise:* Separate a monolithic component into clean layers
-- *Project Application:* Apply clean architecture to TaskFlow services and components
+- *Project Application:* Extract pure domain functions (filtering, moving) from `TaskStore` into `core/domain/*.ts` with unit tests
 
 ---
 
 ### Lesson 13.3: Bundle Analysis & Optimization
 - *Objective:* Tree-shaking, bundle budgets.
-- *Branch Name:* `lesson-133-bundle-analysis`
+- *Branch Name:* `lesson-13.3-bundle-analysis`
 - *Topics:*
-  - Bundle budget configuration in `angular.json`
-  - Tree-shaking and sideEffects
-  - Bundle analysis tools and interpretation
+  - Bundle budgets in `angular.json`
+  - `ng build --stats-json` + a bundle analyzer
+  - Tree-shaking, `sideEffects`, lazy chunks
 - *Training Exercise:* Analyze bundle size, identify large dependencies
-- *Project Application:* Optimize TaskFlow production bundle
+- *Project Application:* Optimize the TaskFlow production bundle; tighten the budgets
 
 ---
 
-### Lesson 13.4: Production Build & Deployment
-- *Objective:* Build configurations, CI/CD awareness.
-- *Branch Name:* `lesson-134-production-deploy`
+### Lesson 13.4: Error Handling, Production Build & CI
+- *Objective:* Ship with confidence.
+- *Branch Name:* `lesson-13.4-production`
 - *Topics:*
-  - Production build flags and optimizations
-  - Environment-specific builds
-  - Deployment checklist and CI/CD integration
-- *Training Exercise:* Build for production, verify output
-- *Project Application:* Configure production build for TaskFlow deployment
+  - Error handling layers: `provideBrowserGlobalErrorListeners()`, custom `ErrorHandler`, `withNavigationErrorHandler()`, HTTP interceptor
+  - Environment-specific builds (`fileReplacements`, environment files)
+  - `ng build` production flags; verifying the output
+  - CI outline: lint → test (with coverage thresholds) → build; a GitHub Actions workflow
+  - Deploying static output (SSR server vs static host) — awareness
+- *Training Exercise:* Add a global `ErrorHandler` that reports to the console with context; build for production
+- *Project Application:* Add error handling to TaskFlow; add a GitHub Actions workflow running tests and build
 ---
 
 ## Phase Completion Criteria
@@ -60,7 +65,7 @@ Before marking this phase as complete:
 - [ ] All training exercises completed
 - [ ] All project applications integrated into TaskFlow
 - [ ] Code reviewed and follows best practices
-- [ ] Tests pass (if Testing Phase already completed)
+- [ ] Tests pass and coverage thresholds are met
 
 ---
 
@@ -68,9 +73,7 @@ Before marking this phase as complete:
 
 After completing this phase, the learner should be able to:
 
-- Structure a feature-based architecture: `features/`, `core/`, `shared/`, `layouts/`
-- Apply the bucket brigade pattern for cross-feature communication
-- Configure environment-specific builds (`environment.ts`, `config`)
-- Set up CI/CD pipeline: lint → test → build → deploy
-- Implement error handling strategy: global error handler, route-level, component-level
-- Document architectural decisions with ADRs (Architecture Decision Records)
+- Explain and enforce the `core/` / `features/` / `shared/` boundaries and dependency direction
+- Separate domain logic from stores and components
+- Analyze and reduce bundle size with budgets and lazy chunks
+- Implement layered error handling and set up a CI pipeline (lint → test → build)
