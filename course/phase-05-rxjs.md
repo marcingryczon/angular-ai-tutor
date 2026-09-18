@@ -8,6 +8,10 @@
 
 ---
 
+> **Lessons 5.1–5.2 are the prerequisite track.** They teach RxJS, not Angular. Take the self-check
+> in `course/prerequisites.md`: if you can answer it, do only the *Project Application* of each (the
+> event bus and the debounced search stay in TaskFlow) and jump to 5.3.
+
 ### Lesson 5.1: RxJS Fundamentals
 - *Objective:* Observables, Subjects, subscriptions, unsubscription.
 - *Branch Name:* `lesson-5.1-rxjs-basics`
@@ -111,6 +115,7 @@ Before marking this phase as complete:
 - [ ] All training exercises completed
 - [ ] All project applications integrated into TaskFlow
 - [ ] Code reviewed and follows best practices
+- [ ] `npm run verify 5` passes — the milestone in `taskflow-spec.md` §10 is reached
 - [ ] Tests pass (if Testing Phase already completed)
 
 ---

@@ -23,6 +23,11 @@
 
 ---
 
+> **Lessons 0.2.1–0.2.3 are the prerequisite track.** They teach TypeScript, not Angular. Take the
+> self-check in `course/prerequisites.md` first: if you can answer it, skip the training exercises,
+> do only the *Project Application* of each (they create files TaskFlow needs) and move on to 0.3.
+> If you cannot, this is exactly the right place to spend a day.
+
 ### Lesson 0.2.1: TypeScript Strict Mode — Why Strict?
 - *Objective:* Understand why `strict: true` is non-negotiable in Angular. Explore `strictNullChecks`, `noImplicitOverride`, `noImplicitReturns`.
 - *Branch Name:* `lesson-0.2.1-ts-strict-why`
@@ -87,6 +92,7 @@ Before marking this phase as complete:
 - [ ] All training exercises completed
 - [ ] All project applications integrated into TaskFlow
 - [ ] Code reviewed and follows best practices
+- [ ] `npm run verify 0` passes — the milestone in `taskflow-spec.md` §10 is reached
 - [ ] Tests pass (if Testing Phase already completed)
 
 ---

@@ -12,7 +12,8 @@
     "test:edu": "ng test angular-ai-tutor",
     "start:taskflow": "ng serve taskflow --port 4300",
     "build:taskflow": "ng build taskflow",
-    "test:taskflow": "ng test taskflow"
+    "test:taskflow": "ng test taskflow",
+    "verify": "node verify/run.mjs"
   },
   "private": true,
   "packageManager": "npm@11.13.0",

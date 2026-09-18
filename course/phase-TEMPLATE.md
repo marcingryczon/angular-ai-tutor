@@ -53,6 +53,7 @@ Before marking this phase as complete:
 - [ ] All training exercises completed
 - [ ] All project applications integrated into TaskFlow
 - [ ] Code reviewed and follows best practices
+- [ ] `npm run verify {{NUMBER}}` passes
 - [ ] Tests pass (if Testing Phase already completed)
 
 ---

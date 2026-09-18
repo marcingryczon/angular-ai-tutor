@@ -1,12 +1,14 @@
 # Phase 11: Testing
-*Focus: Confidence through automated tests.*
+*Focus: Depth. You have been testing services since Lesson 3.6 — this phase adds everything that needs a rendered component, and turns the habit into a policy.*
 
 ## Git Branch: `lesson-11.<n>-*`
 ## Training dir: `src/app/phase-11-testing/11.<n>-<slug>/` · Lesson notes: `lessons/phase-11-testing/11.<n>-<slug>.md`
 
-> **⚠️ Testing Policy — effective from this phase onward:**
+> **⚠️ Testing Policy — the full policy takes effect here:**
 >
-> 1. **Backfill:** After completing this phase, ALL existing components, services, directives, and pipes in TaskFlow that lack tests MUST receive unit tests before the phase is marked complete.
+> Since Lesson 3.6 every service, pipe, directive and pure function has shipped with a spec. This phase adds the units that need change detection — components, guards, resolvers — and sets the thresholds.
+>
+> 1. **Backfill:** After completing this phase, the remaining untested units (mostly components written in Phases 1–10) MUST receive tests before the phase is marked complete.
 > 2. **Ongoing:** From this point forward, every new or modified component/service/directive/pipe MUST include corresponding tests before the lesson is marked complete. No exceptions.
 > 3. **Coverage threshold:** ≥ 80% line coverage project-wide, ≥ 90% for business logic (`projects/taskflow/src/`).
 >
@@ -14,19 +16,19 @@
 
 ---
 
-### Lesson 11.1: Vitest Setup
-- *Objective:* Test configuration, running tests, the `.spec.ts` convention.
+### Lesson 11.1: Vitest Configuration & Coverage
+- *Objective:* Go past "it runs": coverage, thresholds, and what the builder can configure.
 - *Branch Name:* `lesson-11.1-vitest-setup`
 - *Reference:* `agent-skills/angular-skills/references/testing-fundamentals.md`
 - *Topics:*
   - `@angular/build:unit-test` builder with Vitest (`ng test`, `--watch`, `--coverage`)
   - `tsconfig.spec.json` and `jsdom`
-  - Remove `skipTests: true` from `angular.json` schematics so new files get specs again
+  - (`skipTests: true` was already removed in Lesson 3.6 — new files get a spec)
   - Coverage needs a provider that is **not** installed by default: `ng test --coverage` stops with *"Code coverage requires either @vitest/coverage-v8 or @vitest/coverage-istanbul"*. Ask the learner to run `npm install -D @vitest/coverage-v8` before lesson 11.5.
   - Coverage options live on the builder, not in a Vitest config file: `coverage`, `coverageInclude`, `coverageExclude`, `coverageThresholds` (a `coverage: { … }` object fails schema validation)
   - `describe` / `it` / `expect`, `vi.fn()`, `vi.spyOn()`
-- *Training Exercise:* Write and run a passing test for a pure helper function
-- *Project Application:* Run the TaskFlow test target (`npm run test:taskflow -- --no-watch`; before the first spec exists it fails with *"No tests found"* — that is the expected starting point) and write the first tests for `core/helpers.ts`
+- *Training Exercise:* Run the existing suite with `--coverage`, read the report, and find the least-covered file
+- *Project Application:* Turn on coverage for the TaskFlow target and record today's number — it is the baseline the rest of the phase moves
 
 ---
 
@@ -97,6 +99,7 @@ Before marking this phase as complete:
 - [ ] All training exercises completed
 - [ ] All project applications integrated into TaskFlow
 - [ ] Code reviewed and follows best practices
+- [ ] `npm run verify 11` passes — the milestone in `taskflow-spec.md` §10 is reached
 - [ ] Tests pass and coverage thresholds are met
 
 ---

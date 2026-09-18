@@ -289,19 +289,19 @@ projects/taskflow/
    │  ├─ db.ts                # TaskFlowDb: localStorage persistence + seed data
    │  ├─ helpers.ts           # newId() and small utilities
    │  ├─ session.service.ts   # role + current user (drives admin-only UI)
-   │  ├─ board.store.ts       # boards state (create/delete/reset, counts)  — Phases 5–13
-   │  ├─ task.store.ts        # tasks state: filters, computed filteredTasks, CRUD, move — Phases 5–13
-   │  ├─ ngrx/                # Phase 14 only: replaces the two stores above
+   │  ├─ board.store.ts       # boards state (create/delete/reset, counts)  — Phases 5–12
+   │  ├─ task.store.ts        # tasks state: filters, computed filteredTasks, CRUD, move — Phases 5–12
+   │  ├─ ngrx/                # Phase 13 on: replaces the two stores above
    │  │  ├─ board.store.ts    # BoardActions + boardReducer + boardsFeature + selectors
    │  │  └─ task.store.ts     # TaskActions + taskReducer + tasksFeature + selectors
    │  ├─ board.service.ts     # thin service layer over the db for boards
    │  ├─ task.service.ts      # thin service layer over the db for tasks
    │  ├─ board.resolver.ts    # resolves a board by id into route data
    │  ├─ role.guard.ts        # role-based route guard (admin/member)
-   │  ├─ domain/              # Phase 13: pure rules extracted from the store
+   │  ├─ domain/              # Phase 14: pure rules extracted from the selectors
    │  │  └─ task-filters.ts   # filterTasks / tasksOfBoard / tasksOfColumn
    │  ├─ logging.interceptor.ts # Phase 5: dev-only HTTP log
-   │  └─ error-handler.ts     # Phase 13: global ErrorHandler with context
+   │  └─ error-handler.ts     # Phase 14: global ErrorHandler with context
    ├─ features/
    │  ├─ board-list/board-list.ts   # "/" screen: gallery + create-board form
    │  └─ board/
@@ -331,7 +331,7 @@ Every component listed above has a matching `.html` and `.scss` next to its `.ts
 **Architecture invariants (keep these to stay on-brand):**
 - **Feature-first**: `core/` holds domain + state with no UI; `features/` hold screens; `shared/` holds reusable primitives.
 - **Standalone components**, signal inputs (`input()`), outputs (`output()`), and `inject()`.
-- **State lives in stores** (`board.store`, `task.store`) as signals + `computed`; components dispatch mutations to the store rather than mutating data directly. In Phase 14 the two signal stores are replaced by NgRx feature slices in `core/ngrx/` — components then read via `store.selectSignal()` and `dispatch()`; the invariant (state outside components) is unchanged.
+- **State lives in stores** (`board.store`, `task.store`) as signals + `computed`; components dispatch mutations to the store rather than mutating data directly. In Phase 13 the two signal stores are replaced by NgRx feature slices in `core/ngrx/` — components then read via `store.selectSignal()` and `dispatch()`; the invariant (state outside components) is unchanged.
 - **Component file separation** — keep component behavior in `.ts`, templates in `.html`, and component-specific styles in `.scss` files.
 - **Global styles are foundational** — use `styles.scss` for design tokens, resets, and styles intentionally shared across components; do not make it the primary source of component-specific styles.
 
@@ -339,7 +339,8 @@ Every component listed above has a matching `.html` and `.scss` next to its `.ts
 
 ## 9. Reproduction Checklist
 
-Use this to verify your build matches the reference look:
+Use this to verify your build matches the reference look. Most of it is also checked automatically —
+`npm run verify <phase>` asserts the milestone of each phase against your code (`verify/README.md`):
 
 - [ ] Global design tokens in `styles.scss` match §1.2 exactly (colors, radii, shadows).
 - [ ] Material Symbols Rounded loaded in `index.html`; icons use `.material-symbols-rounded` (+ `--sm` / `--filled`).
@@ -376,5 +377,5 @@ Use this so every learner's TaskFlow is in the *same* state at each phase bounda
 | **10** | SSR enabled: `/` prerendered, board page server-rendered, hydration clean, `TaskFlowDb` no-op on the server. The store now starts empty on both platforms and swaps in `localStorage` data inside `afterNextRender()`; `seed.json` is fetched once thanks to the HTTP transfer cache. |
 | **11** | Unit tests for every unit; coverage ≥ 90% in `projects/taskflow/src/`. No visual change. |
 | **12** | ARIA structure on board/columns/cards; modal has focus trap, Escape, focus restore, scroll lock; keyboard "move task" alternative; enter/leave animations with reduced-motion fallback. |
-| **13** | Boundaries audited, domain functions extracted, bundle budgets tightened, global error handling, CI workflow. No visual change. |
-| **14** | State managed by `@ngrx/store` (`core/ngrx/`); old signal stores deleted; DevTools enabled in dev; tests updated; bundle budgets raised for the ~35 kB NgRx adds. No visual change — §9 checklist still passes. |
+| **13** | State managed by `@ngrx/store` (`core/ngrx/`); old signal stores deleted; DevTools enabled in dev; tests updated; `course/adr/001-state-management.md` records the verdict. No visual change — §9 checklist still passes. |
+| **14** | Boundaries audited, domain functions extracted from the selectors, bundle budgets set against the measured size, global error handling, CI workflow, and the app is deployed. No visual change. |

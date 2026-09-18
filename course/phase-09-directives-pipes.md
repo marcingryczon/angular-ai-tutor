@@ -54,6 +54,7 @@ Before marking this phase as complete:
 - [ ] All training exercises completed
 - [ ] All project applications integrated into TaskFlow
 - [ ] Code reviewed and follows best practices
+- [ ] `npm run verify 9` passes — the milestone in `taskflow-spec.md` §10 is reached
 - [ ] Tests pass (if Testing Phase already completed)
 
 ---

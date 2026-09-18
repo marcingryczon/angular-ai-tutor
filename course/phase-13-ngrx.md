@@ -1,12 +1,12 @@
-# Phase 14: Global State Management with NgRx
-*Focus: Predictable state with `@ngrx/store` — actions, reducers, selectors, DevTools, testing — and a real migration of TaskFlow from the signal service store.*
+# Phase 13: Global State Management with NgRx
+*Focus: Predictable state with `@ngrx/store` — actions, reducers, selectors, DevTools, testing — a real migration of TaskFlow from the signal service store, and an honest verdict on whether it was worth it.*
 
-## Git Branch: `lesson-14.<n>-*`
-## Training dir: `src/app/phase-14-ngrx/14.<n>-<slug>/` · Lesson notes: `lessons/phase-14-ngrx/14.<n>-<slug>.md`
+## Git Branch: `phase-13-ngrx`
+## Training dir: `src/app/phase-13-ngrx/13.<n>-<slug>/` · Lesson notes: `lessons/phase-13-ngrx/13.<n>-<slug>.md`
 
 **Prerequisite:** Lesson 5.7 (Service-Based State Store) and Phase 11 (Testing). Before learning NgRx, you must have felt the problems it solves: scattered mutations, no audit trail, hard-to-trace bugs.
 
-> **Scope decision.** This phase teaches the **`@ngrx/store`** package (actions → reducers → selectors, consumed as signals via `store.selectSignal()`), plus DevTools and testing — exactly what the reference implementation uses. `@ngrx/effects`, `@ngrx/entity`, and `@ngrx/signals` are covered as *awareness* in 14.9 so the learner can choose them later, but are not installed in TaskFlow.
+> **Scope decision.** This phase teaches the **`@ngrx/store`** package (actions → reducers → selectors, consumed as signals via `store.selectSignal()`), plus DevTools and testing — exactly what the reference implementation uses. `@ngrx/effects`, `@ngrx/entity`, and `@ngrx/signals` are covered as *awareness* in 13.9 so the learner can choose them later, but are not installed in TaskFlow.
 >
 > **This is a migration, not an add-on.** By the end of the phase `core/task.store.ts` / `core/board.store.ts` (signal services) are replaced by `core/ngrx/task.store.ts` / `core/ngrx/board.store.ts` (feature slices), components read state only through selectors, and the old stores are deleted. `TaskFlowDb` and the thin `TaskService` / `BoardService` remain as infrastructure.
 >
@@ -16,9 +16,9 @@
 
 ---
 
-### Lesson 14.1: Why Global State Management?
+### Lesson 13.1: Why Global State Management?
 - *Objective:* Understand the problems with service stores and the Redux pattern.
-- *Branch Name:* `lesson-14.1-why-ngrx`
+- *Branch Name:* `lesson-13.1-why-ngrx`
 - *Topics:*
   - Pain points of the 5.7 service store: any method can mutate anything, no history, no single place to reason about a change
   - Redux pattern: single source of truth, state is read-only, changes are described by actions and applied by pure reducers
@@ -26,13 +26,13 @@
   - Decision matrix: signals in a service vs `signalStore` vs `@ngrx/store`
   - Cost: bundle size, boilerplate, learning curve — when it is *not* worth it
 - *Training Exercise:* Analyze the training `CounterStore` / `TodoStore` from 5.7 — where are mutations hidden? Can you trace a state change from a click?
-- *Project Application:* Document TaskFlow's state touchpoints (every component that reads or writes a store) — this is the migration checklist for 14.8
+- *Project Application:* Document TaskFlow's state touchpoints (every component that reads or writes a store) — this is the migration checklist for 13.8
 
 ---
 
-### Lesson 14.2: Actions
+### Lesson 13.2: Actions
 - *Objective:* Describe *what happened* with typed actions.
-- *Branch Name:* `lesson-14.2-actions`
+- *Branch Name:* `lesson-13.2-actions`
 - *Topics:*
   - `createActionGroup({ source, events })` — the modern way to define a family of actions
   - `props<{ ... }>()` for payloads; `emptyProps()`
@@ -43,22 +43,22 @@
 
 ---
 
-### Lesson 14.3: Reducers & State Shape
+### Lesson 13.3: Reducers & State Shape
 - *Objective:* Pure functions that transform state immutably.
-- *Branch Name:* `lesson-14.3-reducers`
+- *Branch Name:* `lesson-13.3-reducers`
 - *Topics:*
   - `createReducer(initialState, on(Action, (state, props) => newState))`
   - Purity: same input → same output; no side effects; no mutation (spread, `map`, `filter`)
   - Designing the state shape: `TaskState { tasks, loaded, search, priorityFilter, assigneeFilter }`
   - Handling several actions with one handler; unknown actions return the same state
 - *Training Exercise:* Write the counter and todo reducers; prove purity by calling them twice with the same input
-- *Project Application:* Write `taskReducer` and `boardReducer` covering every action from 14.2
+- *Project Application:* Write `taskReducer` and `boardReducer` covering every action from 13.2
 
 ---
 
-### Lesson 14.4: Selectors & Reading State as Signals
+### Lesson 13.4: Selectors & Reading State as Signals
 - *Objective:* Derive data from the store with memoized selectors and consume it with signals.
-- *Branch Name:* `lesson-14.4-selectors`
+- *Branch Name:* `lesson-13.4-selectors`
 - *Topics:*
   - `createFeatureSelector<TaskState>('tasks')` and `createSelector()` composition
   - Memoization: recompute only when inputs change — `createSelector` vs `computed()`
@@ -69,9 +69,9 @@
 
 ---
 
-### Lesson 14.5: `createFeature` & Store Setup
+### Lesson 13.5: `createFeature` & Store Setup
 - *Objective:* Declarative feature slices and providing the store.
-- *Branch Name:* `lesson-14.5-create-feature`
+- *Branch Name:* `lesson-13.5-create-feature`
 - *Topics:*
   - `createFeature({ name, reducer, extraSelectors })` — auto-generated selectors (`selectTasks`, `selectSearch`, …)
   - `provideStore({ tasks: tasksFeature.reducer, boards: … })` in `app.config.ts`; `provideState()` for lazy routes
@@ -83,9 +83,9 @@
 
 ---
 
-### Lesson 14.6: DevTools & Debugging
+### Lesson 13.6: DevTools & Debugging
 - *Objective:* Time-travel debugging, action inspection, state diffing.
-- *Branch Name:* `lesson-14.6-devtools`
+- *Branch Name:* `lesson-13.6-devtools`
 - *Topics:*
   - `provideStoreDevtools({ maxAge, logOnly: !isDevMode(), connectInZone: false })` + the Redux DevTools browser extension — `connectInZone: false` is required in this zoneless workspace
   - Action log, state tree, diff, time travel, dispatching from DevTools
@@ -96,9 +96,9 @@
 
 ---
 
-### Lesson 14.7: Testing NgRx
+### Lesson 13.7: Testing NgRx
 - *Objective:* Test reducers, selectors, and connected components.
-- *Branch Name:* `lesson-14.7-testing-ngrx`
+- *Branch Name:* `lesson-13.7-testing-ngrx`
 - *Topics:*
   - Reducers: `expect(reducer(state, action)).toEqual(expected)` — the easiest tests you will write
   - Selectors: `selector.projector(...)` for pure projection tests; memoization checks
@@ -109,9 +109,9 @@
 
 ---
 
-### Lesson 14.8: Migration — Replace the Service Stores
+### Lesson 13.8: Migration — Replace the Service Stores
 - *Objective:* Execute the migration and delete the legacy stores.
-- *Branch Name:* `lesson-14.8-migration`
+- *Branch Name:* `lesson-13.8-migration`
 - *Topics:*
   - Strangler approach: one feature at a time (tasks first, then boards), app keeps working between steps
   - Mapping: `taskStore.moveTask()` → `dispatch(TaskActions.moved())`, `taskStore.filteredTasks()` → `selectSignal(selectFilteredTasks)`
@@ -124,16 +124,17 @@
 
 ---
 
-### Lesson 14.9: Beyond `@ngrx/store` — Effects, Entity, signalStore (Awareness)
+### Lesson 13.9: Beyond `@ngrx/store` — Effects, Entity, signalStore (Awareness)
 - *Objective:* Know the rest of the ecosystem well enough to choose it.
-- *Branch Name:* `lesson-14.9-ngrx-ecosystem`
+- *Branch Name:* `lesson-13.9-ngrx-ecosystem`
 - *Topics:*
   - `@ngrx/effects`: `createEffect()`, `Actions` + `ofType()`, flattening operators — where TaskFlow *would* use it if it had an HTTP backend
   - `@ngrx/entity`: `createEntityAdapter()`, `{ ids, entities }` shape, generated CRUD and selectors
   - `@ngrx/signals`: `signalStore()`, `withState()`, `withComputed()`, `withMethods()`, `withHooks()`, `rxMethod()`, `withEntities()` — the signal-native alternative; comparison with 5.7 and with `@ngrx/store`
   - Decision guide for the learner's next project
 - *Training Exercise:* Rebuild the training todo store as a `signalStore()` in the training app and compare line count and readability with the `@ngrx/store` version
-- *Project Application:* N/A (awareness lesson) — optionally write an ADR in `course/` recording why TaskFlow uses `@ngrx/store`
+- *Project Application:* Write the ADR — `course/adr/001-state-management.md`: what the signal store cost, what NgRx bought, what it cost in bundle size and boilerplate, and which of the three you would pick for your next project. **This is the deliverable of the phase**, not an optional extra: the point of the migration is to be able to answer the question, not to end up on NgRx.
+- *Reality check:* the app behaves exactly as it did before and the bundle grew by ~35 kB. If your ADR concludes "a signal store was enough for TaskFlow", that is the correct answer and you now have the experience to defend it.
 ---
 
 ## Phase Completion Criteria
@@ -144,7 +145,8 @@ Before marking this phase as complete:
 - [ ] All training exercises completed
 - [ ] All project applications integrated into TaskFlow
 - [ ] Legacy service stores removed; `taskflow-spec.md` §9 checklist still passes
-- [ ] Bundle budgets updated for the NgRx footprint (~35 kB on the initial bundle) and the build is green again
+- [ ] The ADR is written and says, in one sentence, whether you would do this again
+- [ ] `npm run verify 13` passes — the milestone in `taskflow-spec.md` §10 is reached
 - [ ] Tests pass and coverage thresholds are met
 
 ---

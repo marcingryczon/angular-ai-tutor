@@ -48,7 +48,18 @@
 - *Project Application:* Animate task card insertion/removal and the modal open/close; disable under reduced motion
 ---
 
-## Phase Completion Criteria
+### Lesson 12.4: Accessible Forms & Announcements
+- *Objective:* Make the task form usable by someone who cannot see it.
+- *Branch Name:* `phase-12-accessibility` (commit `lesson-12.4-accessible-forms`)
+- *Reference:* `agent-skills/angular-skills/references/angular-aria.md` · `agent-skills/angular-skills/references/signal-forms.md`
+- *Topics:*
+  - Every control needs a name: `<label for>` beats `aria-label`, and a placeholder is not a label
+  - Wiring an error message to its field with `aria-describedby`, and marking the field `aria-invalid`
+  - Announcing what changed: `aria-live="polite"` for the filtered task count, `role="alert"` for a submit failure
+  - Focus after an action: where does focus go when the modal closes, when a task is deleted, when the form fails to submit?
+  - Required vs `aria-required`, and why `[disabled]` on a submit button hides the reason from a screen reader
+- *Training Exercise:* Take the 6.2 training form, run axe on it, and fix every violation without changing what it looks like
+- *Project Application:* Audit `task-form` and the create-board form: labels, `aria-describedby` on the "Title is required." error, an announced result after a successful create, and focus returned to the element that opened the modal
 
 Before marking this phase as complete:
 
@@ -56,6 +67,7 @@ Before marking this phase as complete:
 - [ ] All training exercises completed
 - [ ] All project applications integrated into TaskFlow
 - [ ] Code reviewed and follows best practices
+- [ ] `npm run verify 12` passes — the milestone in `taskflow-spec.md` §10 is reached
 - [ ] Tests pass and coverage thresholds are met
 
 ---

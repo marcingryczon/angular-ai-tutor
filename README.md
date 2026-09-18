@@ -52,8 +52,8 @@ Detailed lesson plans are split across phase files. Each phase builds on all pre
 | **10** | ⬜ | Server-Side Rendering & Hydration | [`course/phase-10-ssr.md`](course/phase-10-ssr.md) |
 | **11** | ⬜ | Testing | [`course/phase-11-testing.md`](course/phase-11-testing.md) |
 | **12** | ⬜ | Accessibility & Polish | [`course/phase-12-accessibility.md`](course/phase-12-accessibility.md) |
-| **13** | ⬜ | Architecture & Production | [`course/phase-13-architecture.md`](course/phase-13-architecture.md) |
-| **14** | ⬜ | Global State Management with NgRx | [`course/phase-14-ngrx.md`](course/phase-14-ngrx.md) |
+| **13** | ⬜ | Global State Management with NgRx | [`course/phase-13-ngrx.md`](course/phase-13-ngrx.md) |
+| **14** | ⬜ | Architecture & Production (finale — you ship) | [`course/phase-14-production.md`](course/phase-14-production.md) |
 
 > The full phase index is maintained as the **single source of truth** in `agent-skills/course.md`. The table above is a convenience mirror.
 
@@ -95,17 +95,17 @@ The repository uses a structured branching model to keep the codebase clean and 
 |---|---|---|
 | `start` | **Clean baseline** — project setup and the curriculum documents. | ❌ Only to update project assumptions or curriculum docs |
 | `main` | **Working branch** — receives every completed lesson branch. | ✅ Yes |
-| `lesson-<phase>.<lesson>-<slug>` | **Lesson branches** — one per lesson, created from the previous lesson branch (or `main` at phase start). Merged to `main` at least at the end of each phase. | ✅ Yes |
+| `phase-<n>-<slug>` | **Phase branches** — one per phase, one commit per lesson. Merged to `main` when `npm run verify <n>` passes. | ✅ Yes |
 | `taskflow-finished`, `taskflow-preview` | **Reference implementation** of the finished TaskFlow. Consult it to verify a result against the spec; never copy from it or show it before the matching lesson. | ❌ No |
 
 ### Flow
 
 ```
-start (clean baseline, read-only)
+start (clean baseline + curriculum docs)
   └── main (merge target)
-        ├── lesson-0.1-workspace-anatomy ──┐
-        ├── lesson-0.2.1-ts-strict-why ────┤── merged after completion
-        ├── lesson-1.1-standalone-basics ──┘
+        ├── phase-0-fundamentals   (commits: lesson-0.1 … lesson-0.3)  ──┐
+        ├── phase-1-components     (commits: lesson-1.1 … lesson-1.6)  ──┤ merged when
+        ├── phase-2-communication  (commits: lesson-2.1 … lesson-2.5)  ──┘ verification passes
         └── ...
 ```
 
@@ -113,8 +113,26 @@ start (clean baseline, read-only)
 
 1. **`start` branch** is the source of truth for the clean project state **and the curriculum files** (`course/`, `agent-skills/`, templates). Curriculum fixes land on `start` and are merged forward into `main`.
 2. **`main` tracks progress** — every completed lesson branch merges into `main`
-3. **Each lesson branches from the previous lesson branch** (or from `main` at the start of a phase) — ensures lessons build on top of all previous work
-4. **Lesson branches follow the dotted naming convention** — `lesson-<phase>.<lesson>-<slug>` (e.g. `lesson-0.1-workspace-anatomy`, `lesson-1.5-component-styling`). The dot avoids `1.1` vs `11` collisions.
+3. **Each phase branches from `main`** after the previous phase merged — ensures a phase starts from all completed work
+4. **One branch per phase, one commit per lesson** — branch `phase-3-di`, commits `lesson-3.1: …`, `lesson-3.2: …`. The dot in the commit subject avoids `1.1` vs `11` collisions.
+5. **A phase is done when `npm run verify <n>` passes** — see [Verification](#-verification) below
+
+---
+
+## ✅ Verification
+
+Every phase ends with a milestone in [`course/taskflow-spec.md`](course/taskflow-spec.md) §10, and every
+milestone is executable:
+
+```bash
+npm run verify 7     # the "after phase 7" milestone
+npm run verify       # all of them — red is expected for phases you have not reached
+```
+
+Static checks read your code (is every component `OnPush`, are the old stores deleted, does any `@for`
+still track by `$index`), browser checks drive the real app in headless Chrome (four columns without a
+horizontal scrollbar, a debounced search, a dialog that returns focus, an unknown board id that
+redirects). Details in [`verify/README.md`](verify/README.md).
 
 ---
 
