@@ -83,6 +83,7 @@
   - Resource vs `HttpClient` + `toSignal()`: when each fits
 - *Training Exercise:* Fetch data using `httpResource()`, render loading and error states
 - *Project Application:* Replace the manual `HttpClient` seed load with `httpResource()`; show a loading state on first run
+- *Where the resource lives:* put the `httpResource()` in the **store**, not inside `TaskFlowDb`. The db stays a synchronous, SSR-safe wrapper around storage (`load()` returns `undefined` when nothing is persisted or when there is no browser) and only knows how to *expand* a `SeedFile` into the dataset. Phase 10 depends on this split: the server has no `localStorage`, so the seed resource is the one thing both platforms share.
 
 ---
 
@@ -98,6 +99,7 @@
   - When a service store is enough vs when you need NgRx (Phase 14)
 - *Training Exercise:* Build a minimal `CounterStore` with state, selectors, and action methods; connect two unrelated components
 - *Project Application:* Create `core/task.store.ts` and `core/board.store.ts` per spec §8. Components read only store selectors and call store actions. `TaskService` / `BoardService` become thin data-access layers over `TaskFlowDb`.
+- *Heads-up for Phase 10:* it is tempting to seed the store from `localStorage` **synchronously in the constructor**. It works now and breaks in Phase 10 — the server renders the seed while the browser would render stored data, which is a hydration mismatch. Lesson 10.2 refactors it: start from the same empty state on both platforms and swap in the persisted data inside `afterNextRender()`.
 ---
 
 ## Phase Completion Criteria

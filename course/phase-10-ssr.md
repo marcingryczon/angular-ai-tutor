@@ -12,12 +12,13 @@
 - *Objective:* `@angular/ssr`, server entry, render modes.
 - *Branch Name:* `lesson-10.1-ssr-setup`
 - *Topics:*
-  - `ng add @angular/ssr` — what it generates (`server.ts`, `app.config.server.ts`, `app.routes.server.ts`)
+  - `ng add @angular/ssr` — what it generates (`server.ts`, `main.server.ts`, `app.config.server.ts`, `app.routes.server.ts`), plus the `server` / `outputMode` / `ssr` keys it adds to the build target
+  - **Two things bite here:** (1) there is no `--server-routing` flag in v22 — the schematic rejects it; (2) the schematic writes `"security": { "allowedHosts": [] }`, and the built server then answers `400 Bad Request — Header "host" … is not allowed` for `localhost`. Add `"allowedHosts": ["localhost"]` before running `npm run serve:ssr:taskflow`.
   - `provideServerRendering()` and `provideClientHydration()`
   - Render modes per route: `RenderMode.Server` / `Client` / `Prerender`
   - How the dev server and `ng build` change with SSR
 - *Training Exercise:* Enable SSR in the training app, view the page source, confirm server-rendered HTML
-- *Project Application:* Enable SSR for TaskFlow; prerender `/`, server-render `/boards/:boardId`
+- *Project Application:* Enable SSR for TaskFlow; prerender `/` and `/boards`, server-render `/boards/:boardId` (board ids are only known per request), leave `**` on `RenderMode.Server`. Verify with `curl` that the HTML already contains the board title and the cards.
 
 ---
 
@@ -31,6 +32,7 @@
   - `ngSkipHydration` as an escape hatch
 - *Training Exercise:* Introduce a hydration mismatch on purpose, read the error, fix it
 - *Project Application:* Make TaskFlow hydrate cleanly: the board renders seed data on the server and swaps to `localStorage` data after `afterNextRender()`
+- *The refactor this forces:* the store built in Phases 3–5 reads `localStorage` in its constructor. Change it to start from the same empty state on both platforms, seed from the resource, and only then — inside `afterNextRender()` — replace the state with what was persisted. Guard the persistence `effect()` with a "storage already consulted" flag, otherwise the first write overwrites the user's data with the seed.
 
 ---
 
@@ -44,6 +46,7 @@
   - `DOCUMENT` instead of `document`
 - *Training Exercise:* Conditionally run browser-only code; transfer a fetched value to the client
 - *Project Application:* Make `TaskFlowDb` fully SSR-safe (no-op outside the browser — spec §6) and verify no duplicate `seed.json` request after hydration
+- *How to verify:* with the app served from the SSR build, `performance.getEntriesByType('resource')` must contain **no** `seed.json` entry — `provideClientHydration(withHttpTransferCacheOptions(...))` replays the server's response. A mismatch would surface as an `NG0500` console error, so a clean console is part of the acceptance.
 ---
 
 ## Phase Completion Criteria

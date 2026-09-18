@@ -73,6 +73,7 @@
 - *Topics:*
   - `createFeature({ name, reducer, extraSelectors })` — auto-generated selectors (`selectTasks`, `selectSearch`, …)
   - `provideStore({ tasks: tasksFeature.reducer, boards: … })` in `app.config.ts`; `provideState()` for lazy routes
+  - **Reducers must stay pure**, so everything impure happens *before* the dispatch: ids and timestamps are produced by a service and travel inside the action payload (`TaskActions.added({ task })`, `BoardActions.created({ board, columns })`), never inside the reducer
   - Dispatching from components: `store.dispatch(TaskActions.moved({ … }))`
   - Persistence without Effects: a small `effect()` in a root service that watches `selectSignal(selectTasks)` and calls `TaskFlowDb.save()`
 - *Training Exercise:* Convert the counter/todo reducers to `createFeature()`; compare the code
@@ -84,7 +85,7 @@
 - *Objective:* Time-travel debugging, action inspection, state diffing.
 - *Branch Name:* `lesson-14.6-devtools`
 - *Topics:*
-  - `provideStoreDevtools({ maxAge, logOnly: !isDevMode() })` + the Redux DevTools browser extension
+  - `provideStoreDevtools({ maxAge, logOnly: !isDevMode(), connectInZone: false })` + the Redux DevTools browser extension — `connectInZone: false` is required in this zoneless workspace
   - Action log, state tree, diff, time travel, dispatching from DevTools
   - Common bugs: mutating state in a reducer (runtime checks `strictStateImmutability`, `strictActionImmutability`), forgetting to dispatch, selectors that always recompute
   - Meta-reducers (e.g. a logger) — awareness
@@ -100,6 +101,7 @@
   - Reducers: `expect(reducer(state, action)).toEqual(expected)` — the easiest tests you will write
   - Selectors: `selector.projector(...)` for pure projection tests; memoization checks
   - Components: `provideMockStore({ initialState })`, `MockStore.overrideSelector()`, spying on `dispatch`
+  - A mock store still needs `initialState` for every slice a *non-overridden* selector reads, and the component may still request `seed.json` — add `provideHttpClientTesting()` and drive change detection with `TestBed.tick()` instead of `whenStable()` (see 11.3)
 - *Training Exercise:* Test the counter reducer, the todo selectors, and a component that dispatches on click
 - *Project Application:* Test `taskReducer`, `boardReducer`, all selectors, and `Board` / `Column` with `provideMockStore` — coverage policy still applies
 
@@ -112,6 +114,8 @@
   - Strangler approach: one feature at a time (tasks first, then boards), app keeps working between steps
   - Mapping: `taskStore.moveTask()` → `dispatch(TaskActions.moved())`, `taskStore.filteredTasks()` → `selectSignal(selectFilteredTasks)`
   - Finding dead code after the switch; deleting `core/task.store.ts` / `core/board.store.ts`
+  - **What is left of the services:** the reducers take over every data transformation, so `TaskService` shrinks to what a reducer must not do — building a task with a fresh id and timestamps, plus the event bus the UI subscribes to. Keeping its old `create/update/move/remove` methods would mean two implementations of the same rule.
+  - Seeding, hydration and persistence still need an owner. Without `@ngrx/effects` that is a small root service holding the `httpResource`, the `afterNextRender()` hydration and one `effect()` over `store.selectSignal(...)` that writes to `TaskFlowDb`.
   - Post-migration verification with DevTools and the test suite
 - *Training Exercise:* Migrate the training todo app from its service store to NgRx using the same steps
 - *Project Application:* Complete the TaskFlow migration; remove the old stores; all tests green; spec §9 checklist still passes
@@ -138,6 +142,7 @@ Before marking this phase as complete:
 - [ ] All training exercises completed
 - [ ] All project applications integrated into TaskFlow
 - [ ] Legacy service stores removed; `taskflow-spec.md` §9 checklist still passes
+- [ ] Bundle budgets updated for the NgRx footprint (~35 kB on the initial bundle) and the build is green again
 - [ ] Tests pass and coverage thresholds are met
 
 ---

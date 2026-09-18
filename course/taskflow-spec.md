@@ -363,8 +363,8 @@ Use this so every learner's TaskFlow is in the *same* state at each phase bounda
 | **7** | Routes per §3. Board list (§4) with board cards and the create-board form; board page reads `boardId` as an input; `boardResolver` redirects unknown boards; routes lazy-loaded with `PreloadAllModules`; `role.guard.ts` protects an admin placeholder route. |
 | **8** | Every component is `OnPush`; every `@for` tracks by id; modal body under `@defer`. No visual change. |
 | **9** | `*adminOnly` hides Reset/Delete for members; `[priorityHighlight]` accent on cards; `DueDatePipe` and `PriorityLabelPipe` used in templates. |
-| **10** | SSR enabled: `/` prerendered, board page server-rendered, hydration clean, `TaskFlowDb` no-op on the server. |
+| **10** | SSR enabled: `/` prerendered, board page server-rendered, hydration clean, `TaskFlowDb` no-op on the server. The store now starts empty on both platforms and swaps in `localStorage` data inside `afterNextRender()`; `seed.json` is fetched once thanks to the HTTP transfer cache. |
 | **11** | Unit tests for every unit; coverage ≥ 90% in `projects/taskflow/src/`. No visual change. |
 | **12** | ARIA structure on board/columns/cards; modal has focus trap, Escape, focus restore, scroll lock; keyboard "move task" alternative; enter/leave animations with reduced-motion fallback. |
 | **13** | Boundaries audited, domain functions extracted, bundle budgets tightened, global error handling, CI workflow. No visual change. |
-| **14** | State managed by `@ngrx/store` (`core/ngrx/`); old signal stores deleted; DevTools enabled in dev; tests updated. No visual change — §9 checklist still passes. |
+| **14** | State managed by `@ngrx/store` (`core/ngrx/`); old signal stores deleted; DevTools enabled in dev; tests updated; bundle budgets raised for the ~35 kB NgRx adds. No visual change — §9 checklist still passes. |

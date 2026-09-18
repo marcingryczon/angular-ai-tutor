@@ -105,6 +105,23 @@ start (clean baseline + curriculum docs)
 
 ---
 
+## Toolchain Facts (from a full end-to-end run of the course)
+
+Properties of *this* workspace, collected while building TaskFlow once from `start` through Phase 14.
+Each item is something that blocked or surprised that run.
+
+- **Angular versions are pinned**, not ranged: `@angular/*` at `22.1.4`, `@angular/build` / `@angular/cli` at `22.1.6`. Ranges plus a drifted `package-lock.json` make `ng add @angular/ssr` fail with `ERESOLVE`. The fix is to align versions and regenerate the lockfile — never `--force` / `--legacy-peer-deps`.
+- **`strict: true` is set in the workspace `tsconfig.json`** alongside the flags listed in CLAUDE.md. `target` is `ES2022`, so ES2023 array methods (`toSorted`, `with`) do not exist.
+- **Both projects have a `test` target** (`@angular/build:unit-test`, runner `vitest`). Before the first spec exists, `ng test taskflow` reports *"No tests found"* — the expected Phase 11 starting point.
+- **Three moments in the course need a package install** (rule 7 applies — ask the learner to run them):
+  1. Lesson 10.1 — `ng add @angular/ssr` (no `--server-routing` flag in v22)
+  2. Lesson 11.1 — `npm install -D @vitest/coverage-v8` (required by `ng test --coverage`)
+  3. Phase 14 — `ng add @ngrx/store` plus `@ngrx/store-devtools`
+- **Zoneless testing:** `await fixture.whenStable()` waits for in-flight HTTP, so with `httpResource()` the order is `TestBed.tick()` → `httpMock.expectOne(url).flush(data)` → microtask → `tick()`. Details in lesson 11.3.
+- **Zoneless runtime:** `provideStoreDevtools({ connectInZone: false })`; and a property binding only writes to the DOM when the bound value changed *between* checks (the quick-add case in lesson 8.1).
+
+---
+
 ## Tutor Meta-Commands
 
 The learner can invoke these at any point during a session:

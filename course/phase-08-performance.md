@@ -15,7 +15,8 @@
   - What does **not** schedule a pass: a `setTimeout` mutating a plain property — the classic zoneless bug
   - `ChangeDetectorRef`: `markForCheck()`, `detectChanges()`, `detach()` — and why you rarely need them with signals
   - `ExpressionChangedAfterItHasBeenCheckedError` explained
-- *Training Exercise:* Mutate a plain property from `setTimeout` (no update) vs a signal (update); add `console.log` in a template getter to count checks
+  - **One pass only sees the net change:** a property binding writes to the DOM when the bound value differs from what Angular wrote last time. If the user types into `<input [value]="draft()">` and submits in the *same* cycle, `draft` goes `'' → 'text' → ''` before any check runs, Angular sees no net change, and the field keeps the typed text. Either let the two events land in different cycles or reset the element directly through `viewChild()` — which is what TaskFlow's quick-add does.
+- *Training Exercise:* Mutate a plain property from `setTimeout` (no update) vs a signal (update); add `console.log` in a template getter to count checks; then reproduce the `[value]` case above and fix it
 - *Project Application:* Audit TaskFlow for any state that is not a signal and could silently go stale
 
 ---

@@ -170,6 +170,14 @@
             }
           },
           "defaultConfiguration": "development"
+        },
+        "test": {
+          "builder": "@angular/build:unit-test",
+          "options": {
+            "tsConfig": "projects/taskflow/tsconfig.spec.json",
+            "buildTarget": "taskflow:build:development",
+            "runner": "vitest"
+          }
         }
       }
     }

@@ -13,7 +13,9 @@
   - Project tree: `angular.json`, `package.json`, `tsconfig.json`, `src/`, `projects/`
   - Build targets: `ng serve`, `ng build`, `ng test` (Vitest via `@angular/build:unit-test`)
   - Workspace vs project configuration in `angular.json`; the `schematics` block (`style: scss`, `skipTests: true` until Phase 11)
+  - Every project needs its own `architect` targets — both `angular-ai-tutor` and `taskflow` have `build`, `serve`, and `test`; a missing target is why a CLI command "does not exist" for one project only
   - What is **not** in `package.json`: no `zone.js` — Angular 22 apps are zoneless by default (explained in 0.3)
+  - **Exact versions, not ranges:** the `@angular/*` packages are pinned (`22.1.4`, tooling `22.1.6`) instead of `^22.0.0`. Ranges plus a lockfile that drifted are what make a later `ng add @angular/ssr` (Phase 10) fail with `ERESOLVE` peer conflicts. The fix is to align the versions and regenerate `package-lock.json`, never `--force`.
   - Tooling: Prettier (`npx prettier --check .`); ESLint is optional (`ng add angular-eslint`) — ask before adding
 - *Training Exercise:* Identify files in workspace, explain purpose of each config file
 - *Project Application:* Explore TaskFlow project structure in `projects/taskflow/` and read `course/taskflow-spec.md` §8 (target layout: `core/`, `features/`, `shared/`)
@@ -30,8 +32,9 @@
   - `noImplicitReturns`: catch missing return paths
   - `noFallthroughCasesInSwitch`: prevent switch bugs
   - `noPropertyAccessFromIndexSignature`: why `obj['key']` vs `obj.key` matters
+  - `target: ES2022` decides which standard-library methods exist: `Array.prototype.toSorted()` / `with()` are ES2023, so `columns.toSorted(...)` fails to compile — use `[...columns].sort(...)`
 - *Training Exercise:* Write code that fails without strict mode and compiles safely with it
-- *Project Application:* Verify TaskFlow tsconfig uses strict mode
+- *Project Application:* Verify TaskFlow tsconfig uses strict mode — `strict: true` is already set in the workspace `tsconfig.json`; read each flag it turns on and try removing one to see what stops being reported
 
 ---
 

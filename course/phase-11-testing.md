@@ -21,9 +21,11 @@
   - `@angular/build:unit-test` builder with Vitest (`ng test`, `--watch`, `--coverage`)
   - `tsconfig.spec.json` and `jsdom`
   - Remove `skipTests: true` from `angular.json` schematics so new files get specs again
+  - Coverage needs a provider that is **not** installed by default: `ng test --coverage` stops with *"Code coverage requires either @vitest/coverage-v8 or @vitest/coverage-istanbul"*. Ask the learner to run `npm install -D @vitest/coverage-v8` before lesson 11.5.
+  - Coverage options live on the builder, not in a Vitest config file: `coverage`, `coverageInclude`, `coverageExclude`, `coverageThresholds` (a `coverage: { … }` object fails schema validation)
   - `describe` / `it` / `expect`, `vi.fn()`, `vi.spyOn()`
 - *Training Exercise:* Write and run a passing test for a pure helper function
-- *Project Application:* Run the TaskFlow test target; write the first tests for `core/helpers.ts`
+- *Project Application:* Run the TaskFlow test target (`npm run test:taskflow -- --no-watch`; before the first spec exists it fails with *"No tests found"* — that is the expected starting point) and write the first tests for `core/helpers.ts`
 
 ---
 
@@ -31,8 +33,8 @@
 - *Objective:* Render components, test behavior through the DOM.
 - *Branch Name:* `lesson-11.2-component-tests`
 - *Topics:*
-  - `TestBed.configureTestingModule({ imports: [Cmp] })`, `createComponent()`, `fixture.detectChanges()`
-  - Setting signal inputs: `fixture.componentRef.setInput()`
+  - `TestBed.configureTestingModule({ imports: [Cmp] })`, `createComponent()`, and why zoneless tests use `await fixture.whenStable()` instead of `fixture.detectChanges()`
+  - Setting signal inputs: `fixture.componentRef.setInput()` — beware that a render helper with a default parameter (`assignee = USER`) also applies that default when you pass `undefined` explicitly, so the "unassigned" case silently tests the wrong thing
   - Querying the DOM (`nativeElement`, `By.css`), dispatching events
   - Testing outputs with `vi.fn()` subscribers
   - Optional: `render()` / `screen` from `@testing-library/angular` for user-centric tests
@@ -49,7 +51,8 @@
   - Overriding providers: `{ provide: X, useValue: mock }`
   - Testing signals and `computed()` selectors
   - `provideHttpClientTesting()` + `HttpTestingController` for `HttpClient`
-  - Testing `localStorage` behavior with a fake storage
+  - **`httpResource()` in tests:** `await fixture.whenStable()` *waits for the pending request*, so calling it before answering that request hangs until the hook times out. The working order is `await TestBed.tick()` (lets the effect start the request) → `http.expectOne(url).flush(data)` → `await new Promise((r) => setTimeout(r))` (the resource resolves in a microtask) → `await TestBed.tick()` / `whenStable()`.
+  - Testing `localStorage` behavior with a fake storage; `localStorage.clear()` in `beforeEach` keeps specs independent
 - *Training Exercise:* Test a service that filters and transforms data; test an HTTP call with `HttpTestingController`
 - *Project Application:* Test `TaskStore` (filters, `filteredTasks`, move/add/delete), `BoardStore`, `TaskFlowDb` (seed / load / save), and `SessionService`
 

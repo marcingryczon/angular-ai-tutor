@@ -40,7 +40,7 @@
   - `ng build --stats-json` + a bundle analyzer
   - Tree-shaking, `sideEffects`, lazy chunks
 - *Training Exercise:* Analyze bundle size, identify large dependencies
-- *Project Application:* Optimize the TaskFlow production bundle; tighten the budgets
+- *Project Application:* Optimize the TaskFlow production bundle; tighten the budgets — but leave headroom: Phase 14 adds `@ngrx/store` + DevTools and grows the initial bundle by roughly 35 kB, so a budget set flush against today's size will fail there. Record the current number in the lesson notes and compare after the migration.
 
 ---
 
@@ -52,6 +52,7 @@
   - Environment-specific builds (`fileReplacements`, environment files)
   - `ng build` production flags; verifying the output
   - CI outline: lint → test (with coverage thresholds) → build; a GitHub Actions workflow
+  - Scope the format check to the code (`projects/**`, `src/**`, `angular.json`): running `prettier --check .` over the course's hand-written markdown turns every CI run red
   - Deploying static output (SSR server vs static host) — awareness
 - *Training Exercise:* Add a global `ErrorHandler` that reports to the console with context; build for production
 - *Project Application:* Add error handling to TaskFlow; add a GitHub Actions workflow running tests and build
