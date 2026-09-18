@@ -1,7 +1,7 @@
 # Phase 5: RxJS, HTTP & Async Patterns
 *Focus: Streams, HTTP, and the RxJS + Signals synergy.*
 
-## Git Branch: `lesson-5.<n>-*`
+## Git Branch: `phase-5-rxjs` — one branch per phase, one commit per lesson
 ## Training dir: `src/app/phase-5-rxjs/5.<n>-<slug>/` · Lesson notes: `lessons/phase-5-rxjs/5.<n>-<slug>.md`
 
 > TaskFlow has no backend. HTTP lessons use static JSON files served from `projects/taskflow/public/` (see `taskflow-spec.md` §7.3) so every learner sees the same data.
@@ -14,7 +14,7 @@
 
 ### Lesson 5.1: RxJS Fundamentals
 - *Objective:* Observables, Subjects, subscriptions, unsubscription.
-- *Branch Name:* `lesson-5.1-rxjs-basics`
+- *Commit:* `lesson-5.1-rxjs-basics`
 - *Topics:*
   - Observable vs Promise: lazy, cancellable, multi-value
   - `Subject` / `BehaviorSubject`: multicasting, manual emission, current value
@@ -27,7 +27,7 @@
 
 ### Lesson 5.2: Essential Operators
 - *Objective:* `map`, `filter`, `switchMap`, `debounceTime`, `distinctUntilChanged`, `catchError`.
-- *Branch Name:* `lesson-5.2-rxjs-operators`
+- *Commit:* `lesson-5.2-rxjs-operators`
 - *Topics:*
   - Transformation: `map`, `filter`, `tap`
   - Flattening: `switchMap` vs `mergeMap` vs `concatMap` vs `exhaustMap` — cancellation semantics
@@ -41,7 +41,7 @@
 
 ### Lesson 5.3: `HttpClient`
 - *Objective:* Fetch typed data over HTTP the Angular way.
-- *Branch Name:* `lesson-5.3-http-client`
+- *Commit:* `lesson-5.3-http-client`
 - *Topics:*
   - `provideHttpClient()` in `app.config.ts`; `withFetch()`
   - `HttpClient.get<T>()` returns a cold Observable — nothing happens until subscribed
@@ -55,7 +55,7 @@
 
 ### Lesson 5.4: `toSignal()` / `toObservable()` — Bridges
 - *Objective:* Convert between Observables and Signals.
-- *Branch Name:* `lesson-5.4-to-signal`
+- *Commit:* `lesson-5.4-to-signal`
 - *Topics:*
   - `toSignal(obs$, { initialValue })` / `{ requireSync: true }` — subscribe once, read synchronously
   - `toObservable(signal)` — when an operator pipeline needs a signal as input
@@ -67,7 +67,7 @@
 
 ### Lesson 5.5: `takeUntilDestroyed()` & `DestroyRef`
 - *Objective:* Automatic subscription cleanup, prevent memory leaks.
-- *Branch Name:* `lesson-5.5-takeuntil-destroyed`
+- *Commit:* `lesson-5.5-takeuntil-destroyed`
 - *Topics:*
   - `takeUntilDestroyed()` — auto-unsubscribe on destroy (needs injection context or an explicit `DestroyRef`)
   - `DestroyRef.onDestroy()` — manual cleanup registration
@@ -79,7 +79,7 @@
 
 ### Lesson 5.6: `resource()` & `httpResource()`
 - *Objective:* Declarative async data with built-in loading / error states.
-- *Branch Name:* `lesson-5.6-resource-api`
+- *Commit:* `lesson-5.6-resource-api`
 - *Reference:* `agent-skills/angular-skills/references/resource.md`
 - *Topics:*
   - `resource({ params, loader })` — signal-driven async data
@@ -94,7 +94,7 @@
 
 ### Lesson 5.7: Service-Based State Store Pattern
 - *Objective:* Build a centralized signal store — the foundation for understanding why NgRx exists.
-- *Branch Name:* `lesson-5.7-service-store`
+- *Commit:* `lesson-5.7-service-store`
 - *Topics:*
   - Why centralized state: prop drilling and scattered state
   - Store = `@Injectable` service with private `signal()` state, public `computed()` selectors, and action methods

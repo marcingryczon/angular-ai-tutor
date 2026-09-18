@@ -37,7 +37,9 @@ export function json(path) {
 
 export function equals(actual, expected, what) {
   if (actual !== expected) {
-    throw new Error(`${what}: expected ${JSON.stringify(expected)}, found ${JSON.stringify(actual)}`);
+    throw new Error(
+      `${what}: expected ${JSON.stringify(expected)}, found ${JSON.stringify(actual)}`,
+    );
   }
 }
 

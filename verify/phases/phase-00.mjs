@@ -17,7 +17,16 @@ export default {
     {
       name: 'core/models.ts declares the domain (spec §7.1)',
       run: () => {
-        const types = ['Priority', 'TaskStatus', 'Visibility', 'Role', 'User', 'Board', 'Column', 'Task'];
+        const types = [
+          'Priority',
+          'TaskStatus',
+          'Visibility',
+          'Role',
+          'User',
+          'Board',
+          'Column',
+          'Task',
+        ];
         const source = fileExists(`${APP}/core/models.ts`);
         for (const type of types) {
           truthy(
@@ -31,7 +40,11 @@ export default {
       name: 'core/helpers.ts exports newId() and a generic findById()',
       run: () => {
         fileContains(`${APP}/core/helpers.ts`, /function newId/, 'lesson 0.2.3');
-        fileContains(`${APP}/core/helpers.ts`, /function findById<\s*T extends/, 'it must stay generic — no any');
+        fileContains(
+          `${APP}/core/helpers.ts`,
+          /function findById<\s*T extends/,
+          'it must stay generic — no any',
+        );
       },
     },
     {

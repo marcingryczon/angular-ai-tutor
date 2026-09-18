@@ -5,7 +5,8 @@ const APP = 'projects/taskflow/src/app';
 export default {
   phase: 11,
   title: 'Testing',
-  milestone: 'Unit tests for every unit; coverage ≥ 90% in projects/taskflow/src. No visual change. (spec §10)',
+  milestone:
+    'Unit tests for every unit; coverage ≥ 90% in projects/taskflow/src. No visual change. (spec §10)',
   checks: [
     {
       name: 'the taskflow project has a test target',
@@ -13,7 +14,10 @@ export default {
         const config = json('angular.json');
         const test = config.projects.taskflow.architect.test;
         truthy(test, 'angular.json has no test target for taskflow');
-        truthy(test.builder === '@angular/build:unit-test', 'use the @angular/build:unit-test builder');
+        truthy(
+          test.builder === '@angular/build:unit-test',
+          'use the @angular/build:unit-test builder',
+        );
       },
     },
     {
@@ -22,7 +26,10 @@ export default {
         const config = json('angular.json');
         const schematics = config.projects.taskflow.schematics ?? {};
         const offenders = Object.entries(schematics).filter(([, value]) => value?.skipTests);
-        truthy(offenders.length === 0, `skipTests is still on for: ${offenders.map(([k]) => k).join(', ')}`);
+        truthy(
+          offenders.length === 0,
+          `skipTests is still on for: ${offenders.map(([k]) => k).join(', ')}`,
+        );
       },
     },
     {
@@ -32,7 +39,11 @@ export default {
         const options = config.projects.taskflow.architect.test.options ?? {};
         truthy(options.coverage, 'coverage is not enabled on the test target');
         const thresholds = options.coverageThresholds ?? {};
-        atLeast(thresholds.lines ?? 0, 90, 'line coverage threshold (policy: ≥ 90% for business logic)');
+        atLeast(
+          thresholds.lines ?? 0,
+          90,
+          'line coverage threshold (policy: ≥ 90% for business logic)',
+        );
       },
     },
     {
@@ -57,10 +68,15 @@ export default {
             return false;
           }
         };
-        const units = walk(APP, (file) => file.endsWith('.ts') && !file.endsWith('.spec.ts')).filter((file) =>
+        const units = walk(
+          APP,
+          (file) => file.endsWith('.ts') && !file.endsWith('.spec.ts'),
+        ).filter((file) =>
           /@Component\(|@Injectable\(|@Directive\(|@Pipe\(/.test(fileExists(file)),
         );
-        const missing = units.filter((file) => !hasSpec(file)).map((file) => file.replace(`${APP}/`, ''));
+        const missing = units
+          .filter((file) => !hasSpec(file))
+          .map((file) => file.replace(`${APP}/`, ''));
         truthy(missing.length === 0, `no spec for: ${missing.join(', ')}`);
       },
     },

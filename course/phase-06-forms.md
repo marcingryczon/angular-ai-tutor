@@ -1,7 +1,7 @@
 # Phase 6: Forms
 *Focus: User input with modern form patterns.*
 
-## Git Branch: `lesson-6.<n>-*`
+## Git Branch: `phase-6-forms` — one branch per phase, one commit per lesson
 ## Training dir: `src/app/phase-6-forms/6.<n>-<slug>/` · Lesson notes: `lessons/phase-6-forms/6.<n>-<slug>.md`
 
 > **Decision:** TaskFlow uses **Signal Forms** (`@angular/forms/signals`) — consistent with `taskflow-spec.md` §5.7 and the reference implementation. Legacy Reactive Forms are covered for awareness only. Check `agent-skills/angular-skills/references/signal-forms.md` for the API status in the detected Angular version before teaching.
@@ -10,7 +10,7 @@
 
 ### Lesson 6.1: Template-Driven Forms
 - *Objective:* `ngModel`, simple validation, quick forms.
-- *Branch Name:* `lesson-6.1-template-forms`
+- *Commit:* `lesson-6.1-template-forms`
 - *Reference:* `agent-skills/angular-skills/references/template-driven-forms.md`
 - *Topics:*
   - `FormsModule`, `[(ngModel)]`, `#ctrl="ngModel"`
@@ -23,7 +23,7 @@
 
 ### Lesson 6.2: Signal Forms
 - *Objective:* Model-driven forms built on signals.
-- *Branch Name:* `lesson-6.2-signal-forms`
+- *Commit:* `lesson-6.2-signal-forms`
 - *Reference:* `agent-skills/angular-skills/references/signal-forms.md`
 - *Topics:*
   - `form(modelSignal, schema)` — the form is derived from a `signal<T>()` model
@@ -40,7 +40,7 @@
 
 ### Lesson 6.3: Reactive Forms (Legacy Awareness)
 - *Objective:* Read and migrate `FormControl` / `FormGroup` code.
-- *Branch Name:* `lesson-6.3-reactive-forms`
+- *Commit:* `lesson-6.3-reactive-forms`
 - *Reference:* `agent-skills/angular-skills/references/reactive-forms.md`
 - *Topics:*
   - `FormControl`, `FormGroup`, `FormArray`, `FormBuilder`, `Validators`
@@ -53,7 +53,7 @@
 
 ### Lesson 6.4: Custom & Async Validators
 - *Objective:* Reusable validation logic in signal forms.
-- *Branch Name:* `lesson-6.4-validators`
+- *Commit:* `lesson-6.4-validators`
 - *Reference:* `agent-skills/angular-skills/references/signal-forms.md`
 - *Topics:*
   - `validate()` with a custom rule returning an error object or `null`

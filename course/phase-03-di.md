@@ -1,14 +1,14 @@
 # Phase 3: Dependency Injection
 *Focus: The power of Angular's DI system.*
 
-## Git Branch: `lesson-3.<n>-*`
+## Git Branch: `phase-3-di` — one branch per phase, one commit per lesson
 ## Training dir: `src/app/phase-3-di/3.<n>-<slug>/` · Lesson notes: `lessons/phase-3-di/3.<n>-<slug>.md`
 
 ---
 
 ### Lesson 3.1: `inject()` API
 - *Objective:* Functional injection replacing constructor DI.
-- *Branch Name:* `lesson-3.1-inject-api`
+- *Commit:* `lesson-3.1-inject-api`
 - *Reference:* `agent-skills/angular-skills/references/injection-context.md`
 - *Topics:*
   - `inject<T>(Token)` — functional DI replacing the `constructor` pattern
@@ -22,7 +22,7 @@
 
 ### Lesson 3.2: Creating Services
 - *Objective:* Injectable services, `providedIn: 'root'`, the singleton pattern.
-- *Branch Name:* `lesson-3.2-services`
+- *Commit:* `lesson-3.2-services`
 - *Reference:* `agent-skills/angular-skills/references/creating-services.md`
 - *Topics:*
   - `@Injectable({ providedIn: 'root' })` — tree-shakable singletons
@@ -37,7 +37,7 @@
 
 ### Lesson 3.3: DI Fundamentals — Tokens & Providers
 - *Objective:* `InjectionToken`, `useValue`, `useFactory`, `useClass`, `useExisting`.
-- *Branch Name:* `lesson-3.3-di-fundamentals`
+- *Commit:* `lesson-3.3-di-fundamentals`
 - *Reference:* `agent-skills/angular-skills/references/defining-providers.md` · `agent-skills/angular-skills/references/di-fundamentals.md`
 - *Topics:*
   - `InjectionToken<T>`: tokens for non-class dependencies
@@ -51,7 +51,7 @@
 
 ### Lesson 3.4: Hierarchical Injectors
 - *Objective:* Element injectors, environment injectors, resolution order.
-- *Branch Name:* `lesson-3.4-hierarchical-injectors`
+- *Commit:* `lesson-3.4-hierarchical-injectors`
 - *Reference:* `agent-skills/angular-skills/references/hierarchical-injectors.md`
 - *Topics:*
   - Root / environment injector vs element injector
@@ -65,7 +65,7 @@
 
 ### Lesson 3.5: Persistence Service (`localStorage`)
 - *Objective:* Encapsulate browser storage behind an injectable service.
-- *Branch Name:* `lesson-3.5-persistence`
+- *Commit:* `lesson-3.5-persistence`
 - *Reference:* `agent-skills/angular-skills/references/creating-services.md`
 - *Topics:*
   - Why storage access belongs in one service (testability, SSR safety, versioning)
@@ -78,7 +78,7 @@
 
 ### Lesson 3.6: First Unit Tests — Services
 - *Objective:* Close the feedback loop. A service with no template is the easiest thing in Angular to test, so this is where testing starts — not in Phase 11.
-- *Branch Name:* `phase-3-di` (commit `lesson-3.6-first-tests`)
+- *Commit:* `lesson-3.6-first-tests`
 - *Reference:* `agent-skills/angular-skills/references/testing-fundamentals.md`
 - *Topics:*
   - `ng test taskflow` and what the `@angular/build:unit-test` builder does; remove `skipTests: true` from `angular.json` so new files get a spec again

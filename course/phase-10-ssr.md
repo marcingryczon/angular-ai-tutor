@@ -1,7 +1,7 @@
 # Phase 10: Server-Side Rendering & Hydration
 *Focus: Production-grade rendering.*
 
-## Git Branch: `lesson-10.<n>-*`
+## Git Branch: `phase-10-ssr` — one branch per phase, one commit per lesson
 ## Training dir: `src/app/phase-10-ssr/10.<n>-<slug>/` · Lesson notes: `lessons/phase-10-ssr/10.<n>-<slug>.md`
 
 > **Honest framing:** TaskFlow persists to `localStorage`, so the server can only render the shell and seed/empty states. That is exactly what makes it a good hydration exercise — the mismatch cases are real. `ng add @angular/ssr` installs packages: ask the learner to run it.
@@ -10,7 +10,7 @@
 
 ### Lesson 10.1: SSR Setup
 - *Objective:* `@angular/ssr`, server entry, render modes.
-- *Branch Name:* `lesson-10.1-ssr-setup`
+- *Commit:* `lesson-10.1-ssr-setup`
 - *Reference:* `agent-skills/angular-skills/references/rendering-strategies.md`
 - *Topics:*
   - `ng add @angular/ssr` — what it generates (`server.ts`, `main.server.ts`, `app.config.server.ts`, `app.routes.server.ts`), plus the `server` / `outputMode` / `ssr` keys it adds to the build target
@@ -25,7 +25,7 @@
 
 ### Lesson 10.2: Hydration
 - *Objective:* Non-destructive hydration, incremental hydration, mismatches.
-- *Branch Name:* `lesson-10.2-hydration`
+- *Commit:* `lesson-10.2-hydration`
 - *Reference:* `agent-skills/angular-skills/references/rendering-strategies.md`
 - *Topics:*
   - How hydration works: reuse server DOM, attach listeners, no re-render
@@ -40,7 +40,7 @@
 
 ### Lesson 10.3: Platform Detection & State Transfer
 - *Objective:* Browser-only code, `TransferState`.
-- *Branch Name:* `lesson-10.3-platform`
+- *Commit:* `lesson-10.3-platform`
 - *Reference:* `agent-skills/angular-skills/references/rendering-strategies.md`
 - *Topics:*
   - `PLATFORM_ID` + `isPlatformBrowser()` / `isPlatformServer()`

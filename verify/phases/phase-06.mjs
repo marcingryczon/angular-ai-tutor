@@ -30,8 +30,8 @@ export default {
     {
       name: '"New task" opens a modal whose submit starts disabled',
       needsApp: true,
-      run: async ({ visit, page }) => {
-        await visit('/');
+      run: async ({ visitBoard, page }) => {
+        await visitBoard();
         const found = await page.evaluate(`
           const button = [...document.querySelectorAll('button')].find(b => b.textContent.includes('New task'));
           if (!button) return null;

@@ -1,7 +1,7 @@
 # Phase 11: Testing
 *Focus: Depth. You have been testing services since Lesson 3.6 — this phase adds everything that needs a rendered component, and turns the habit into a policy.*
 
-## Git Branch: `lesson-11.<n>-*`
+## Git Branch: `phase-11-testing` — one branch per phase, one commit per lesson
 ## Training dir: `src/app/phase-11-testing/11.<n>-<slug>/` · Lesson notes: `lessons/phase-11-testing/11.<n>-<slug>.md`
 
 > **⚠️ Testing Policy — the full policy takes effect here:**
@@ -18,7 +18,7 @@
 
 ### Lesson 11.1: Vitest Configuration & Coverage
 - *Objective:* Go past "it runs": coverage, thresholds, and what the builder can configure.
-- *Branch Name:* `lesson-11.1-vitest-setup`
+- *Commit:* `lesson-11.1-vitest-setup`
 - *Reference:* `agent-skills/angular-skills/references/testing-fundamentals.md`
 - *Topics:*
   - `@angular/build:unit-test` builder with Vitest (`ng test`, `--watch`, `--coverage`)
@@ -34,7 +34,7 @@
 
 ### Lesson 11.2: Component Testing
 - *Objective:* Render components, test behavior through the DOM.
-- *Branch Name:* `lesson-11.2-component-tests`
+- *Commit:* `lesson-11.2-component-tests`
 - *Reference:* `agent-skills/angular-skills/references/testing-fundamentals.md` · `agent-skills/angular-skills/references/component-harnesses.md`
 - *Topics:*
   - `TestBed.configureTestingModule({ imports: [Cmp] })`, `createComponent()`, and why zoneless tests use `await fixture.whenStable()` instead of `fixture.detectChanges()`
@@ -49,7 +49,7 @@
 
 ### Lesson 11.3: Service & Store Testing
 - *Objective:* Unit test services and signal stores, mock dependencies.
-- *Branch Name:* `lesson-11.3-service-tests`
+- *Commit:* `lesson-11.3-service-tests`
 - *Reference:* `agent-skills/angular-skills/references/testing-fundamentals.md`
 - *Topics:*
   - `TestBed.inject()` vs plain `new` for services without dependencies
@@ -65,7 +65,7 @@
 
 ### Lesson 11.4: Pipe, Directive, Guard & Resolver Testing
 - *Objective:* Test the small units.
-- *Branch Name:* `lesson-11.4-pipe-directive-tests`
+- *Commit:* `lesson-11.4-pipe-directive-tests`
 - *Reference:* `agent-skills/angular-skills/references/router-testing.md`
 - *Topics:*
   - Pipes: call `transform()` directly
@@ -79,7 +79,7 @@
 
 ### Lesson 11.5: Testing Best Practices & Coverage
 - *Objective:* What to test, test structure, behavior over implementation, enforcing thresholds.
-- *Branch Name:* `lesson-11.5-testing-practices`
+- *Commit:* `lesson-11.5-testing-practices`
 - *Reference:* `agent-skills/angular-skills/references/testing-fundamentals.md` · `agent-skills/angular-skills/references/e2e-testing.md`
 - *Topics:*
   - Arrange-Act-Assert; one behavior per test

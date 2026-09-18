@@ -72,7 +72,9 @@ export async function openBrowser({ width = 1440, height = 900 } = {}) {
     const entry = pending.get(message.id);
     if (!entry) return;
     pending.delete(message.id);
-    message.error ? entry.reject(new Error(JSON.stringify(message.error))) : entry.resolve(message.result);
+    message.error
+      ? entry.reject(new Error(JSON.stringify(message.error)))
+      : entry.resolve(message.result);
   });
 
   const send = (method, params = {}) =>
@@ -109,7 +111,11 @@ export async function openBrowser({ width = 1440, height = 900 } = {}) {
         /* ignore */
       }
       proc.kill();
-      rmSync(profile, { recursive: true, force: true });
+      try {
+        rmSync(profile, { recursive: true, force: true, maxRetries: 3, retryDelay: 100 });
+      } catch {
+        // Chrome may still be flushing its profile; a temp dir left behind is harmless.
+      }
     },
   };
 }

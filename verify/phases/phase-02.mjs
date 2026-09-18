@@ -11,9 +11,17 @@ export default {
     {
       name: 'the tree is wired with input() and output()',
       run: () => {
-        fileContains(`${APP}/features/board/task-card.ts`, /task = input(\.required)?</, 'lesson 2.1');
+        fileContains(
+          `${APP}/features/board/task-card.ts`,
+          /task = input(\.required)?</,
+          'lesson 2.1',
+        );
         fileContains(`${APP}/features/board/task-card.ts`, /output</, 'lesson 2.2');
-        fileContains(`${APP}/features/board/column.ts`, /tasks = input(\.required)?</, 'lesson 2.1');
+        fileContains(
+          `${APP}/features/board/column.ts`,
+          /tasks = input(\.required)?</,
+          'lesson 2.1',
+        );
       },
     },
     {
@@ -37,8 +45,8 @@ export default {
     {
       name: 'the board still renders and the quick-add row is there',
       needsApp: true,
-      run: async ({ visit }) => {
-        const page = await visit('/');
+      run: async ({ visitBoard }) => {
+        const page = await visitBoard();
         const found = await page.evaluate(`
           return {
             cards: document.querySelectorAll('.task-card').length,

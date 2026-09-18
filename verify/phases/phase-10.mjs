@@ -5,7 +5,8 @@ const APP = 'projects/taskflow/src/app';
 export default {
   phase: 10,
   title: 'Server-Side Rendering & Hydration',
-  milestone: 'SSR on: / prerendered, the board page server-rendered, hydration clean, TaskFlowDb a no-op on the server. (spec §10)',
+  milestone:
+    'SSR on: / prerendered, the board page server-rendered, hydration clean, TaskFlowDb a no-op on the server. (spec §10)',
   checks: [
     {
       name: 'the SSR entry points exist',
@@ -25,7 +26,10 @@ export default {
       run: () => {
         const source = fileExists(`${APP}/app.routes.server.ts`);
         truthy(source.includes('RenderMode.Prerender'), 'nothing is prerendered (lesson 10.1)');
-        truthy(source.includes('RenderMode.Server'), 'the board page must be server-rendered (lesson 10.1)');
+        truthy(
+          source.includes('RenderMode.Server'),
+          'the board page must be server-rendered (lesson 10.1)',
+        );
       },
     },
     {
@@ -56,7 +60,10 @@ export default {
       run: () => {
         const config = json('angular.json');
         const options = config.projects.taskflow.architect.build.options;
-        truthy(options.server && options.ssr, 'angular.json is missing the server / ssr build options');
+        truthy(
+          options.server && options.ssr,
+          'angular.json is missing the server / ssr build options',
+        );
         const hosts = options.security?.allowedHosts ?? [];
         truthy(
           hosts.length > 0,

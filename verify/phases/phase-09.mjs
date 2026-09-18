@@ -5,13 +5,21 @@ const APP = 'projects/taskflow/src/app';
 export default {
   phase: 9,
   title: 'Directives & Pipes',
-  milestone: '*adminOnly hides the admin actions, [priorityHighlight] accents the cards, DueDatePipe and PriorityLabelPipe are used in templates. (spec §10)',
+  milestone:
+    '*adminOnly hides the admin actions, [priorityHighlight] accents the cards, DueDatePipe and PriorityLabelPipe are used in templates. (spec §10)',
   checks: [
     {
       name: 'the structural directive renders through a TemplateRef',
       run: () => {
-        const source = fileContains(`${APP}/shared/directives/admin-only.directive.ts`, 'TemplateRef', 'lesson 9.1');
-        truthy(source.includes('ViewContainerRef'), 'a structural directive needs a ViewContainerRef');
+        const source = fileContains(
+          `${APP}/shared/directives/admin-only.directive.ts`,
+          'TemplateRef',
+          'lesson 9.1',
+        );
+        truthy(
+          source.includes('ViewContainerRef'),
+          'a structural directive needs a ViewContainerRef',
+        );
       },
     },
     {
@@ -19,7 +27,10 @@ export default {
       run: () => {
         const source = fileExists(`${APP}/shared/directives/priority-highlight.directive.ts`);
         truthy(source.includes('host:'), 'use host metadata, not @HostBinding (lesson 9.2)');
-        truthy(!/@HostBinding|@HostListener/.test(source), '@HostBinding / @HostListener are legacy');
+        truthy(
+          !/@HostBinding|@HostListener/.test(source),
+          '@HostBinding / @HostListener are legacy',
+        );
       },
     },
     {
@@ -45,13 +56,8 @@ export default {
     {
       name: 'members do not see the admin actions, admins do',
       needsApp: true,
-      run: async ({ visit, page }) => {
-        await visit('/');
-        await page.evaluate(`
-          const link = document.querySelector('.board-card__link');
-          if (link) { link.click(); await new Promise(r => setTimeout(r, 900)); }
-          return true;
-        `);
+      run: async ({ visitBoard, page }) => {
+        await visitBoard();
         const found = await page.evaluate(`
           const select = document.querySelector('.role-switch__select, .topbar__role-select');
           if (!select) return null;

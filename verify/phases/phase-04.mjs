@@ -22,9 +22,11 @@ export default {
     {
       name: 'the filter bar filters, and the count follows',
       needsApp: true,
-      run: async ({ visit, page }) => {
-        await visit('/');
-        const before = await page.evaluate("return document.querySelectorAll('.task-card').length;");
+      run: async ({ visitBoard, page }) => {
+        await visitBoard();
+        const before = await page.evaluate(
+          "return document.querySelectorAll('.task-card').length;",
+        );
         atLeast(before, 2, 'cards before filtering');
 
         const after = await page.evaluate(`
@@ -41,14 +43,17 @@ export default {
         `);
         truthy(after, 'no #board-search input — the filter bar is missing (spec §5.2)');
         equals(after.cards, 0, 'cards left after an impossible search');
-        truthy(after.count.startsWith('0'), `the header count should read "0 task(s)", found "${after.count}"`);
+        truthy(
+          after.count.startsWith('0'),
+          `the header count should read "0 task(s)", found "${after.count}"`,
+        );
       },
     },
     {
       name: 'the priority filter narrows the board',
       needsApp: true,
-      run: async ({ visit, page }) => {
-        await visit('/');
+      run: async ({ visitBoard, page }) => {
+        await visitBoard();
         const found = await page.evaluate(`
           const select = document.querySelector('#board-priority');
           if (!select) return null;

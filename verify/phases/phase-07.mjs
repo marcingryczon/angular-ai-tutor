@@ -60,7 +60,9 @@ export default {
       needsApp: true,
       run: async ({ visit, page }) => {
         await visit('/boards/does-not-exist');
-        const path = await page.evaluate('await new Promise(r => setTimeout(r, 700)); return location.pathname;');
+        const path = await page.evaluate(
+          'await new Promise(r => setTimeout(r, 700)); return location.pathname;',
+        );
         truthy(path === '/', `expected a redirect to /, landed on ${path}`);
       },
     },

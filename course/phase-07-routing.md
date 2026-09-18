@@ -1,14 +1,14 @@
 # Phase 7: Routing & Navigation
 *Focus: Multi-page applications and advanced routing.*
 
-## Git Branch: `lesson-7.<n>-*`
+## Git Branch: `phase-7-routing` — one branch per phase, one commit per lesson
 ## Training dir: `src/app/phase-7-routing/7.<n>-<slug>/` · Lesson notes: `lessons/phase-7-routing/7.<n>-<slug>.md`
 
 ---
 
 ### Lesson 7.1: Route Configuration
 - *Objective:* `provideRouter`, route definitions, basic navigation.
-- *Branch Name:* `lesson-7.1-route-config`
+- *Commit:* `lesson-7.1-route-config`
 - *Reference:* `agent-skills/angular-skills/references/define-routes.md`
 - *Topics:*
   - `provideRouter(routes, ...features)` in `app.config.ts`
@@ -22,7 +22,7 @@
 
 ### Lesson 7.2: Router Outlet & Links
 - *Objective:* `<router-outlet>`, `routerLink`, active link states.
-- *Branch Name:* `lesson-7.2-router-outlet`
+- *Commit:* `lesson-7.2-router-outlet`
 - *Reference:* `agent-skills/angular-skills/references/show-routes-with-outlets.md` · `agent-skills/angular-skills/references/navigate-to-routes.md`
 - *Topics:*
   - `<router-outlet />` — where routed components render
@@ -35,7 +35,7 @@
 
 ### Lesson 7.3: Route Parameters & Query Params
 - *Objective:* Dynamic segments, reading params as inputs.
-- *Branch Name:* `lesson-7.3-route-params`
+- *Commit:* `lesson-7.3-route-params`
 - *Reference:* `agent-skills/angular-skills/references/define-routes.md` · `agent-skills/angular-skills/references/router-lifecycle.md`
 - *Topics:*
   - Dynamic segments: `:boardId`
@@ -49,7 +49,7 @@
 
 ### Lesson 7.4: Route Guards
 - *Objective:* Functional guards: `canActivate`, `canMatch`, `canDeactivate`.
-- *Branch Name:* `lesson-7.4-route-guards`
+- *Commit:* `lesson-7.4-route-guards`
 - *Reference:* `agent-skills/angular-skills/references/route-guards.md`
 - *Topics:*
   - `CanActivateFn` — with `inject()` and `Router.createUrlTree()` for redirects
@@ -62,7 +62,7 @@
 
 ### Lesson 7.5: Resolvers & Data Fetching
 - *Objective:* Pre-fetching route data.
-- *Branch Name:* `lesson-7.5-resolvers`
+- *Commit:* `lesson-7.5-resolvers`
 - *Reference:* `agent-skills/angular-skills/references/data-resolvers.md`
 - *Topics:*
   - `ResolveFn<T>` and the `resolve` route property; a resolver may return a value, a `Promise`, an `Observable` — or a `RedirectCommand(router.parseUrl('/'))` to send the navigation somewhere else
@@ -75,7 +75,7 @@
 
 ### Lesson 7.6: Lazy Loading & Preloading
 - *Objective:* `loadComponent`, route-level code splitting.
-- *Branch Name:* `lesson-7.6-lazy-loading`
+- *Commit:* `lesson-7.6-lazy-loading`
 - *Reference:* `agent-skills/angular-skills/references/loading-strategies.md`
 - *Topics:*
   - `loadComponent` / `loadChildren` with dynamic `import()`

@@ -1,7 +1,7 @@
 # Phase 2: Component Communication
 *Focus: How components talk to each other.*
 
-## Git Branch: `lesson-2.<n>-*`
+## Git Branch: `phase-2-communication` — one branch per phase, one commit per lesson
 ## Training dir: `src/app/phase-2-communication/2.<n>-<slug>/` · Lesson notes: `lessons/phase-2-communication/2.<n>-<slug>.md`
 
 > Still no `signal()` / `computed()` / `effect()` for state (Phase 4). `input()`, `output()`, and `model()` are the standard component APIs and are used here.
@@ -10,7 +10,7 @@
 
 ### Lesson 2.1: `input()` — Modern Inputs
 - *Objective:* Typed inputs with default values, required inputs, and transforms.
-- *Branch Name:* `lesson-2.1-inputs`
+- *Commit:* `lesson-2.1-inputs`
 - *Reference:* `agent-skills/angular-skills/references/inputs.md`
 - *Topics:*
   - `input<T>()` vs `input.required<T>()` — typed inputs replacing `@Input()`
@@ -25,7 +25,7 @@
 
 ### Lesson 2.2: `output()` — Modern Outputs
 - *Objective:* Replace `@Output()` + `EventEmitter` with the `output()` API.
-- *Branch Name:* `lesson-2.2-outputs`
+- *Commit:* `lesson-2.2-outputs`
 - *Reference:* `agent-skills/angular-skills/references/outputs.md`
 - *Topics:*
   - `output<T>()` — typed outputs; `.emit(value)`
@@ -39,7 +39,7 @@
 
 ### Lesson 2.3: `model()` — Two-Way Binding
 - *Objective:* Component-level two-way binding with `model()`.
-- *Branch Name:* `lesson-2.3-model`
+- *Commit:* `lesson-2.3-model`
 - *Reference:* `agent-skills/angular-skills/references/inputs.md`
 - *Topics:*
   - `model<T>()` — a writable input that also emits; banana-in-a-box `[(value)]`
@@ -53,7 +53,7 @@
 
 ### Lesson 2.4: Content Projection
 - *Objective:* `<ng-content>`, multi-slot projection, `ngProjectAs`.
-- *Branch Name:* `lesson-2.4-content-projection`
+- *Commit:* `lesson-2.4-content-projection`
 - *Topics:*
   - Single-slot projection: `<ng-content>`
   - Multi-slot projection: `<ng-content select="[slot]">`
@@ -66,7 +66,7 @@
 
 ### Lesson 2.5: Native Drag & Drop Across Components
 - *Objective:* Combine DOM events, `output()`, and parent state to move tasks between columns.
-- *Branch Name:* `lesson-2.5-drag-and-drop`
+- *Commit:* `lesson-2.5-drag-and-drop`
 - *Reference:* `agent-skills/angular-skills/references/host-elements.md`
 - *Topics:*
   - HTML5 DnD events: `dragstart`, `dragover` (+ `preventDefault()`), `dragleave`, `drop`

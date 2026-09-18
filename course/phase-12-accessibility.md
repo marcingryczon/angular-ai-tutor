@@ -1,14 +1,14 @@
 # Phase 12: Accessibility & Polish
 *Focus: Production-ready quality.*
 
-## Git Branch: `lesson-12.<n>-*`
+## Git Branch: `phase-12-accessibility` — one branch per phase, one commit per lesson
 ## Training dir: `src/app/phase-12-accessibility/12.<n>-<slug>/` · Lesson notes: `lessons/phase-12-accessibility/12.<n>-<slug>.md`
 
 ---
 
 ### Lesson 12.1: ARIA Fundamentals
 - *Objective:* Roles, states, properties; semantic HTML first.
-- *Branch Name:* `lesson-12.1-aria`
+- *Commit:* `lesson-12.1-aria`
 - *Reference:* `agent-skills/angular-skills/references/angular-aria.md`
 - *Topics:*
   - Semantic HTML before ARIA (`<button>`, `<nav>`, `<ul>`, `<dialog>`-like patterns)
@@ -23,7 +23,7 @@
 
 ### Lesson 12.2: Keyboard Navigation & Focus Management
 - *Objective:* Everything works without a mouse.
-- *Branch Name:* `lesson-12.2-keyboard-focus`
+- *Commit:* `lesson-12.2-keyboard-focus`
 - *Reference:* `agent-skills/angular-skills/references/angular-aria.md`
 - *Topics:*
   - Keyboard events, `tabindex`, roving focus
@@ -37,7 +37,7 @@
 
 ### Lesson 12.3: Animations & Motion
 - *Objective:* Enter/leave animations the modern way; respect reduced motion.
-- *Branch Name:* `lesson-12.3-animations`
+- *Commit:* `lesson-12.3-animations`
 - *Reference:* `agent-skills/angular-skills/references/angular-animations.md` · `agent-skills/angular-skills/references/route-animations.md`
 - *Topics:*
   - `animate.enter` / `animate.leave` (Angular 20.2+) with CSS transitions/keyframes — the recommended approach
@@ -50,7 +50,7 @@
 
 ### Lesson 12.4: Accessible Forms & Announcements
 - *Objective:* Make the task form usable by someone who cannot see it.
-- *Branch Name:* `phase-12-accessibility` (commit `lesson-12.4-accessible-forms`)
+- *Commit:* `lesson-12.4-accessible-forms`
 - *Reference:* `agent-skills/angular-skills/references/angular-aria.md` · `agent-skills/angular-skills/references/signal-forms.md`
 - *Topics:*
   - Every control needs a name: `<label for>` beats `aria-label`, and a placeholder is not a label

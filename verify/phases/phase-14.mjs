@@ -14,13 +14,19 @@ export default {
         const offenders = walk(`${APP}/core`, (file) => file.endsWith('.ts')).filter((file) =>
           /from '\.\.\/.*features\//.test(fileExists(file)),
         );
-        truthy(offenders.length === 0, `core must not depend on features: ${offenders.join(', ')} (lesson 14.1)`);
+        truthy(
+          offenders.length === 0,
+          `core must not depend on features: ${offenders.join(', ')} (lesson 14.1)`,
+        );
       },
     },
     {
       name: 'the business rules live in core/domain as pure functions',
       run: () => {
-        const files = walk(`${APP}/core/domain`, (file) => file.endsWith('.ts') && !file.endsWith('.spec.ts'));
+        const files = walk(
+          `${APP}/core/domain`,
+          (file) => file.endsWith('.ts') && !file.endsWith('.spec.ts'),
+        );
         atLeast(files.length, 1, 'files in core/domain (lesson 14.2)');
         for (const file of files) {
           const source = fileExists(file);
@@ -42,7 +48,8 @@ export default {
       name: 'bundle budgets are set',
       run: () => {
         const config = json('angular.json');
-        const budgets = config.projects.taskflow.architect.build.configurations.production.budgets ?? [];
+        const budgets =
+          config.projects.taskflow.architect.build.configurations.production.budgets ?? [];
         const initial = budgets.find((budget) => budget.type === 'initial');
         truthy(initial, 'no initial bundle budget (lesson 14.3)');
       },
@@ -51,7 +58,11 @@ export default {
       name: 'errors have somewhere to land',
       run: () => {
         fileExists(`${APP}/core/error-handler.ts`);
-        fileContains(`${APP}/app.config.ts`, 'ErrorHandler', 'wire the handler in app.config.ts (lesson 14.4)');
+        fileContains(
+          `${APP}/app.config.ts`,
+          'ErrorHandler',
+          'wire the handler in app.config.ts (lesson 14.4)',
+        );
       },
     },
     {

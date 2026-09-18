@@ -24,7 +24,9 @@ const BOLD = '\x1b[1m';
 const OFF = '\x1b[0m';
 
 async function loadPhase(number) {
-  const file = readdirSync(phasesDir).find((name) => name === `phase-${String(number).padStart(2, '0')}.mjs`);
+  const file = readdirSync(phasesDir).find(
+    (name) => name === `phase-${String(number).padStart(2, '0')}.mjs`,
+  );
   if (!file) {
     throw new Error(`No verification for phase ${number}. Available: 0–14.`);
   }
@@ -51,7 +53,9 @@ async function runPhase(phase, context) {
 
   console.log(
     `\n  ${passed}/${phase.checks.length} checks passed` +
-      (failures.length ? ` ${DIM}(first failure: ${failures[0]})${OFF}` : ` ${GREEN}— milestone reached${OFF}`),
+      (failures.length
+        ? ` ${DIM}(first failure: ${failures[0]})${OFF}`
+        : ` ${GREEN}— milestone reached${OFF}`),
   );
   return failures.length === 0;
 }
@@ -59,7 +63,9 @@ async function runPhase(phase, context) {
 const requested = process.argv.slice(2).filter((arg) => /^\d+$/.test(arg));
 const numbers = requested.length
   ? requested.map(Number)
-  : readdirSync(phasesDir).map((name) => Number(name.match(/\d+/)[0])).sort((a, b) => a - b);
+  : readdirSync(phasesDir)
+      .map((name) => Number(name.match(/\d+/)[0]))
+      .sort((a, b) => a - b);
 
 const phases = [];
 for (const number of numbers) phases.push(await loadPhase(number));
@@ -77,9 +83,25 @@ if (needsApp) {
 const context = {
   url: server?.url,
   page: browser,
-  /** Loads a route with a clean localStorage, then lets the app settle. */
+  /** Navigates to a route and lets the app settle. */
   async visit(path = '/') {
     await browser.goto(server.url + path.replace(/^\//, ''));
+    return browser;
+  },
+  /**
+   * Opens a Kanban board, wherever it lives: before Phase 7 the board *is* the
+   * home page; afterwards the home page is the board list and we click through.
+   */
+  async visitBoard() {
+    await browser.goto(server.url);
+    await browser.evaluate(`
+      const link = document.querySelector('.board-card__link');
+      if (link) {
+        link.click();
+        await new Promise(r => setTimeout(r, 900));
+      }
+      return true;
+    `);
     return browser;
   },
   async reset() {
@@ -88,12 +110,16 @@ const context = {
 };
 
 let allGreen = true;
-for (const phase of phases) {
-  const green = await runPhase(phase, context);
-  allGreen = allGreen && green;
+try {
+  for (const phase of phases) {
+    const green = await runPhase(phase, context);
+    allGreen = allGreen && green;
+  }
+} finally {
+  // Always tear the tooling down, including when a check throws something unexpected —
+  // a leaked dev server would block the next run.
+  await browser?.close();
+  server?.stop();
 }
-
-await browser?.close();
-server?.stop();
 
 process.exit(allGreen ? 0 : 1);

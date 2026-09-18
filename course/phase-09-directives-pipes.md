@@ -1,14 +1,14 @@
 # Phase 9: Directives & Pipes
 *Focus: Reusable template logic.*
 
-## Git Branch: `lesson-9.<n>-*`
+## Git Branch: `phase-9-directives-pipes` — one branch per phase, one commit per lesson
 ## Training dir: `src/app/phase-9-directives-pipes/9.<n>-<slug>/` · Lesson notes: `lessons/phase-9-directives-pipes/9.<n>-<slug>.md`
 
 ---
 
 ### Lesson 9.1: Structural Directives & Templates
 - *Objective:* Create custom structural directives.
-- *Branch Name:* `lesson-9.1-structural-directives`
+- *Commit:* `lesson-9.1-structural-directives`
 - *Topics:*
   - `<ng-template>`, `TemplateRef`, `ViewContainerRef` — how `@if` works underneath
   - `*directive` microsyntax desugars to `<ng-template [directive]>`
@@ -22,7 +22,7 @@
 
 ### Lesson 9.2: Attribute Directives & Host Bindings
 - *Objective:* DOM behavior and declarative `host` metadata.
-- *Branch Name:* `lesson-9.2-attribute-directives`
+- *Commit:* `lesson-9.2-attribute-directives`
 - *Reference:* `agent-skills/angular-skills/references/host-elements.md`
 - *Topics:*
   - `@Directive({ selector: '[appX]' })` with `input()`s
@@ -36,7 +36,7 @@
 
 ### Lesson 9.3: Custom Pipes
 - *Objective:* Pure pipes, pipe transforms, chaining pipes.
-- *Branch Name:* `lesson-9.3-custom-pipes`
+- *Commit:* `lesson-9.3-custom-pipes`
 - *Topics:*
   - `@Pipe({ name })` and `PipeTransform`
   - Pure vs impure pipes; pipes as memoized template functions

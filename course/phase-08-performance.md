@@ -1,14 +1,14 @@
 # Phase 8: Change Detection & Performance
 *Focus: Rendering efficiency and optimization in a zoneless app.*
 
-## Git Branch: `lesson-8.<n>-*`
+## Git Branch: `phase-8-performance` — one branch per phase, one commit per lesson
 ## Training dir: `src/app/phase-8-performance/8.<n>-<slug>/` · Lesson notes: `lessons/phase-8-performance/8.<n>-<slug>.md`
 
 ---
 
 ### Lesson 8.1: Change Detection Internals (Zoneless)
 - *Objective:* How Angular decides *what* to re-check and *when*, without Zone.js.
-- *Branch Name:* `lesson-8.1-cd-internals`
+- *Commit:* `lesson-8.1-cd-internals`
 - *Topics:*
   - The change detection pass: top-down, unidirectional, template bindings compared
   - What schedules a pass in a zoneless app: signal writes read by a template, template event listeners, `markForCheck()`, `async` pipe, `ComponentRef.setInput()`
@@ -23,7 +23,7 @@
 
 ### Lesson 8.2: `OnPush` Strategy
 - *Objective:* Skip untouched subtrees.
-- *Branch Name:* `lesson-8.2-onpush`
+- *Commit:* `lesson-8.2-onpush`
 - *Topics:*
   - `changeDetection: ChangeDetectionStrategy.OnPush`
   - When an OnPush view is checked: input reference change, event in the view, signal read in the template changed, `markForCheck()`
@@ -36,7 +36,7 @@
 
 ### Lesson 8.3: Zone.js — Legacy & Interop
 - *Objective:* Understand what Zone.js did, how to recognise zone-era code, and how to interoperate.
-- *Branch Name:* `lesson-8.3-zone-legacy`
+- *Commit:* `lesson-8.3-zone-legacy`
 - *Reference:* `agent-skills/angular-skills/references/migrations.md`
 - *Topics:*
   - What Zone.js is: monkey-patching async browser APIs to trigger CD after *every* task
@@ -50,7 +50,7 @@
 
 ### Lesson 8.4: Performance Profiling
 - *Objective:* Angular DevTools, measuring change detection.
-- *Branch Name:* `lesson-8.4-profiling`
+- *Commit:* `lesson-8.4-profiling`
 - *Topics:*
   - Angular DevTools: component tree, signal graph, profiler
   - Measuring CD passes and their duration
@@ -62,7 +62,7 @@
 
 ### Lesson 8.5: Rendering Optimization & `@defer`
 - *Objective:* `@for` track, pure pipes, deferred blocks.
-- *Branch Name:* `lesson-8.5-rendering-opts`
+- *Commit:* `lesson-8.5-rendering-opts`
 - *Reference:* `agent-skills/angular-skills/references/loading-strategies.md`
 - *Topics:*
   - `@for` `track` — identity vs index and what a wrong track costs (DOM churn)

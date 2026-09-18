@@ -5,16 +5,21 @@ const APP = 'projects/taskflow/src/app';
 export default {
   phase: 8,
   title: 'Change Detection & Performance',
-  milestone: 'Every component is OnPush, every @for tracks by id, the modal body sits behind @defer. No visual change. (spec §10)',
+  milestone:
+    'Every component is OnPush, every @for tracks by id, the modal body sits behind @defer. No visual change. (spec §10)',
   checks: [
     {
       name: 'every component uses OnPush',
       run: () => {
-        const offenders = walk(APP, (file) => file.endsWith('.ts') && !file.endsWith('.spec.ts'))
-          .filter((file) => {
-            const source = fileExists(file);
-            return source.includes('@Component(') && !source.includes('ChangeDetectionStrategy.OnPush');
-          });
+        const offenders = walk(
+          APP,
+          (file) => file.endsWith('.ts') && !file.endsWith('.spec.ts'),
+        ).filter((file) => {
+          const source = fileExists(file);
+          return (
+            source.includes('@Component(') && !source.includes('ChangeDetectionStrategy.OnPush')
+          );
+        });
         truthy(offenders.length === 0, `not OnPush yet: ${offenders.join(', ')}`);
       },
     },
@@ -45,8 +50,12 @@ export default {
       run: async () => {
         const { json } = await import('../lib/checks.mjs');
         const config = json('angular.json');
-        const component = config.projects.taskflow.schematics?.['@schematics/angular:component'] ?? {};
-        truthy(component.changeDetection === 'OnPush', 'angular.json should generate OnPush components');
+        const component =
+          config.projects.taskflow.schematics?.['@schematics/angular:component'] ?? {};
+        truthy(
+          component.changeDetection === 'OnPush',
+          'angular.json should generate OnPush components',
+        );
       },
     },
     {

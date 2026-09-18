@@ -48,8 +48,8 @@ export default {
     {
       name: 'the search is debounced (typing does not filter instantly)',
       needsApp: true,
-      run: async ({ visit, page }) => {
-        await visit('/');
+      run: async ({ visitBoard, page }) => {
+        await visitBoard();
         const found = await page.evaluate(`
           const input = document.querySelector('#board-search');
           if (!input) return null;
@@ -67,7 +67,10 @@ export default {
           found.immediate === found.before,
           'the board filtered within 80ms — the search is not debounced (lesson 5.2/5.4)',
         );
-        truthy(found.settled === 0, 'after the debounce the impossible search should leave no cards');
+        truthy(
+          found.settled === 0,
+          'after the debounce the impossible search should leave no cards',
+        );
       },
     },
   ],

@@ -1,14 +1,14 @@
 # Phase 14: Architecture & Production
 *Focus: Real-world application structure and shipping — the last thing you do is release.*
 
-## Git Branch: `phase-14-production`
+## Git Branch: `phase-14-production` — one branch per phase, one commit per lesson
 ## Training dir: `src/app/phase-14-production/14.<n>-<slug>/` · Lesson notes: `lessons/phase-14-production/14.<n>-<slug>.md`
 
 ---
 
 ### Lesson 14.1: Feature-First Architecture — Review & Boundaries
 - *Objective:* Understand *why* TaskFlow is laid out as `core/` / `features/` / `shared/` and enforce the boundaries.
-- *Branch Name:* `lesson-14.1-feature-architecture`
+- *Commit:* `lesson-14.1-feature-architecture`
 - *Topics:*
   - `core/` (domain + state, no UI) vs `features/` (screens) vs `shared/` (reusable UI primitives)
   - Dependency direction: features → core/shared; never core → features
@@ -22,7 +22,7 @@
 
 ### Lesson 14.2: Clean Architecture in Angular
 - *Objective:* Separation of concerns, layers.
-- *Branch Name:* `lesson-14.2-clean-architecture`
+- *Commit:* `lesson-14.2-clean-architecture`
 - *Topics:*
   - Domain (models, pure functions) / application (stores) / infrastructure (`TaskFlowDb`, HTTP) / presentation (components)
   - Smart vs presentational components
@@ -34,7 +34,7 @@
 
 ### Lesson 14.3: Bundle Analysis & Optimization
 - *Objective:* Tree-shaking, bundle budgets.
-- *Branch Name:* `lesson-14.3-bundle-analysis`
+- *Commit:* `lesson-14.3-bundle-analysis`
 - *Topics:*
   - Bundle budgets in `angular.json`
   - `ng build --stats-json` + a bundle analyzer
@@ -46,7 +46,7 @@
 
 ### Lesson 14.4: Error Handling, Production Build & CI
 - *Objective:* Ship with confidence.
-- *Branch Name:* `lesson-14.4-production`
+- *Commit:* `lesson-14.4-production`
 - *Reference:* `agent-skills/angular-skills/references/environment-configuration.md`
 - *Topics:*
   - Error handling layers: `provideBrowserGlobalErrorListeners()`, custom `ErrorHandler`, `withNavigationErrorHandler()`, HTTP interceptor

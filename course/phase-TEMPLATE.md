@@ -1,14 +1,14 @@
 # Phase {{NUMBER}}: {{PHASE_TITLE}}
 *Focus: {{PHASE_FOCUS}}*
 
-## Git Branch: `lesson-{{NUMBER}}.<n>-*`
+## Git Branch: `phase-{{NUMBER}}-{{PHASE_SLUG}}` — one branch per phase, one commit per lesson
 ## Training dir: `src/app/phase-{{NUMBER}}-{{PHASE_SLUG}}/{{NUMBER}}.<n>-<slug>/` · Lesson notes: `lessons/phase-{{NUMBER}}-{{PHASE_SLUG}}/{{NUMBER}}.<n>-<slug>.md`
 
 ---
 
 ### Lesson {{NUMBER}}.1: {{LESSON_1_TITLE}}
 - *Objective:* {{LESSON_1_OBJECTIVE}}
-- *Branch Name:* `lesson-{{NUMBER}}.1-{{LESSON_1_SLUG}}`
+- *Commit:* `lesson-{{NUMBER}}.1-{{LESSON_1_SLUG}}`
 - *Reference:* `agent-skills/angular-skills/references/{{REFERENCE_FILE}}.md`
 - *Topics:*
   - {{TOPIC_1_1}}
@@ -21,7 +21,7 @@
 
 ### Lesson {{NUMBER}}.2: {{LESSON_2_TITLE}}
 - *Objective:* {{LESSON_2_OBJECTIVE}}
-- *Branch Name:* `lesson-{{NUMBER}}.2-{{LESSON_2_SLUG}}`
+- *Commit:* `lesson-{{NUMBER}}.2-{{LESSON_2_SLUG}}`
 - *Reference:* `agent-skills/angular-skills/references/{{REFERENCE_FILE}}.md`
 - *Topics:*
   - {{TOPIC_2_1}}
@@ -34,7 +34,7 @@
 
 ### Lesson {{NUMBER}}.3: {{LESSON_3_TITLE}}
 - *Objective:* {{LESSON_3_OBJECTIVE}}
-- *Branch Name:* `lesson-{{NUMBER}}.3-{{LESSON_3_SLUG}}`
+- *Commit:* `lesson-{{NUMBER}}.3-{{LESSON_3_SLUG}}`
 - *Reference:* `agent-skills/angular-skills/references/{{REFERENCE_FILE}}.md`
 - *Topics:*
   - {{TOPIC_3_1}}

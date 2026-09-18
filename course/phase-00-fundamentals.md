@@ -1,14 +1,14 @@
 # Phase 0: Project Setup & Angular Fundamentals
 *Focus: Understanding the workspace, TypeScript, and the Angular mental model.*
 
-## Git Branch: `lesson-0.<n>-*`
+## Git Branch: `phase-0-fundamentals` — one branch per phase, one commit per lesson
 ## Training dir: `src/app/phase-0-fundamentals/0.<n>-<slug>/` · Lesson notes: `lessons/phase-0-fundamentals/0.<n>-<slug>.md`
 
 ---
 
 ### Lesson 0.1: Workspace Anatomy
 - *Objective:* Navigate `angular.json`, `package.json`, project structure, and CLI commands.
-- *Branch Name:* `lesson-0.1-workspace-anatomy`
+- *Commit:* `lesson-0.1-workspace-anatomy`
 - *Reference:* `agent-skills/angular-skills/references/cli.md` · `agent-skills/angular-skills/references/mcp.md`
 - *Topics:*
   - Project tree: `angular.json`, `package.json`, `tsconfig.json`, `src/`, `projects/`
@@ -30,7 +30,7 @@
 
 ### Lesson 0.2.1: TypeScript Strict Mode — Why Strict?
 - *Objective:* Understand why `strict: true` is non-negotiable in Angular. Explore `strictNullChecks`, `noImplicitOverride`, `noImplicitReturns`.
-- *Branch Name:* `lesson-0.2.1-ts-strict-why`
+- *Commit:* `lesson-0.2.1-ts-strict-why`
 - *Topics:*
   - What `strict: true` enables under the hood
   - `strictNullChecks`: null/undefined safety
@@ -46,7 +46,7 @@
 
 ### Lesson 0.2.2: TypeScript Strict Mode — Types & Interfaces
 - *Objective:* Master `type` unions, `interface` definitions, optional vs required fields, `readonly`.
-- *Branch Name:* `lesson-0.2.2-ts-types-interfaces`
+- *Commit:* `lesson-0.2.2-ts-types-interfaces`
 - *Topics:*
   - Union types with string literals
   - Interface vs type alias
@@ -59,7 +59,7 @@
 
 ### Lesson 0.2.3: TypeScript Strict Mode — Generics
 - *Objective:* Understand generic functions, generic interfaces, `T extends`, and why generics preserve type safety.
-- *Branch Name:* `lesson-0.2.3-ts-generics`
+- *Commit:* `lesson-0.2.3-ts-generics`
 - *Topics:*
   - Why generics: type preservation without `any`
   - Generic functions and generic interfaces
@@ -72,7 +72,7 @@
 
 ### Lesson 0.3: Angular Mental Model (Zoneless)
 - *Objective:* Understand the bootstrap process, the component tree, and how a zoneless Angular app knows when to re-render.
-- *Branch Name:* `lesson-0.3-angular-mental-model`
+- *Commit:* `lesson-0.3-angular-mental-model`
 - *Reference:* `agent-skills/angular-skills/references/components.md` · `agent-skills/angular-skills/references/signals-overview.md`
 - *Topics:*
   - Entry point: `main.ts` → `bootstrapApplication(App, appConfig)`

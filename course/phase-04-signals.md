@@ -1,7 +1,7 @@
 # Phase 4: Signals & Reactive State
 *Focus: Modern reactive programming with Signals.*
 
-## Git Branch: `lesson-4.<n>-*`
+## Git Branch: `phase-4-signals` — one branch per phase, one commit per lesson
 ## Training dir: `src/app/phase-4-signals/4.<n>-<slug>/` · Lesson notes: `lessons/phase-4-signals/4.<n>-<slug>.md`
 
 > From this phase on, component and service state is held in signals.
@@ -10,7 +10,7 @@
 
 ### Lesson 4.1: `signal()` — Writable Signals
 - *Objective:* Create and manage reactive state with `signal()`.
-- *Branch Name:* `lesson-4.1-writable-signals`
+- *Commit:* `lesson-4.1-writable-signals`
 - *Reference:* `agent-skills/angular-skills/references/signals-overview.md`
 - *Topics:*
   - `signal<T>(initialValue)` — creating writable signals; `WritableSignal` vs `Signal`
@@ -24,7 +24,7 @@
 
 ### Lesson 4.2: `computed()` — Derived State
 - *Objective:* Automatic dependency tracking with computed signals.
-- *Branch Name:* `lesson-4.2-computed-signals`
+- *Commit:* `lesson-4.2-computed-signals`
 - *Reference:* `agent-skills/angular-skills/references/signals-overview.md`
 - *Topics:*
   - `computed()` — derived signals that auto-track dependencies
@@ -38,7 +38,7 @@
 
 ### Lesson 4.3: `effect()` — Side Effects
 - *Objective:* React to signal changes, manage cleanup, know when *not* to use effects.
-- *Branch Name:* `lesson-4.3-effects`
+- *Commit:* `lesson-4.3-effects`
 - *Reference:* `agent-skills/angular-skills/references/effects.md`
 - *Topics:*
   - `effect()` — runs when tracked signals change; runs in an injection context
@@ -52,7 +52,7 @@
 
 ### Lesson 4.4: Linked Signals
 - *Objective:* `linkedSignal()` — writable state that resets when its source changes.
-- *Branch Name:* `lesson-4.4-linked-signals`
+- *Commit:* `lesson-4.4-linked-signals`
 - *Reference:* `agent-skills/angular-skills/references/linked-signal.md`
 - *Topics:*
   - `linkedSignal(() => source())` — a writable signal with a computed default. It only resets when the computation **reads a signal**: `linkedSignal(() => '')` has no dependency and therefore never resets.
@@ -65,7 +65,7 @@
 
 ### Lesson 4.5: Signals in Templates
 - *Objective:* Template reactivity and the reading rules.
-- *Branch Name:* `lesson-4.5-signals-templates`
+- *Commit:* `lesson-4.5-signals-templates`
 - *Reference:* `agent-skills/angular-skills/references/signals-overview.md`
 - *Topics:*
   - Calling signals in templates: `{{ count() }}`, `[prop]="value()"`, `@if (item())`

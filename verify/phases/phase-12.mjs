@@ -13,7 +13,10 @@ export default {
       run: () => {
         const source = fileExists(`${APP}/shared/modal.ts`);
         truthy(/escape/i.test(source), 'the modal does not handle Escape (spec §5.6)');
-        truthy(source.includes('afterNextRender'), 'focus must move into the dialog after it renders');
+        truthy(
+          source.includes('afterNextRender'),
+          'focus must move into the dialog after it renders',
+        );
         truthy(/overflow/.test(source), 'body scroll is not locked while the dialog is open');
       },
     },
@@ -38,19 +41,17 @@ export default {
         const offenders = walk(APP, (file) => file.endsWith('.ts')).filter((file) =>
           fileExists(file).includes('@angular/animations'),
         );
-        truthy(offenders.length === 0, `@angular/animations is deprecated: ${offenders.join(', ')}`);
+        truthy(
+          offenders.length === 0,
+          `@angular/animations is deprecated: ${offenders.join(', ')}`,
+        );
       },
     },
     {
       name: 'the board exposes a list structure and labelled icon buttons',
       needsApp: true,
-      run: async ({ visit, page }) => {
-        await visit('/');
-        await page.evaluate(`
-          const link = document.querySelector('.board-card__link');
-          if (link) { link.click(); await new Promise(r => setTimeout(r, 900)); }
-          return true;
-        `);
+      run: async ({ visitBoard, page }) => {
+        await visitBoard();
         const found = await page.evaluate(`
           const iconButtons = [...document.querySelectorAll('.task-card .icon-btn')];
           return {

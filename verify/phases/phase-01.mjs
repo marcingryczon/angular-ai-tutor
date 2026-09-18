@@ -12,7 +12,12 @@ export default {
       name: 'styles.scss carries the §1.2 design tokens',
       run: () => {
         const source = fileContains('projects/taskflow/src/styles.scss', '--primary: #3b6fe0');
-        for (const token of ['--bg: #f3f5f9', '--radius: 12px', '--priority-urgent: #e0455a', '--shadow-sm']) {
+        for (const token of [
+          '--bg: #f3f5f9',
+          '--radius: 12px',
+          '--priority-urgent: #e0455a',
+          '--shadow-sm',
+        ]) {
           truthy(source.includes(token), `styles.scss is missing the token ${token}`);
         }
       },
@@ -24,7 +29,11 @@ export default {
     {
       name: 'components keep template and styles in their own files',
       run: () => {
-        for (const file of ['features/board/board', 'features/board/column', 'features/board/task-card']) {
+        for (const file of [
+          'features/board/board',
+          'features/board/column',
+          'features/board/task-card',
+        ]) {
           fileContains(`${APP}/${file}.ts`, 'templateUrl', 'no inline templates (CLAUDE.md)');
           fileContains(`${APP}/${file}.ts`, 'styleUrl', 'no inline styles (CLAUDE.md)');
         }
@@ -33,8 +42,8 @@ export default {
     {
       name: 'the board renders four columns with cards',
       needsApp: true,
-      run: async ({ visit }) => {
-        const page = await visit('/');
+      run: async ({ visitBoard }) => {
+        const page = await visitBoard();
         const found = await page.evaluate(`
           return {
             columns: document.querySelectorAll('.column').length,
