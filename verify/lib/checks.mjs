@@ -23,15 +23,76 @@ export function fileMissing(path, hint = '') {
   }
 }
 
-/** Angular's config files are JSON with comments, so strip those first. */
+/**
+ * Angular's config files are JSON with comments. Stripping those with a regex is a trap: an
+ * asset glob such as the one in `angular.json` contains a slash-star sequence inside a string
+ * literal, and a naive stripper swallows the rest of the file from there. This scanner tracks
+ * whether it is inside a string, so only real comments are removed.
+ */
+function stripJsonComments(text) {
+  let out = '';
+  let inString = false;
+  let inLine = false;
+  let inBlock = false;
+
+  for (let i = 0; i < text.length; i++) {
+    const char = text[i];
+    const next = text[i + 1];
+
+    if (inLine) {
+      if (char === '\n') {
+        inLine = false;
+        out += char;
+      }
+      continue;
+    }
+    if (inBlock) {
+      if (char === '*' && next === '/') {
+        inBlock = false;
+        i++;
+      }
+      continue;
+    }
+    if (inString) {
+      out += char;
+      if (char === '\\') {
+        out += text[++i] ?? '';
+      } else if (char === '"') {
+        inString = false;
+      }
+      continue;
+    }
+    if (char === '"') {
+      inString = true;
+      out += char;
+      continue;
+    }
+    if (char === '/' && next === '/') {
+      inLine = true;
+      i++;
+      continue;
+    }
+    if (char === '/' && next === '*') {
+      inBlock = true;
+      i++;
+      continue;
+    }
+    out += char;
+  }
+
+  return out;
+}
+
 export function json(path) {
-  const raw = fileExists(path)
-    .replace(/\/\*[\s\S]*?\*\//g, '')
-    .replace(/(^|[^:"'])\/\/.*$/gm, '$1');
+  const raw = fileExists(path);
   try {
     return JSON.parse(raw);
-  } catch (error) {
-    throw new Error(`${path} is not valid JSON: ${error.message}`);
+  } catch {
+    try {
+      return JSON.parse(stripJsonComments(raw));
+    } catch (error) {
+      throw new Error(`${path} is not valid JSON: ${error.message}`);
+    }
   }
 }
 

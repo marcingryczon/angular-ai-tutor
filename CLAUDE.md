@@ -108,6 +108,7 @@ Tests start at Lesson 3.6 (services and pure functions), not at Phase 11. See `a
 | Angular references (37 topics) | `agent-skills/angular-skills/references/` |
 | TaskFlow visual/domain spec | `course/taskflow-spec.md` — pixel-perfect required |
 | Detailed lesson plans | `course/phase-NN-<slug>.md` |
+| Architecture decisions (from Phase 13) | `course/adr/` |
 | Lesson content (Polish) | `lessons/` |
 
 ## TaskFlow Spec

@@ -40,9 +40,33 @@ export default {
     },
     {
       name: 'the stores own the state and the services stayed thin',
-      run: () => {
-        fileContains(`${APP}/core/task.store.ts`, /computed\(/, 'lesson 5.7');
-        fileContains(`${APP}/core/board.store.ts`, /signal\(/, 'lesson 5.7');
+      // After Phase 13 the store is the NgRx slice, so either shape counts — what must
+      // hold is that state lives in a store and not in the data-access services.
+      run: async () => {
+        const { walk, fileExists, atLeast, truthy } = await import('../lib/checks.mjs');
+        const stores = walk(
+          `${APP}/core`,
+          (file) => /store\.ts$/.test(file) && !file.endsWith('.spec.ts'),
+        );
+        atLeast(
+          stores.length,
+          2,
+          'store files in core/ — one for tasks, one for boards (lesson 5.7)',
+        );
+
+        const stateful = ['task.service.ts', 'board.service.ts']
+          .map((name) => `${APP}/core/${name}`)
+          .filter((file) => {
+            try {
+              return /\bsignal</.test(fileExists(file));
+            } catch {
+              return false;
+            }
+          });
+        truthy(
+          stateful.length === 0,
+          `state moved to the stores in 5.7, but it is still held in: ${stateful.join(', ')}`,
+        );
       },
     },
     {

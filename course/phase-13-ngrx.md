@@ -133,7 +133,7 @@
   - `@ngrx/signals`: `signalStore()`, `withState()`, `withComputed()`, `withMethods()`, `withHooks()`, `rxMethod()`, `withEntities()` — the signal-native alternative; comparison with 5.7 and with `@ngrx/store`
   - Decision guide for the learner's next project
 - *Training Exercise:* Rebuild the training todo store as a `signalStore()` in the training app and compare line count and readability with the `@ngrx/store` version
-- *Project Application:* Write the ADR — `course/adr/001-state-management.md`: what the signal store cost, what NgRx bought, what it cost in bundle size and boilerplate, and which of the three you would pick for your next project. **This is the deliverable of the phase**, not an optional extra: the point of the migration is to be able to answer the question, not to end up on NgRx.
+- *Project Application:* Write the ADR from `course/adr/000-TEMPLATE.md` into `course/adr/001-state-management.md`: what the signal store cost, what NgRx bought, what it cost in bundle size and boilerplate, and which of the three you would pick for your next project. **This is the deliverable of the phase**, not an optional extra: the point of the migration is to be able to answer the question, not to end up on NgRx.
 - *Reality check:* the app behaves exactly as it did before and the bundle grew by ~35 kB. If your ADR concludes "a signal store was enough for TaskFlow", that is the correct answer and you now have the experience to defend it.
 ---
 

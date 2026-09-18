@@ -1,4 +1,4 @@
-import { atLeast, equals, fileContains, truthy } from '../lib/checks.mjs';
+import { atLeast, equals, fileExists, truthy, walk } from '../lib/checks.mjs';
 
 const APP = 'projects/taskflow/src/app';
 
@@ -9,15 +9,29 @@ export default {
     'All state is signals; the filter bar works (search, priority, assignee, filtered count); persistence runs through an effect(). (spec §10)',
   checks: [
     {
-      name: 'service state is held in signals',
+      name: 'state is held in signals',
+      // Checked across core/ rather than in one file: later phases move the state
+      // from the services into a store, and a milestone once reached must stay reached.
       run: () => {
-        fileContains(`${APP}/core/session.service.ts`, /signal</, 'lesson 4.1');
-        fileContains(`${APP}/core/board.service.ts`, /signal</, 'lesson 4.1');
+        const holders = walk(
+          `${APP}/core`,
+          (file) => file.endsWith('.ts') && !file.endsWith('.spec.ts'),
+        ).filter((file) => /\bsignal</.test(fileExists(file)));
+        atLeast(holders.length, 1, 'files in core/ holding state in signals (lesson 4.1)');
       },
     },
     {
       name: 'persistence happens in an effect(), not inside the mutations',
-      run: () => fileContains(`${APP}/core/board.service.ts`, /effect\(/, 'lesson 4.3'),
+      run: () => {
+        const effects = walk(
+          `${APP}/core`,
+          (file) => file.endsWith('.ts') && !file.endsWith('.spec.ts'),
+        ).filter((file) => {
+          const source = fileExists(file);
+          return /\beffect\(/.test(source) && /persist|save\(/.test(source);
+        });
+        atLeast(effects.length, 1, 'a persistence effect() in core/ (lesson 4.3)');
+      },
     },
     {
       name: 'the filter bar filters, and the count follows',

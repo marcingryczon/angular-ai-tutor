@@ -38,9 +38,10 @@ export default {
     {
       name: 'every @for has a track expression at all',
       run: () => {
+        // The header runs up to the opening brace: `tasks()` inside it has its own parentheses.
         const offenders = walk(APP, (file) => file.endsWith('.html')).filter((file) => {
-          const blocks = fileExists(file).match(/@for\s*\([^)]*\)/g) ?? [];
-          return blocks.some((block) => !block.includes('track'));
+          const headers = fileExists(file).match(/@for\s*\(([^{]*)\)\s*\{/g) ?? [];
+          return headers.some((header) => !header.includes('track'));
         });
         truthy(offenders.length === 0, `@for without track: ${offenders.join(', ')}`);
       },
