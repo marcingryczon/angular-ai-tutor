@@ -1,0 +1,30 @@
+<section class="board">
+  <header class="board__header">
+    <div class="board__heading">
+      <a class="board__back" href="/">
+        <span class="material-symbols-rounded material-symbols-rounded--sm">arrow_back</span>
+        All boards
+      </a>
+      <h1 class="board__title">
+        {{ title }}
+        <span class="visibility-team">team</span>
+      </h1>
+      <p class="board__desc">{{ description }}</p>
+      <p class="board__meta">{{ tasks.length }} task(s)</p>
+    </div>
+
+    <div class="board__actions">
+      <button type="button" class="btn btn--primary">
+        <span class="material-symbols-rounded material-symbols-rounded--sm">add</span>
+        New task
+      </button>
+    </div>
+  </header>
+
+  <div class="board__columns">
+    <app-column />
+    <app-column />
+    <app-column />
+    <app-column />
+  </div>
+</section>

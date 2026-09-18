@@ -1,0 +1,70 @@
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 57px;
+  padding: 0 clamp(16px, 4vw, 40px);
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: saturate(180%) blur(8px);
+  -webkit-backdrop-filter: saturate(180%) blur(8px);
+  border-bottom: 1px solid var(--border);
+
+  &__brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--text);
+  }
+
+  &__logo {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, var(--primary), #6a8bf0);
+    color: #fff;
+
+    .material-symbols-rounded {
+      font-size: 18px;
+    }
+  }
+
+  &__name {
+    font-weight: 700;
+    font-size: 1.05rem;
+    letter-spacing: -0.01em;
+  }
+
+  &__role {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  &__role-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-subtle);
+  }
+
+  &__role-select {
+    min-width: 108px;
+    padding: 6px 30px 6px 10px;
+    font-size: 0.88rem;
+    font-weight: 600;
+  }
+}
+
+.page {
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 24px clamp(16px, 4vw, 40px) 48px;
+  min-height: calc(100dvh - 57px);
+}

@@ -1,0 +1,19 @@
+<section class="column">
+  <header class="column__header">
+    <h2 class="column__title">{{ title }}</h2>
+    <span class="column__count">{{ tasks.length }}</span>
+  </header>
+
+  <div class="column__cards">
+    @for (task of tasks; track task.id) {
+      <app-task-card />
+    } @empty {
+      <div class="column__empty">No tasks</div>
+    }
+  </div>
+
+  <div class="column__quick-add">
+    <span class="material-symbols-rounded material-symbols-rounded--sm column__quick-add-icon">add</span>
+    <input #quickAdd class="column__quick-add-input" type="text" placeholder="Quick add" />
+  </div>
+</section>
