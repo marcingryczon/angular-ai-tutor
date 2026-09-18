@@ -5,11 +5,13 @@
         <span class="material-symbols-rounded material-symbols-rounded--sm">arrow_back</span>
         All boards
       </a>
-      <h1 class="board__title">
-        {{ boardTitle }}
-        <span class="visibility-team">team</span>
-      </h1>
-      <p class="board__desc">{{ description }}</p>
+      @if (board; as board) {
+        <h1 class="board__title">
+          {{ board.title }}
+          <span class="visibility-{{ board.visibility }}">{{ board.visibility }}</span>
+        </h1>
+        <p class="board__desc">{{ board.description }}</p>
+      }
       <p class="board__meta">{{ tasks.length }} task(s)</p>
     </div>
 
@@ -18,6 +20,13 @@
         <span class="material-symbols-rounded material-symbols-rounded--sm">add</span>
         New task
       </button>
+
+      <!-- Inline role check until the *adminOnly directive arrives in Phase 9 -->
+      @if (session.isAdmin) {
+        <button type="button" class="btn btn--ghost" (click)="resetDemoData()">
+          Reset demo data
+        </button>
+      }
     </div>
   </header>
 
